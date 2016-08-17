@@ -1,17 +1,13 @@
 package com.mercateo.jsonschema.property;
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.mercateo.jsonschema.generictype.GenericType;
-import javaslang.collection.HashMap;
 import javaslang.collection.HashSet;
 import javaslang.collection.List;
 import javaslang.collection.Set;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class UnwrappedPropertyBuilder {
 
@@ -40,30 +36,45 @@ public class UnwrappedPropertyBuilder {
     }
 
     private Property unwrap(GenericType<?> genericType) {
-        return unwrap(propertyBuilder.from(genericType));
+        java.util.Map addedUnwrappedPropertyDescriptors = new java.util.HashMap<>();
+        final Property property = unwrap(propertyBuilder.from(genericType), addedUnwrappedPropertyDescriptors);
+        unwrappedPropertyDescriptors.putAll(addedUnwrappedPropertyDescriptors);
+        return property;
     }
 
-    private Property unwrap(Property property) {
-        final PropertyDescriptor propertyDescriptor = unwrappedPropertyDescriptors.computeIfAbsent(
-                property.genericType(), t -> createUnwrappedDescriptor(property));
+    private Property unwrap(Property property, java.util.Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
+        final GenericType<?> genericType = property.genericType();
 
+        final PropertyDescriptor propertyDescriptor;
+        if (unwrappedPropertyDescriptors.containsKey(genericType)) {
+            propertyDescriptor = unwrappedPropertyDescriptors.get(genericType);
+        } else {
+            if (addedUnwrappedProperties.containsKey(genericType)){
+                propertyDescriptor = addedUnwrappedProperties.get(genericType);
+            } else {
+                propertyDescriptor = createUnwrappedDescriptor(property, addedUnwrappedProperties);
+            }
+        }
         return ImmutableProperty.of(property.name(), propertyDescriptor, property.valueAccessor(),
                 property.annotations());
     }
 
-    private PropertyDescriptor createUnwrappedDescriptor(Property property) {
-        List<Property> children = addChildren(List.empty(), property);
-        return ImmutablePropertyDescriptor.of(property.genericType(), children, property
+    private PropertyDescriptor createUnwrappedDescriptor(Property property, Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
+        List<Property> children = addChildren(List.empty(), property, addedUnwrappedProperties);
+        final GenericType<?> genericType = property.genericType();
+        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptor.of(genericType, children, property
                 .propertyDescriptor().annotations());
+        addedUnwrappedProperties.put(genericType, propertyDescriptor);
+        return propertyDescriptor;
     }
 
-    private List<Property> addChildren(List<Property> children, Property property) {
+    private List<Property> addChildren(List<Property> children, Property property, Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
         return property.children()
-                .map(this::unwrap)
+                .map(child -> unwrap(child, addedUnwrappedProperties))
                 .flatMap(child -> {
                     if (!unwrapAnnotations.intersect(child.annotations().keySet()).isEmpty()) {
                         child = updateValueAccessors(child);
-                        return addChildren(children, child);
+                        return addChildren(children, child, addedUnwrappedProperties);
                     } else {
                         return children.append(child);
                     }

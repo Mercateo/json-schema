@@ -6,8 +6,8 @@ import javaslang.collection.Stream;
 public class GenericTypeHierarchy {
     public Stream<GenericType<?>> hierarchy(GenericType<?> genericType) {
         return Stream.ofAll(new GenericTypeIterable(genericType));
-
     }
+
     private static class GenericTypeIterable implements Iterable<GenericType<?>> {
 
         private final GenericType<?> genericType;
