@@ -2,9 +2,14 @@ package com.mercateo.jsonschema.property;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.mercateo.jsonschema.generictype.GenericType;
+import javaslang.collection.HashMap;
+import javaslang.collection.HashSet;
+import javaslang.collection.List;
+import javaslang.collection.Set;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -12,12 +17,15 @@ public class UnwrappedPropertyBuilder {
 
     private final PropertyBuilder propertyBuilder;
 
+    private final Set<Class<? extends Annotation>> unwrapAnnotations;
+
     private ConcurrentHashMap<GenericType, Property> unwrappedProperties;
 
     private ConcurrentHashMap<GenericType, PropertyDescriptor> unwrappedPropertyDescriptors;
 
-    public UnwrappedPropertyBuilder(PropertyBuilder propertyBuilder) {
+    public UnwrappedPropertyBuilder(PropertyBuilder propertyBuilder, Class<? extends Annotation>... unwrapAnnotations) {
         this.propertyBuilder = propertyBuilder;
+        this.unwrapAnnotations = HashSet.of(unwrapAnnotations);
 
         this.unwrappedProperties = new ConcurrentHashMap<>();
         this.unwrappedPropertyDescriptors = new ConcurrentHashMap<>();
@@ -44,30 +52,31 @@ public class UnwrappedPropertyBuilder {
     }
 
     private PropertyDescriptor createUnwrappedDescriptor(Property property) {
-        List<Property> children = new ArrayList<>();
-        addChildren(children, property);
+        List<Property> children = addChildren(List.empty(), property);
         return ImmutablePropertyDescriptor.of(property.genericType(), children, property
                 .propertyDescriptor().annotations());
     }
 
-    private void addChildren(List<Property> children, Property property) {
-        for (Property child : property.children()) {
-            child = unwrap(child);
-            if (child.annotations().containsKey(JsonUnwrapped.class)) {
-                child = updateValueAccessors(child);
-                addChildren(children, child);
-            } else {
-                children.add(child);
-            }
-        }
+    private List<Property> addChildren(List<Property> children, Property property) {
+        return property.children()
+                .map(this::unwrap)
+                .flatMap(child -> {
+                    if (!unwrapAnnotations.intersect(child.annotations().keySet()).isEmpty()) {
+                        child = updateValueAccessors(child);
+                        return addChildren(children, child);
+                    } else {
+                        return children.append(child);
+                    }
+
+        });
     }
 
     private Property updateValueAccessors(Property child) {
-        final List<Property> children = child.children().stream().map(c -> ImmutableProperty.of(c.name(), c.propertyDescriptor(),
+        final List<Property> children = child.children().map(c -> (Property) ImmutableProperty.of(c.name(), c.propertyDescriptor(),
                 object -> {
                     Object intermediateObject = child.valueAccessor().apply(object);
                     return intermediateObject != null ? c.valueAccessor().apply(intermediateObject) : null;
-                }, c.annotations())).collect(Collectors.toList());
+                }, c.annotations())).toList();
 
         final PropertyDescriptor propertyDescriptor = child.propertyDescriptor();
         final PropertyDescriptor updatedPropertyDescriptor = ImmutablePropertyDescriptor.of(

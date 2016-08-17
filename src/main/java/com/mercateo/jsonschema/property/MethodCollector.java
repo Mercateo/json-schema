@@ -3,10 +3,9 @@ package com.mercateo.jsonschema.property;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 import com.mercateo.jsonschema.generictype.GenericType;
+import javaslang.collection.Stream;
 
 public class MethodCollector implements RawPropertyCollector {
 
@@ -18,7 +17,7 @@ public class MethodCollector implements RawPropertyCollector {
 
     @Override
     public Stream<RawProperty> forType(GenericType<?> genericType) {
-        return Arrays.stream(genericType.getRawType().getDeclaredMethods())
+        return Stream.of(genericType.getRawType().getDeclaredMethods())
                 .filter(method -> !method.isSynthetic())
                 .filter(method -> method.getDeclaringClass() != Object.class)
                 .filter( method -> method.getReturnType() != void.class)

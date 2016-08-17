@@ -1,8 +1,9 @@
 package com.mercateo.jsonschema.property;
 
-import com.google.common.collect.Multimap;
 import com.mercateo.immutables.Tuple;
 import com.mercateo.jsonschema.generictype.GenericType;
+import javaslang.collection.Map;
+import javaslang.collection.Set;
 import org.immutables.value.Value;
 
 import java.lang.annotation.Annotation;
@@ -15,7 +16,7 @@ public interface RawProperty {
 
     GenericType<?> genericType();
 
-    Multimap<Class<? extends Annotation>, Annotation> annotations();
+    Map<Class<? extends Annotation>, Set<Annotation>> annotations();
 
     Function valueAccessor();
 }

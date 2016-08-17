@@ -1,13 +1,14 @@
 package com.mercateo.jsonschema.property;
 
-import com.google.common.collect.Multimap;
 import com.mercateo.immutables.Tuple;
 import com.mercateo.jsonschema.generictype.GenericType;
+import javaslang.collection.List;
+import javaslang.collection.Map;
+import javaslang.collection.Set;
 import org.immutables.value.Value;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.function.Function;
 
 @Value.Immutable
@@ -23,7 +24,7 @@ public interface Property {
        return valueAccessor().apply(object);
     }
 
-    default Collection<Property> children() {
+    default List<Property> children() {
         return propertyDescriptor().children();
     }
 
@@ -31,5 +32,5 @@ public interface Property {
         return propertyDescriptor().genericType();
     }
 
-    Multimap<Class<? extends Annotation>, Annotation> annotations();
+    Map<Class<? extends Annotation>, Set<Annotation>> annotations();
 }

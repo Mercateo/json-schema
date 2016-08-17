@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericArrayTest {
 
-    class TestClass<T> {
+    static class TestClass<T> {
         private T[] values;
     }
 

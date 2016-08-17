@@ -4,25 +4,24 @@ import java.lang.annotation.Annotation;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import javaslang.collection.HashSet;
+import javaslang.collection.Map;
+import javaslang.collection.Set;
+import javaslang.collection.Stream;
 
 class AnnotationMapBuilder {
-    Multimap<Class<? extends Annotation>, Annotation> createMap(
+    Map<Class<? extends Annotation>, Set<Annotation>> createMap(
             Annotation[] annotations) {
-        final Multimap<Class<? extends Annotation>, Annotation> annotationMap = HashMultimap
-                .create();
-        for (Annotation annotation : annotations) {
-            annotationMap.put(annotation.annotationType(), annotation);
-        }
-        return annotationMap;
+
+        return Stream.of(annotations)
+                .<Class<? extends Annotation>>groupBy(Annotation::annotationType)
+                .mapValues(HashSet::ofAll);
     }
 
-    Multimap<Class<? extends Annotation>, Annotation> merge(
-            Multimap<Class<? extends Annotation>, Annotation> annotations,
-            Multimap<Class<? extends Annotation>, Annotation> otherAnnotations) {
+    Map<Class<? extends Annotation>, Set<Annotation>> merge(
+            Map<Class<? extends Annotation>, Set<Annotation>> annotations,
+            Map<Class<? extends Annotation>, Set<Annotation>> otherAnnotations) {
 
-        final HashMultimap<Class<? extends Annotation>, Annotation> mergedAnnotations = HashMultimap.create(
-                annotations);
-        mergedAnnotations.putAll(otherAnnotations);
-        return mergedAnnotations;
+        return annotations.merge(otherAnnotations, Set::addAll);
     }
 }

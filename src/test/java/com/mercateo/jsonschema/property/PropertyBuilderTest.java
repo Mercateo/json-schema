@@ -1,5 +1,9 @@
 package com.mercateo.jsonschema.property;
 
+import javaslang.collection.Iterator;
+import javaslang.collection.List;
+import javaslang.collection.Set;
+import javaslang.collection.Traversable;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -10,11 +14,6 @@ import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -24,13 +23,13 @@ public class PropertyBuilderTest {
 
     private PropertyBuilder propertyBuilder;
 
-    public static <T> T getFirstElement(Collection<T> collection) {
+    public static <T> T getFirstElement(Traversable<T> collection) {
         return collection.iterator().next();
     }
 
     @Before
     public void setUp() throws Exception {
-        propertyBuilder = new PropertyBuilder(Arrays.asList(new FieldCollector(FieldCollectorConfig.builder().build()), new MethodCollector()));
+        propertyBuilder = new PropertyBuilder(List.of(new FieldCollector(FieldCollectorConfig.builder().build()), new MethodCollector()));
     }
 
     @Test
@@ -59,7 +58,7 @@ public class PropertyBuilderTest {
     public void buildsPropertiesRecursively() throws Exception {
         Property property = propertyBuilder.from(TwoLevelPropertyHolder.class);
 
-        final Collection<Property> children = property.children();
+        final List<Property> children = property.children();
         final Property firstLevelElement = getFirstElement(children);
         final Property secondLevelElement = getFirstElement(firstLevelElement.children());
 
@@ -92,7 +91,7 @@ public class PropertyBuilderTest {
     public void propertyReturnsClassAnnotation() throws Exception {
         Property property = propertyBuilder.from(PropertyHolder.class);
 
-        final Annotation firstElement = getFirstElement(property.annotations().values());
+        final Annotation firstElement = getFirstElement(property.annotations().head()._2());
         assertThat(firstElement).isInstanceOf(Annotation1.class);
     }
 
@@ -101,7 +100,7 @@ public class PropertyBuilderTest {
         Property property = propertyBuilder.from(TwoLevelPropertyHolder.class);
 
         final Property firstElement1 = getFirstElement(property.children());
-        assertThat(getAnnotations(firstElement1)).containsExactlyInAnyOrder(Annotation1.class, Annotation2.class);
+        assertThat(getAnnotations(firstElement1).toJavaSet()).containsExactlyInAnyOrder(Annotation1.class, Annotation2.class);
     }
 
     private Set<Class<? extends Annotation>> getAnnotations(Property firstElement1) {
@@ -176,7 +175,7 @@ public class PropertyBuilderTest {
         assertThat(collectionTypeElement.genericType().getRawType()).isEqualTo(String.class);
 
         final CollectionPropertyHolder collectionPropertyHolder = new CollectionPropertyHolder();
-        collectionPropertyHolder.values = Collections.singletonList("foo");
+        collectionPropertyHolder.values = List.of("foo");
 
         assertThat(collectionTypeElement.getValue(collectionPropertyHolder)).isNull();
     }
@@ -265,11 +264,11 @@ public class PropertyBuilderTest {
     }
 
     static class CollectionPropertyHolder {
-        Collection<String> values;
+        List<String> values;
     }
 
     static class NestedCollectionPropertyHolder {
-        Collection<String[]> values;
+        List<String[]> values;
     }
 
     static class RecursivePropertyHolder {

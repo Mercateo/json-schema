@@ -1,8 +1,8 @@
 package com.mercateo.jsonschema.property;
 
+import javaslang.collection.List;
 import org.junit.Test;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -11,7 +11,7 @@ public class MethodCollectorTest {
     @Test
     public void collectMethods() {
         final MethodCollector methodCollector = new MethodCollector();
-        final List<RawProperty> rawProperties = methodCollector.forType(TestClass.class).collect(Collectors.toList());
+        final List<RawProperty> rawProperties = methodCollector.forType(TestClass.class).toList();
 
         assertThat(rawProperties).extracting(RawProperty::name).containsExactlyInAnyOrder("value", "number", "enabled", "running");
     }

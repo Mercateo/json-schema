@@ -1,9 +1,12 @@
 package com.mercateo.jsonschema.property;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
+import javaslang.collection.List;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,11 +18,16 @@ public class UnwrappedPropertyBuilderTest {
 
     private UnwrappedPropertyBuilder unwrappedPropertyBuilder;
 
+    @Retention(RetentionPolicy.RUNTIME)
+    static @interface Unwrap {
+
+    }
+
     @Before
     public void setUp() throws Exception {
-        PropertyBuilder propertyBuilder = new PropertyBuilder(Arrays.asList(new FieldCollector(FieldCollectorConfig.builder()
+        PropertyBuilder propertyBuilder = new PropertyBuilder(List.of(new FieldCollector(FieldCollectorConfig.builder()
                 .build())));
-        unwrappedPropertyBuilder = new UnwrappedPropertyBuilder(propertyBuilder);
+        unwrappedPropertyBuilder = new UnwrappedPropertyBuilder(propertyBuilder, Unwrap.class);
     }
 
     @Test
@@ -50,12 +58,12 @@ public class UnwrappedPropertyBuilderTest {
     }
 
     static class SecondLevelPropertyHolder {
-        @JsonUnwrapped
+        @Unwrap
         PropertyHolder propertyHolder;
     }
 
     static class PropertyHolder {
-        @JsonUnwrapped
+        @Unwrap
         UnwrappedPropertyHolder unwrappedPropertyHolder;
     }
 

@@ -1,15 +1,11 @@
 package com.mercateo.jsonschema.generictype;
 
-import java.util.Iterator;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
+import javaslang.collection.Iterator;
+import javaslang.collection.Stream;
 
 public class GenericTypeHierarchy {
     public Stream<GenericType<?>> hierarchy(GenericType<?> genericType) {
-
-        Iterable<GenericType<?>> resultIterable = new GenericTypeIterable(genericType);
-
-        return StreamSupport.stream(resultIterable.spliterator(), false);
+        return Stream.ofAll(new GenericTypeIterable(genericType));
 
     }
     private static class GenericTypeIterable implements Iterable<GenericType<?>> {

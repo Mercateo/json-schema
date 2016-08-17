@@ -6,15 +6,15 @@ import com.mercateo.jsonschema.property.PropertyType;
 import com.mercateo.jsonschema.property.PropertyTypeMapper;
 import com.mercateo.jsonschema.generictype.GenericType;
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy;
+import javaslang.collection.HashMap;
 import javaslang.collection.HashSet;
+import javaslang.collection.List;
+import javaslang.collection.Map;
 import javaslang.collection.Set;
+import javaslang.collection.Stream;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -46,35 +46,39 @@ public class PropertyBuilder {
     }
 
     public Property from(GenericType<?> genericType) {
-        return from(ROOT_NAME, genericType, HashMultimap.create(),
+        return from(ROOT_NAME, genericType, HashMap.empty(),
                 PropertyBuilder::rootValueAccessor, HashSet.empty());
     }
 
     private Property from(String name, GenericType<?> genericType,
-                         Multimap<Class<? extends Annotation>, Annotation> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
-        final Map<GenericType<?>, PropertyDescriptor> addedDescriptors = new HashMap<>();
-        final Property property = from(name, genericType, annotations, valueAccessor, addedDescriptors, nestedTypes);
-        knownDescriptors.putAll(addedDescriptors);
-        return property;
+                         Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
+        final PropertyResult result = from(name, genericType, annotations, valueAccessor, HashMap.empty(), nestedTypes);
+        knownDescriptors.putAll(result.addedDescriptors().toJavaMap());
+        return result.property();
     }
 
-    private Property from(String name, GenericType<?> genericType, Multimap<Class<? extends Annotation>, Annotation> annotations, Function valueAccessor,
+    private PropertyResult from(String name, GenericType<?> genericType, Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor,
                           Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
-        final PropertyDescriptor propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
+        final PropertyDescriptorResult result = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
 
-        return ImmutableProperty.of(name, propertyDescriptor, valueAccessor, annotationMapBuilder
-                .merge(annotations, propertyDescriptor.annotations()));
+        final PropertyDescriptor propertyDescriptor = result.propertyDescriptor();
+        return ImmutablePropertyResult.of(ImmutableProperty.of(name, propertyDescriptor, valueAccessor, annotationMapBuilder
+                .merge(annotations, propertyDescriptor.annotations())), result.addedDescriptors());
     }
 
-    private PropertyDescriptor getPropertyDescriptor(GenericType<?> genericType, Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptorResult getPropertyDescriptor(GenericType<?> genericType, Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
         if (knownDescriptors.containsKey(genericType)) {
-            return knownDescriptors.get(genericType);
+            return ImmutablePropertyDescriptorResult.of(knownDescriptors.get(genericType), addedDescriptors);
         } else {
-            return addedDescriptors.computeIfAbsent(genericType, type -> createPropertyDescriptor(type, addedDescriptors, nestedTypes));
+            if (addedDescriptors.containsKey(genericType)) {
+                return ImmutablePropertyDescriptorResult.of(addedDescriptors.apply(genericType), addedDescriptors);
+            } else {
+                return createPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
+            }
         }
     }
 
-    private PropertyDescriptor createPropertyDescriptor(GenericType<?> genericType, Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptorResult createPropertyDescriptor(GenericType<?> genericType, Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
         final PropertyType propertyType = PropertyTypeMapper.of(genericType);
 
         final List<Property> children;
@@ -83,27 +87,29 @@ public class PropertyBuilder {
                 if (!nestedTypes.contains(genericType)) {
                     children = createChildProperties(genericType, nestedTypes.add(genericType));
                 } else {
-                    children = Collections.emptyList();
+                    children = List.empty();
                 }
                 break;
 
             case ARRAY:
-                children = Collections.singletonList(from("", genericType.getContainedType(), HashMultimap.create(), o -> null, addedDescriptors, nestedTypes));
+                final PropertyResult propertyResult = from("", genericType.getContainedType(), HashMap.empty(), o -> null, addedDescriptors, nestedTypes);
+                children = List.of(propertyResult.property());
+                addedDescriptors = propertyResult.addedDescriptors();
                 break;
 
             default:
-                children = Collections.emptyList();
+                children = List.empty();
                 break;
         }
 
-        return ImmutablePropertyDescriptor.of(genericType, children, annotationMapBuilder.createMap(
+        final ImmutablePropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptor.of(genericType, children, annotationMapBuilder.createMap(
                 genericType.getRawType().getAnnotations()));
+        return ImmutablePropertyDescriptorResult.of(propertyDescriptor, addedDescriptors.put(genericType, propertyDescriptor));
     }
 
     private List<Property> createChildProperties(GenericType<?> genericType, Set<GenericType<?>> nestedTypes) {
-        return rawPropertyCollectors.stream().flatMap(collector -> genericTypeHierarchy.hierarchy(
-                genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(nestedTypes, rawProperty)).collect(Collectors
-                .toList());
+        return rawPropertyCollectors.flatMap(collector -> genericTypeHierarchy.hierarchy(
+                genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(nestedTypes, rawProperty));
     }
 
         private Property mapProperty(Set<GenericType<?>> nestedTypes, RawProperty rawProperty) {
