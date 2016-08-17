@@ -11,14 +11,6 @@ public class SizeConstraints {
 
     private Optional<Integer> min;
 
-    public Optional<Integer> getMax() {
-        return max;
-    }
-
-    public Optional<Integer> getMin() {
-        return min;
-    }
-
     public SizeConstraints(Size size) {
         this(size.max(), size.min());
     }
@@ -36,12 +28,20 @@ public class SizeConstraints {
         this.min = min == 0 ? Optional.empty() : Optional.of(min);
     }
 
+    private SizeConstraints() {
+        this.max = Optional.empty();
+        this.min = Optional.empty();
+    }
+
     public static SizeConstraints empty() {
         return EMPTY_CONSTRAINTS;
     }
 
-    private SizeConstraints() {
-        this.max = Optional.empty();
-        this.min = Optional.empty();
+    public Optional<Integer> getMax() {
+        return max;
+    }
+
+    public Optional<Integer> getMin() {
+        return min;
     }
 }

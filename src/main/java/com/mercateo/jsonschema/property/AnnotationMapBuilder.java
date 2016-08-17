@@ -1,13 +1,11 @@
 package com.mercateo.jsonschema.property;
 
-import java.lang.annotation.Annotation;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import javaslang.collection.HashSet;
 import javaslang.collection.Map;
 import javaslang.collection.Set;
 import javaslang.collection.Stream;
+
+import java.lang.annotation.Annotation;
 
 class AnnotationMapBuilder {
     Map<Class<? extends Annotation>, Set<Annotation>> createMap(

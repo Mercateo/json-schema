@@ -1,15 +1,11 @@
 package com.mercateo.jsonschema.property;
 
-import java.lang.annotation.Annotation;
+import com.mercateo.jsonschema.generictype.GenericType;
+import javaslang.collection.Stream;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.acl.AclNotFoundException;
-import java.util.Arrays;
-
-import com.mercateo.jsonschema.property.ImmutableRawProperty;
-import com.mercateo.jsonschema.generictype.GenericType;
-import javaslang.collection.Stream;
 
 public class FieldCollector implements RawPropertyCollector {
 

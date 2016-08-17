@@ -1,9 +1,5 @@
 package com.mercateo.jsonschema.property;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-import com.mercateo.jsonschema.property.PropertyType;
-import com.mercateo.jsonschema.property.PropertyTypeMapper;
 import com.mercateo.jsonschema.generictype.GenericType;
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy;
 import javaslang.collection.HashMap;
@@ -11,13 +7,10 @@ import javaslang.collection.HashSet;
 import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.collection.Set;
-import javaslang.collection.Stream;
 
 import java.lang.annotation.Annotation;
-import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class PropertyBuilder {
     private static final String ROOT_NAME = "#";
@@ -51,7 +44,7 @@ public class PropertyBuilder {
     }
 
     private Property from(String name, GenericType<?> genericType,
-                         Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
+                          Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
         java.util.Map addedDescriptors = new java.util.HashMap<>();
         final Property property = from(name, genericType, annotations, valueAccessor, addedDescriptors, nestedTypes);
         knownDescriptors.putAll(addedDescriptors);
@@ -112,10 +105,10 @@ public class PropertyBuilder {
                 genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(nestedTypes, rawProperty));
     }
 
-        private Property mapProperty(Set<GenericType<?>> nestedTypes, RawProperty rawProperty) {
-            return from(rawProperty.name(), rawProperty.genericType(), rawProperty.annotations(),
-                    rawProperty.valueAccessor(), nestedTypes);
-        }
+    private Property mapProperty(Set<GenericType<?>> nestedTypes, RawProperty rawProperty) {
+        return from(rawProperty.name(), rawProperty.genericType(), rawProperty.annotations(),
+                rawProperty.valueAccessor(), nestedTypes);
+    }
 
 
 }

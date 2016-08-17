@@ -10,14 +10,6 @@ public class ValueConstraints {
 
     private Optional<Long> min;
 
-    public Optional<Long> getMax() {
-        return max;
-    }
-
-    public Optional<Long> getMin() {
-        return min;
-    }
-
     public ValueConstraints(Optional<Long> max, Optional<Long> min) {
         if (max.flatMap(x -> min.map(y -> y > x)).orElse(false)) {
             throw new IllegalArgumentException(String.format(
@@ -27,12 +19,20 @@ public class ValueConstraints {
         this.min = min;
     }
 
+    private ValueConstraints() {
+        this.max = Optional.empty();
+        this.min = Optional.empty();
+    }
+
     public static ValueConstraints empty() {
         return EMPTY_CONSTRAINTS;
     }
 
-    private ValueConstraints() {
-        this.max = Optional.empty();
-        this.min = Optional.empty();
+    public Optional<Long> getMax() {
+        return max;
+    }
+
+    public Optional<Long> getMin() {
+        return min;
     }
 }
