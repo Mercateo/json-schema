@@ -20,8 +20,8 @@ public class FieldCollectorTest {
 
     @Test
     public void mapAllDeclaredFields() throws Exception {
-        final List<RawProperty> properties = fieldCollector.forType(GenericType.of(
-                PropertyHolder.class)).collect(Collectors.toList());
+        final List<RawProperty> properties = fieldCollector.forType(PropertyHolder.class)
+                .collect(Collectors.toList());
 
         assertThat(properties).extracting(RawProperty::name).containsExactlyInAnyOrder("hidden",
                 "visible");
@@ -30,22 +30,22 @@ public class FieldCollectorTest {
     @Test
     public void limitToPublicFieldsIfConfigured() throws Exception {
         fieldCollector = new FieldCollector(FieldCollectorConfig.builder().withIncludePrivateFields(false).build());
-        final List<RawProperty> properties = fieldCollector.forType(GenericType.of(
-                PropertyHolder.class)).collect(Collectors.toList());
+        final List<RawProperty> properties = fieldCollector.forType(PropertyHolder.class)
+                .collect(Collectors.toList());
 
         assertThat(properties).extracting(RawProperty::name).containsExactly("visible");
     }
 
     @Test
     public void mapAllDaeclaredFields() throws Exception {
-        final RawProperty hidden = fieldCollector.forType(GenericType.of(PropertyHolder.class))
+        final RawProperty hidden = fieldCollector.forType(PropertyHolder.class)
                 .filter(p -> p.name().equals("hidden")).findFirst().get();
 
         final PropertyHolder propertyHolder = new PropertyHolder();
         hidden.valueAccessor().apply(propertyHolder);
     }
 
-    public static class PropertyHolder {
+    static class PropertyHolder {
         public String visible;
 
         private String hidden;

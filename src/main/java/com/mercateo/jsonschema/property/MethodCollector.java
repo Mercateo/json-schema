@@ -51,5 +51,4 @@ public class MethodCollector implements RawPropertyCollector {
             throw new IllegalStateException(e);
         }
     }
-
 }
