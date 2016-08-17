@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class UnwrappedPropertyBuilder {
+public final class UnwrappedPropertyBuilder {
 
     private final PropertyBuilder propertyBuilder;
 

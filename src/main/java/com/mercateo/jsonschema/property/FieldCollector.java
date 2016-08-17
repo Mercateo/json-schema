@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
-public class FieldCollector implements RawPropertyCollector {
+public final class FieldCollector implements RawPropertyCollector {
 
     private final FieldCollectorConfig config;
 

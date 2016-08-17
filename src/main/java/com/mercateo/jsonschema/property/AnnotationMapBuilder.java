@@ -7,7 +7,7 @@ import javaslang.collection.Stream;
 
 import java.lang.annotation.Annotation;
 
-class AnnotationMapBuilder {
+final class AnnotationMapBuilder {
     Map<Class<? extends Annotation>, Set<Annotation>> createMap(
             Annotation[] annotations) {
 

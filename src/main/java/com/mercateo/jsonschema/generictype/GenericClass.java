@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public class GenericClass<T> extends GenericType<T> {
+public final class GenericClass<T> extends GenericType<T> {
 
     public GenericClass(Class<T> type) {
         super(type);

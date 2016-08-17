@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public class GenericArray<T> extends GenericType<T> {
+public final class GenericArray<T> extends GenericType<T> {
     private final GenericArrayType arrayType;
 
     public GenericArray(GenericArrayType arrayType, Class<T> rawType) {

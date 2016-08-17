@@ -3,12 +3,12 @@ package com.mercateo.jsonschema.generictype;
 import javaslang.collection.Iterator;
 import javaslang.collection.Stream;
 
-public class GenericTypeHierarchy {
+public final class GenericTypeHierarchy {
     public Stream<GenericType<?>> hierarchy(GenericType<?> genericType) {
         return Stream.ofAll(new GenericTypeIterable(genericType));
     }
 
-    private static class GenericTypeIterable implements Iterable<GenericType<?>> {
+    private final static class GenericTypeIterable implements Iterable<GenericType<?>> {
 
         private final GenericType<?> genericType;
 
@@ -22,7 +22,7 @@ public class GenericTypeHierarchy {
         }
     }
 
-    private static class GenericTypeIterator implements Iterator<GenericType<?>> {
+    private final static class GenericTypeIterator implements Iterator<GenericType<?>> {
         GenericType<?> currentType;
 
         GenericTypeIterator(GenericType<?> genericType) {

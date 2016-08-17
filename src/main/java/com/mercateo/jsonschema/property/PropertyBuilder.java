@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-public class PropertyBuilder {
+public final class PropertyBuilder {
     private static final String ROOT_NAME = "#";
 
     private final GenericTypeHierarchy genericTypeHierarchy;

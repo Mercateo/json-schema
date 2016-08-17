@@ -7,7 +7,7 @@ import java.lang.reflect.Type;
 import com.mercateo.jsonschema.generictype.GenericType;
 import javaslang.collection.Stream;
 
-public class MethodCollector implements RawPropertyCollector {
+public final class MethodCollector implements RawPropertyCollector {
 
     private final AnnotationMapBuilder annotationMapBuilder;
 

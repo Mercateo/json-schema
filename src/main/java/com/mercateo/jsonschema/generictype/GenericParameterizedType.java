@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public class GenericParameterizedType<T> extends GenericType<T> {
+public final class GenericParameterizedType<T> extends GenericType<T> {
 
     private final ParameterizedType type;
 
