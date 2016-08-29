@@ -14,7 +14,7 @@ import java.util.function.Function;
 public interface RawProperty {
     String name();
 
-    GenericType<?> genericType();
+    GenericType<?, ?> genericType();
 
     Map<Class<? extends Annotation>, Set<Annotation>> annotations();
 

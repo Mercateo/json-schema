@@ -14,7 +14,7 @@ public class GenericArrayTest {
         private T[] values;
     }
 
-    private GenericType<?> genericType;
+    private GenericType<?, ?> genericType;
 
     @Before
     public void setUp() throws NoSuchFieldException {

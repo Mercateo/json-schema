@@ -16,7 +16,7 @@ public final class MethodCollector implements RawPropertyCollector {
     }
 
     @Override
-    public Stream<RawProperty> forType(GenericType<?> genericType) {
+    public Stream<RawProperty> forType(GenericType<?, ?> genericType) {
         return Stream.of(genericType.getRawType().getDeclaredMethods())
                 .filter(method -> !method.isSynthetic())
                 .filter(method -> method.getDeclaringClass() != Object.class)

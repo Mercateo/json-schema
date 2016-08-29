@@ -5,10 +5,10 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericClass<T> extends GenericType<T> {
+public final class GenericClass<T> extends GenericType<T, Class<?>> {
 
     public GenericClass(Class<T> type) {
-        super(type);
+        super(type, type);
     }
 
     @Override
@@ -17,12 +17,7 @@ public final class GenericClass<T> extends GenericType<T> {
     }
 
     @Override
-    public Type getType() {
-        return getRawType();
-    }
-
-    @Override
-    public GenericType<?> getContainedType() {
+    public GenericType<?, ?> getContainedType() {
         if (getRawType().isArray()) {
             return GenericType.of(GenericTypeReflector.getArrayComponentType(getRawType()),
                     getRawType().getComponentType());
@@ -31,7 +26,7 @@ public final class GenericClass<T> extends GenericType<T> {
     }
 
     @Override
-    public GenericType<? super T> getSuperType() {
+    public GenericType<? super T, ?> getSuperType() {
         final Class<? super T> superclass = getRawType().getSuperclass();
         return superclass != null ? GenericType.of(GenericTypeReflector.getExactSuperType(
                 getRawType(), superclass), superclass) : null;
@@ -45,18 +40,5 @@ public final class GenericClass<T> extends GenericType<T> {
     @Override
     public String toString() {
         return getRawType().toString();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GenericType<?> that = (GenericType<?>) o;
-        return Objects.equals(getRawType(), that.getRawType());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getRawType());
     }
 }

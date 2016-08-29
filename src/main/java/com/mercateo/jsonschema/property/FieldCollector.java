@@ -19,7 +19,7 @@ public final class FieldCollector implements RawPropertyCollector {
     }
 
     @Override
-    public Stream<RawProperty> forType(GenericType<?> genericType) {
+    public Stream<RawProperty> forType(GenericType<?, ?> genericType) {
         return Stream.of(genericType.getDeclaredFields())
                 .filter(field -> !field.isSynthetic())
                 .filter(field -> config.includePrivateFields() || Modifier.isPublic(field.getModifiers()))

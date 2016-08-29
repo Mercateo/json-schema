@@ -2,28 +2,28 @@ package com.mercateo.jsonschema.generictype;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.GenericArrayType;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class GenericType<T> {
+public abstract class GenericType<T, U extends Type> {
 
     protected final Class<T> rawType;
 
-    GenericType(Class<T> rawType) {
+    protected final U type;
+
+    GenericType(Class<T> rawType, U type) {
         this.rawType = requireNonNull(rawType);
+        this.type = type;
     }
 
-    public static GenericType<?> of(Type type) {
+    public static GenericType<?,?> of(Type type) {
         return of(type, null);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> GenericType<T> of(Type type, Class<T> rawType) {
+    public static <T> GenericType<T,?> of(Type type, Class<T> rawType) {
         if (type instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) type;
             return new GenericParameterizedType<>(parameterizedType, (Class<T>) parameterizedType
@@ -38,13 +38,13 @@ public abstract class GenericType<T> {
         }
     }
 
-    public static GenericType<?> of(Field field, Type type) {
+    public static GenericType<?,?> of(Field field, Type type) {
         final Class<?> fieldClass = field.getType();
         final Type fieldType = GenericTypeReflector.getExactFieldType(field, type);
         return of(fieldType, fieldClass);
     }
 
-    public static GenericType<?> of(Method method, Type type) {
+    public static GenericType<?,?> of(Method method, Type type) {
         final Class<?> returnClass = method.getReturnType();
         final Type returnType = GenericTypeReflector.getExactReturnType(method, type);
         return of(returnType, returnClass);
@@ -56,9 +56,11 @@ public abstract class GenericType<T> {
 
     public abstract String getSimpleName();
 
-    public abstract Type getType();
+    public U getType() {
+        return type;
+    }
 
-    public abstract GenericType<?> getContainedType();
+    public abstract GenericType<?, ?> getContainedType();
 
     public boolean isInstanceOf(Class<?> clazz) {
         return requireNonNull(clazz).isAssignableFrom(getRawType());
@@ -72,5 +74,22 @@ public abstract class GenericType<T> {
         return getRawType().getDeclaredFields();
     }
 
-    public abstract GenericType<? super T> getSuperType();
+    public abstract GenericType<? super T, ?> getSuperType();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || !GenericType.class.isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        if (getClass() != o.getClass()) return false;
+        GenericType<?, ?> that = (GenericType<?, ?>) o;
+        return Objects.equals(rawType, that.rawType) &&
+            Objects.equals(type, that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, type);
+    }
 }

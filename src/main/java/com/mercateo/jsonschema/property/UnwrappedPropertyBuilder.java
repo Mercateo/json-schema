@@ -31,19 +31,19 @@ public final class UnwrappedPropertyBuilder {
         return from(GenericType.of(clazz));
     }
 
-    public Property from(GenericType<?> genericType) {
+    public Property from(GenericType<?, ?> genericType) {
         return unwrappedProperties.computeIfAbsent(genericType, this::unwrap);
     }
 
-    private Property unwrap(GenericType<?> genericType) {
+    private Property unwrap(GenericType<?, ?> genericType) {
         java.util.Map addedUnwrappedPropertyDescriptors = new java.util.HashMap<>();
         final Property property = unwrap(propertyBuilder.from(genericType), addedUnwrappedPropertyDescriptors);
         unwrappedPropertyDescriptors.putAll(addedUnwrappedPropertyDescriptors);
         return property;
     }
 
-    private Property unwrap(Property property, java.util.Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
-        final GenericType<?> genericType = property.genericType();
+    private Property unwrap(Property property, java.util.Map<GenericType<?, ?>, PropertyDescriptor> addedUnwrappedProperties) {
+        final GenericType<?, ?> genericType = property.genericType();
 
         final PropertyDescriptor propertyDescriptor;
         if (unwrappedPropertyDescriptors.containsKey(genericType)) {
@@ -59,16 +59,16 @@ public final class UnwrappedPropertyBuilder {
                 property.annotations());
     }
 
-    private PropertyDescriptor createUnwrappedDescriptor(Property property, Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
+    private PropertyDescriptor createUnwrappedDescriptor(Property property, Map<GenericType<?, ?>, PropertyDescriptor> addedUnwrappedProperties) {
         List<Property> children = addChildren(List.empty(), property, addedUnwrappedProperties);
-        final GenericType<?> genericType = property.genericType();
+        final GenericType<?, ?> genericType = property.genericType();
         final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptor.of(genericType, children, property
                 .propertyDescriptor().annotations());
         addedUnwrappedProperties.put(genericType, propertyDescriptor);
         return propertyDescriptor;
     }
 
-    private List<Property> addChildren(List<Property> children, Property property, Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
+    private List<Property> addChildren(List<Property> children, Property property, Map<GenericType<?, ?>, PropertyDescriptor> addedUnwrappedProperties) {
         return property.children()
                 .map(child -> unwrap(child, addedUnwrappedProperties))
                 .flatMap(child -> {

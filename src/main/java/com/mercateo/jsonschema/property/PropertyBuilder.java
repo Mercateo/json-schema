@@ -21,7 +21,7 @@ public final class PropertyBuilder {
 
     private final AnnotationMapBuilder annotationMapBuilder;
 
-    private ConcurrentHashMap<GenericType<?>, PropertyDescriptor> knownDescriptors;
+    private ConcurrentHashMap<GenericType<?, ?>, PropertyDescriptor> knownDescriptors;
 
     public PropertyBuilder(List<RawPropertyCollector> rawPropertyCollectors) {
         this.rawPropertyCollectors = rawPropertyCollectors;
@@ -38,28 +38,28 @@ public final class PropertyBuilder {
         return from(GenericType.of(propertyClass));
     }
 
-    public Property from(GenericType<?> genericType) {
+    public Property from(GenericType<?, ?> genericType) {
         return from(ROOT_NAME, genericType, HashMap.empty(),
                 PropertyBuilder::rootValueAccessor, HashSet.empty());
     }
 
-    private Property from(String name, GenericType<?> genericType,
-                          Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
+    private Property from(String name, GenericType<?, ?> genericType,
+                          Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?, ?>> nestedTypes) {
         java.util.Map addedDescriptors = new java.util.HashMap<>();
         final Property property = from(name, genericType, annotations, valueAccessor, addedDescriptors, nestedTypes);
         knownDescriptors.putAll(addedDescriptors);
         return property;
     }
 
-    private Property from(String name, GenericType<?> genericType, Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor,
-                          java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private Property from(String name, GenericType<?, ?> genericType, Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor,
+                          java.util.Map<GenericType<?, ?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?, ?>> nestedTypes) {
         final PropertyDescriptor propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
 
         return ImmutableProperty.of(name, propertyDescriptor, valueAccessor, annotationMapBuilder
                 .merge(annotations, propertyDescriptor.annotations()));
     }
 
-    private PropertyDescriptor getPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptor getPropertyDescriptor(GenericType<?, ?> genericType, java.util.Map<GenericType<?, ?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?, ?>> nestedTypes) {
         if (knownDescriptors.containsKey(genericType)) {
             return knownDescriptors.get(genericType);
         } else {
@@ -71,7 +71,7 @@ public final class PropertyBuilder {
         }
     }
 
-    private PropertyDescriptor createPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptor createPropertyDescriptor(GenericType<?, ?> genericType, java.util.Map<GenericType<?, ?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?, ?>> nestedTypes) {
         final PropertyType propertyType = PropertyTypeMapper.of(genericType);
 
         final List<Property> children;
@@ -100,12 +100,12 @@ public final class PropertyBuilder {
         return propertyDescriptor;
     }
 
-    private List<Property> createChildProperties(GenericType<?> genericType, Set<GenericType<?>> nestedTypes) {
+    private List<Property> createChildProperties(GenericType<?, ?> genericType, Set<GenericType<?, ?>> nestedTypes) {
         return rawPropertyCollectors.flatMap(collector -> genericTypeHierarchy.hierarchy(
                 genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(nestedTypes, rawProperty));
     }
 
-    private Property mapProperty(Set<GenericType<?>> nestedTypes, RawProperty rawProperty) {
+    private Property mapProperty(Set<GenericType<?, ?>> nestedTypes, RawProperty rawProperty) {
         return from(rawProperty.name(), rawProperty.genericType(), rawProperty.annotations(),
                 rawProperty.valueAccessor(), nestedTypes);
     }
