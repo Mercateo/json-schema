@@ -1,14 +1,11 @@
 package com.mercateo.jsonschema.generictype;
 
-import static java.util.Objects.requireNonNull;
+import com.googlecode.gentyref.GenericTypeReflector;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Objects;
 
-import com.googlecode.gentyref.GenericTypeReflector;
-
-public final class GenericParameterizedType<T> extends GenericTypeAbstract<T, ParameterizedType> {
+final class GenericParameterizedType<T> extends GenericTypeAbstract<T, ParameterizedType> {
 
     GenericParameterizedType(ParameterizedType type, Class<T> rawType) {
         super(rawType, type);

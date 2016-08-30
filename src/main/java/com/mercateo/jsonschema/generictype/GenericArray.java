@@ -6,9 +6,9 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericArray<T> extends GenericTypeAbstract<T, GenericArrayType> {
+final class GenericArray<T> extends GenericTypeAbstract<T, GenericArrayType> {
 
-    public GenericArray(GenericArrayType arrayType, Class<T> rawType) {
+    GenericArray(GenericArrayType arrayType, Class<T> rawType) {
         super(rawType, arrayType);
     }
 

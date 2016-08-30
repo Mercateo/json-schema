@@ -1,13 +1,10 @@
 package com.mercateo.jsonschema.generictype;
 
-import java.lang.reflect.Type;
-import java.util.Objects;
-
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericClass<T> extends GenericTypeAbstract<T, Class<?>> {
+final class GenericClass<T> extends GenericTypeAbstract<T, Class<?>> {
 
-    public GenericClass(Class<T> type) {
+    GenericClass(Class<T> type) {
         super(type, type);
     }
 
