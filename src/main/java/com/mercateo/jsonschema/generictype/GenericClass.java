@@ -5,7 +5,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericClass<T> extends GenericType<T, Class<?>> {
+public final class GenericClass<T> extends GenericTypeAbstract<T, Class<?>> {
 
     public GenericClass(Class<T> type) {
         super(type, type);
@@ -17,7 +17,7 @@ public final class GenericClass<T> extends GenericType<T, Class<?>> {
     }
 
     @Override
-    public GenericType<?, ?> getContainedType() {
+    public GenericType<?> getContainedType() {
         if (getRawType().isArray()) {
             return GenericType.of(GenericTypeReflector.getArrayComponentType(getRawType()),
                     getRawType().getComponentType());
@@ -26,7 +26,7 @@ public final class GenericClass<T> extends GenericType<T, Class<?>> {
     }
 
     @Override
-    public GenericType<? super T, ?> getSuperType() {
+    public GenericType<? super T> getSuperType() {
         final Class<? super T> superclass = getRawType().getSuperclass();
         return superclass != null ? GenericType.of(GenericTypeReflector.getExactSuperType(
                 getRawType(), superclass), superclass) : null;

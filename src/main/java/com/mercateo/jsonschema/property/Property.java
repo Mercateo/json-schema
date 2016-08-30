@@ -28,7 +28,7 @@ public interface Property {
         return propertyDescriptor().children();
     }
 
-    default GenericType<?, ?> genericType() {
+    default GenericType<?> genericType() {
         return propertyDescriptor().genericType();
     }
 

@@ -6,7 +6,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericArray<T> extends GenericType<T, GenericArrayType> {
+public final class GenericArray<T> extends GenericTypeAbstract<T, GenericArrayType> {
 
     public GenericArray(GenericArrayType arrayType, Class<T> rawType) {
         super(rawType, arrayType);
@@ -18,13 +18,13 @@ public final class GenericArray<T> extends GenericType<T, GenericArrayType> {
     }
 
     @Override
-    public GenericType<?, ?> getContainedType() {
-        return of(GenericTypeReflector.getArrayComponentType(type), getRawType()
+    public GenericType<?> getContainedType() {
+        return GenericType.of(GenericTypeReflector.getArrayComponentType(type), getRawType()
                 .getComponentType());
     }
 
     @Override
-    public GenericType<? super T, ?> getSuperType() {
+    public GenericType<? super T> getSuperType() {
         return null;
     }
 

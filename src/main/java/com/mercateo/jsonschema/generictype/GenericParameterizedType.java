@@ -8,7 +8,7 @@ import java.util.Objects;
 
 import com.googlecode.gentyref.GenericTypeReflector;
 
-public final class GenericParameterizedType<T> extends GenericType<T, ParameterizedType> {
+public final class GenericParameterizedType<T> extends GenericTypeAbstract<T, ParameterizedType> {
 
     GenericParameterizedType(ParameterizedType type, Class<T> rawType) {
         super(rawType, type);
@@ -20,7 +20,7 @@ public final class GenericParameterizedType<T> extends GenericType<T, Parameteri
     }
 
     @Override
-    public GenericType<?, ?> getContainedType() {
+    public GenericType<?> getContainedType() {
         Type[] actualTypeArguments = type.getActualTypeArguments();
         if (actualTypeArguments.length > 1) {
             throw new IllegalStateException(type + " not supported for subtyping");
@@ -29,7 +29,7 @@ public final class GenericParameterizedType<T> extends GenericType<T, Parameteri
     }
 
     @Override
-    public GenericType<? super T, ?> getSuperType() {
+    public GenericType<? super T> getSuperType() {
         final Class<? super T> superclass = rawType.getSuperclass();
         return superclass != null ? GenericType.of(GenericTypeReflector.getExactSuperType(type,
                 superclass), superclass) : null;

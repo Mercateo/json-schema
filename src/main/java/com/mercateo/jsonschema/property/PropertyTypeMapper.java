@@ -29,7 +29,7 @@ public final class PropertyTypeMapper {
         TYPE_MAP.put(UUID.class, PropertyType.STRING);
     }
 
-    public static PropertyType of(GenericType<?, ?> type) {
+    public static PropertyType of(GenericType<?> type) {
         if (type.isIterable()) {
             return PropertyType.ARRAY;
         }

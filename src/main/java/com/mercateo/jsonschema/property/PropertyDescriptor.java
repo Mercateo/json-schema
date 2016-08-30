@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
 @Value.Immutable
 @Tuple
 public interface PropertyDescriptor {
-    GenericType<?, ?> genericType();
+    GenericType<?> genericType();
 
     List<Property> children();
 

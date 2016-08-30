@@ -21,10 +21,10 @@ public class GenericParameterizedTypeTest {
         final GenericParameterizedType<List> genericType = new GenericParameterizedType<>(
                 (ParameterizedType) type, List.class);
 
-        final GenericType<?, ?> containedType1 = genericType.getContainedType();
+        final GenericType<?> containedType1 = genericType.getContainedType();
         assertThat(containedType1.getRawType()).isEqualTo(List.class);
 
-        final GenericType<?, ?> containedType2 = containedType1.getContainedType();
+        final GenericType<?> containedType2 = containedType1.getContainedType();
         assertThat(containedType2.getRawType()).isEqualTo(Double.class);
     }
 
@@ -34,7 +34,7 @@ public class GenericParameterizedTypeTest {
         final Field field = superclass.getDeclaredField("object");
         final Type type = GenericTypeReflector.getExactFieldType(field, TestClass.class);
 
-        final GenericType<?, ?> genericType = GenericType.of(type);
+        final GenericType<?> genericType = GenericType.of(type);
 
         assertThat(genericType.getRawType()).isEqualTo(Boolean.class);
     }
