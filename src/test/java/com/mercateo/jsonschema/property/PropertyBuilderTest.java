@@ -5,7 +5,6 @@ import javaslang.collection.List;
 import javaslang.collection.Set;
 import javaslang.collection.Traversable;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -29,7 +27,7 @@ public class PropertyBuilderTest {
 
     @Before
     public void setUp() throws Exception {
-        propertyBuilder = new PropertyBuilder(List.of(new FieldCollector(FieldCollectorConfig.builder().build()), new MethodCollector()));
+        propertyBuilder = new PropertyBuilderDefault(List.of(new FieldCollector(FieldCollectorConfig.builder().build()), new MethodCollector()));
     }
 
     @Test

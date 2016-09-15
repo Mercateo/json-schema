@@ -2,7 +2,11 @@ package com.mercateo.jsonschema.schema;
 
 import com.mercateo.immutables.Tuple;
 import com.mercateo.jsonschema.property.Property;
+import com.mercateo.jsonschema.property.RawPropertyCollector;
+import javaslang.collection.List;
 import org.immutables.value.Value;
+
+import java.lang.annotation.Annotation;
 
 import static java.util.Objects.requireNonNull;
 
@@ -12,7 +16,11 @@ public interface SchemaPropertyContext {
 
     PropertyChecker propertyChecker();
 
-    default boolean isFieldApplicable(Property field) {
-        return propertyChecker().test(requireNonNull(field));
+    Annotation[] unwrapAnnotations();
+
+    List<RawPropertyCollector> propertyCollectors();
+
+    default boolean isApplicable(Property property) {
+        return propertyChecker().test(requireNonNull(property));
     }
 }

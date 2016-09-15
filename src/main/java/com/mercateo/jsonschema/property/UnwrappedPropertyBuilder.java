@@ -9,7 +9,7 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class UnwrappedPropertyBuilder {
+public final class UnwrappedPropertyBuilder implements PropertyBuilder {
 
     private final PropertyBuilder propertyBuilder;
 
@@ -19,6 +19,7 @@ public final class UnwrappedPropertyBuilder {
 
     private ConcurrentHashMap<GenericType, PropertyDescriptor> unwrappedPropertyDescriptors;
 
+    @SafeVarargs
     public UnwrappedPropertyBuilder(PropertyBuilder propertyBuilder, Class<? extends Annotation>... unwrapAnnotations) {
         this.propertyBuilder = propertyBuilder;
         this.unwrapAnnotations = HashSet.of(unwrapAnnotations);
@@ -78,7 +79,6 @@ public final class UnwrappedPropertyBuilder {
                     } else {
                         return children.append(child);
                     }
-
         });
     }
 
