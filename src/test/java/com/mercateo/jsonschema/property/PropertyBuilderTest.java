@@ -205,13 +205,11 @@ public class PropertyBuilderTest {
 
         assertThat(firstElement.name()).isEqualTo("children");
 
-        final Property firstSubelement = getFirstElement(firstElement.children() );
+        final Property firstSubelement = getFirstElement(firstElement.children());
         assertThat(firstSubelement.name()).isEmpty();
         assertThat(firstSubelement.genericType().getRawType()).isEqualTo(RecursivePropertyHolder.class);
-        assertThat(firstSubelement.children()).isEmpty();
         final PropertyDescriptor propertyDescriptor = firstSubelement.propertyDescriptor();
-        // TODO fix test
-        //assertThat(propertyDescriptor.children()).hasSize(2);
+        assertThat(propertyDescriptor.children()).hasSize(2);
 
         final Property secondElement = childrenIterator.next();
         assertThat(secondElement.name()).isEqualTo("name");

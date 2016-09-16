@@ -9,6 +9,7 @@ import javaslang.collection.Map;
 import javaslang.collection.Set;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -47,47 +48,56 @@ public final class PropertyBuilderDefault implements PropertyBuilder {
 
     private Property from(String name, GenericType<?> genericType,
                           Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor, Set<GenericType<?>> nestedTypes) {
-        java.util.Map addedDescriptors = new java.util.HashMap<>();
-        final Property property = from(name, genericType, annotations, valueAccessor, addedDescriptors, nestedTypes);
+        java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors = new java.util.HashMap<>();
+        java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences = new java.util.HashMap<>();
+        final Property property = from(name, genericType, annotations, valueAccessor, addedDescriptors, addedReferences, nestedTypes);
         knownDescriptors.putAll(addedDescriptors);
+
+        for (java.util.Map.Entry<GenericType<?>, java.util.List<PropertyDescriptorReference>> entry : addedReferences.entrySet()) {
+            final PropertyDescriptor propertyDescriptor = knownDescriptors.get(entry.getKey());
+            entry.getValue().forEach(propertyDescriptorReference -> propertyDescriptorReference.setChildren(propertyDescriptor.children()));
+        }
         return property;
     }
 
     private Property from(String name, GenericType<?> genericType, Map<Class<? extends Annotation>, Set<Annotation>> annotations, Function valueAccessor,
-                          java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
-        final PropertyDescriptor propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
+                          java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences, Set<GenericType<?>> nestedTypes) {
+        final PropertyDescriptor propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, addedReferences, nestedTypes);
 
         return ImmutableProperty.of(name, propertyDescriptor, valueAccessor, annotationMapBuilder
                 .merge(annotations, propertyDescriptor.annotations()));
     }
 
-    private PropertyDescriptor getPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptor getPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences, Set<GenericType<?>> nestedTypes) {
         if (knownDescriptors.containsKey(genericType)) {
             return knownDescriptors.get(genericType);
         } else {
             if (addedDescriptors.containsKey(genericType)) {
                 return addedDescriptors.get(genericType);
             } else {
-                return createPropertyDescriptor(genericType, addedDescriptors, nestedTypes);
+                if (!nestedTypes.contains(genericType)) {
+                    return createPropertyDescriptor(genericType, addedDescriptors, addedReferences, nestedTypes);
+                } else {
+                    final PropertyDescriptorReference propertyDescriptorReference = ImmutablePropertyDescriptorReference.of(genericType,
+                            annotationMapBuilder.createMap(genericType.getRawType().getAnnotations()));
+                    addedReferences.computeIfAbsent(genericType, ignore -> new ArrayList()).add(propertyDescriptorReference);
+                    return propertyDescriptorReference;
+                }
             }
         }
     }
 
-    private PropertyDescriptor createPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, Set<GenericType<?>> nestedTypes) {
+    private PropertyDescriptor createPropertyDescriptor(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences, Set<GenericType<?>> nestedTypes) {
         final PropertyType propertyType = PropertyTypeMapper.of(genericType);
 
         final List<Property> children;
         switch (propertyType) {
             case OBJECT:
-                if (!nestedTypes.contains(genericType)) {
-                    children = createChildProperties(genericType, nestedTypes.add(genericType));
-                } else {
-                    children = List.empty();
-                }
+                children = createChildProperties(genericType, addedDescriptors, addedReferences, nestedTypes.add(genericType));
                 break;
 
             case ARRAY:
-                final Property property = from("", genericType.getContainedType(), HashMap.empty(), o -> null, addedDescriptors, nestedTypes);
+                final Property property = from("", genericType.getContainedType(), HashMap.empty(), o -> null, addedDescriptors, addedReferences, nestedTypes);
                 children = List.of(property);
                 break;
 
@@ -96,20 +106,20 @@ public final class PropertyBuilderDefault implements PropertyBuilder {
                 break;
         }
 
-        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptor.of(genericType, children, annotationMapBuilder.createMap(
+        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptorDefault.of(genericType, children, annotationMapBuilder.createMap(
                 genericType.getRawType().getAnnotations()));
         addedDescriptors.put(genericType, propertyDescriptor);
         return propertyDescriptor;
     }
 
-    private List<Property> createChildProperties(GenericType<?> genericType, Set<GenericType<?>> nestedTypes) {
+    private List<Property> createChildProperties(GenericType<?> genericType, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences, Set<GenericType<?>> nestedTypes) {
         return rawPropertyCollectors.flatMap(collector -> genericTypeHierarchy.hierarchy(
-                genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(nestedTypes, rawProperty));
+                genericType).flatMap(collector::forType)).map(rawProperty -> mapProperty(rawProperty, addedDescriptors, addedReferences, nestedTypes));
     }
 
-    private Property mapProperty(Set<GenericType<?>> nestedTypes, RawProperty rawProperty) {
+    private Property mapProperty(RawProperty rawProperty, java.util.Map<GenericType<?>, PropertyDescriptor> addedDescriptors, java.util.Map<GenericType<?>, java.util.List<PropertyDescriptorReference>> addedReferences, Set<GenericType<?>> nestedTypes) {
         return from(rawProperty.name(), rawProperty.genericType(), rawProperty.annotations(),
-                rawProperty.valueAccessor(), nestedTypes);
+                rawProperty.valueAccessor(), addedDescriptors, addedReferences, nestedTypes);
     }
 
 

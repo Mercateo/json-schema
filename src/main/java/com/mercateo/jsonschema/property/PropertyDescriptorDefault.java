@@ -9,10 +9,12 @@ import org.immutables.value.Value;
 
 import java.lang.annotation.Annotation;
 
-public interface PropertyDescriptor {
-    GenericType<?> genericType();
+@Value.Immutable
+@Tuple
+public abstract class PropertyDescriptorDefault implements PropertyDescriptor {
+    public abstract GenericType<?> genericType();
 
-    List<Property> children();
+    public abstract List<Property> children();
 
-    Map<Class<? extends Annotation>, Set<Annotation>> annotations();
+    public abstract Map<Class<? extends Annotation>, Set<Annotation>> annotations();
 }
