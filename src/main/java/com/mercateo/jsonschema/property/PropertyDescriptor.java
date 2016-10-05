@@ -10,6 +10,8 @@ import org.immutables.value.Value;
 import java.lang.annotation.Annotation;
 
 public interface PropertyDescriptor {
+    PropertyType propertyType();
+
     GenericType<?> genericType();
 
     List<Property> children();

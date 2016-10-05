@@ -32,5 +32,9 @@ public interface Property {
         return propertyDescriptor().genericType();
     }
 
+    default PropertyType propertyType() {
+        return propertyDescriptor().propertyType();
+    }
+
     Map<Class<? extends Annotation>, Set<Annotation>> annotations();
 }

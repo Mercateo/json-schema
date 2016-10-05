@@ -55,7 +55,10 @@ public final class PropertyBuilderDefault implements PropertyBuilder {
 
         for (java.util.Map.Entry<GenericType<?>, java.util.List<PropertyDescriptorReference>> entry : addedReferences.entrySet()) {
             final PropertyDescriptor propertyDescriptor = knownDescriptors.get(entry.getKey());
-            entry.getValue().forEach(propertyDescriptorReference -> propertyDescriptorReference.setChildren(propertyDescriptor.children()));
+            entry.getValue().forEach(propertyDescriptorReference -> {
+                propertyDescriptorReference.setChildren(propertyDescriptor.children());
+                propertyDescriptorReference.setReference("todo");
+            });
         }
         return property;
     }
@@ -78,7 +81,8 @@ public final class PropertyBuilderDefault implements PropertyBuilder {
                 if (!nestedTypes.contains(genericType)) {
                     return createPropertyDescriptor(genericType, addedDescriptors, addedReferences, nestedTypes);
                 } else {
-                    final PropertyDescriptorReference propertyDescriptorReference = ImmutablePropertyDescriptorReference.of(genericType,
+                    final PropertyType propertyType = PropertyTypeMapper.of(genericType);
+                    final PropertyDescriptorReference propertyDescriptorReference = ImmutablePropertyDescriptorReference.of(propertyType, genericType,
                             annotationMapBuilder.createMap(genericType.getRawType().getAnnotations()));
                     addedReferences.computeIfAbsent(genericType, ignore -> new ArrayList()).add(propertyDescriptorReference);
                     return propertyDescriptorReference;
@@ -106,7 +110,7 @@ public final class PropertyBuilderDefault implements PropertyBuilder {
                 break;
         }
 
-        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptorDefault.of(genericType, children, annotationMapBuilder.createMap(
+        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptorDefault.of(propertyType, genericType, children, annotationMapBuilder.createMap(
                 genericType.getRawType().getAnnotations()));
         addedDescriptors.put(genericType, propertyDescriptor);
         return propertyDescriptor;

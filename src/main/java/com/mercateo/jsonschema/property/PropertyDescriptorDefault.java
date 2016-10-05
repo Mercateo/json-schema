@@ -12,6 +12,8 @@ import java.lang.annotation.Annotation;
 @Value.Immutable
 @Tuple
 public abstract class PropertyDescriptorDefault implements PropertyDescriptor {
+    public abstract PropertyType propertyType();
+
     public abstract GenericType<?> genericType();
 
     public abstract List<Property> children();

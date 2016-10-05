@@ -19,6 +19,10 @@ import static java.util.Objects.requireNonNull;
 public abstract class PropertyDescriptorReference implements PropertyDescriptor {
     private Option<List<Property>> children;
 
+    private String reference;
+
+    public abstract PropertyType propertyType();
+
     public abstract GenericType<?> genericType();
 
     public List<Property> children() {
@@ -30,5 +34,13 @@ public abstract class PropertyDescriptorReference implements PropertyDescriptor 
     public void setChildren(List<Property> children) {
         checkState(children.nonEmpty(), "cannot set children twice");
         this.children = Option.of(children);
+    }
+
+    public String reference() {
+        return reference;
+    }
+
+    public void setReference(String reference) {
+        this.reference = reference;
     }
 }

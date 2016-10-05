@@ -62,9 +62,10 @@ public final class UnwrappedPropertyBuilder implements PropertyBuilder {
 
     private PropertyDescriptor createUnwrappedDescriptor(Property property, Map<GenericType<?>, PropertyDescriptor> addedUnwrappedProperties) {
         List<Property> children = addChildren(List.empty(), property, addedUnwrappedProperties);
+        final PropertyType propertyType = property.propertyType();
         final GenericType<?> genericType = property.genericType();
-        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptorDefault.of(genericType, children, property
-                .propertyDescriptor().annotations());
+        final PropertyDescriptor propertyDescriptor = ImmutablePropertyDescriptorDefault.of(propertyType, genericType, children, property
+            .propertyDescriptor().annotations());
         addedUnwrappedProperties.put(genericType, propertyDescriptor);
         return propertyDescriptor;
     }
@@ -91,6 +92,7 @@ public final class UnwrappedPropertyBuilder implements PropertyBuilder {
 
         final PropertyDescriptor propertyDescriptor = child.propertyDescriptor();
         final PropertyDescriptor updatedPropertyDescriptor = ImmutablePropertyDescriptorDefault.of(
+                propertyDescriptor.propertyType(),
                 propertyDescriptor.genericType(),
                 children,
                 propertyDescriptor.annotations());
