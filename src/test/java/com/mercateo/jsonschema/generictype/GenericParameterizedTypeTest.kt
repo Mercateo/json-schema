@@ -9,6 +9,21 @@ import org.assertj.core.api.Assertions.assertThat
 
 class GenericParameterizedTypeTest {
 
+
+    @Test
+    @Throws(NoSuchFieldException::class)
+    fun testGetNameContainedType() {
+        val field = TestClass::class.java.getDeclaredField("doubleList")
+        val type = GenericTypeReflector.getExactFieldType(field, TestClass::class.java)
+
+        @SuppressWarnings("rawtypes")
+        val genericType = GenericParameterizedType(
+                type as ParameterizedType, List::class.java)
+
+        assertThat(genericType.name).isEqualTo("java.util.List<java.util.List<java.lang.Double>>")
+        assertThat(genericType.simpleName).isEqualTo("java.util.List<java.util.List<java.lang.Double>>")
+    }
+
     @Test
     @Throws(NoSuchFieldException::class)
     fun testGetContainedType() {

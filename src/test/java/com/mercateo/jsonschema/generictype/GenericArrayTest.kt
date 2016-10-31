@@ -26,6 +26,11 @@ class GenericArrayTest {
     }
 
     @Test
+    fun getNameReturnsCorrectName() {
+        assertThat(genericType.name).isEqualTo("T[]")
+    }
+
+    @Test
     fun getSupertypeAlwaysReturnsNull() {
         assertThat(genericType.superType).isNull()
     }

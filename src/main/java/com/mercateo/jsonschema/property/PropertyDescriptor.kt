@@ -1,13 +1,29 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
+import sun.font.TrueTypeFont
 
-interface PropertyDescriptor {
-    val propertyType: PropertyType
+data class PropertyDescriptor(
+        val propertyType: PropertyType,
+        val genericType: GenericType<*>,
+        val context: Context,
+        val annotations: Map<Class<out Annotation>, Set<Annotation>>
+) {
+    val children: List<Property> =
+            when (context) {
+                is Context.Children -> context.children
+                else -> emptyList()
+            }
 
-    val genericType: GenericType<*>
+    val innerReference: Boolean =
+            when (context) {
+                is Context.InnerReference -> true
+                else -> false
+            }
 
-    val children: List<Property>
-
-    val annotations: Map<Class<out Annotation>, Set<Annotation>>
+    sealed class Context {
+        class Children(val children: List<Property>) : Context()
+        object InnerReference : Context()
+    }
 }
+

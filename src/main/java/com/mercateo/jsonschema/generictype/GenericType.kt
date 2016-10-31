@@ -11,6 +11,8 @@ interface GenericType<T> {
 
     val simpleName: String
 
+    val name: String
+
     val type: Type
 
     val containedType: GenericType<*>

@@ -5,9 +5,6 @@ import java.lang.reflect.Type
 
 internal class GenericClass<T>(type: Class<T>) : GenericTypeAbstract<T, Class<*>>(type, type) {
 
-    override val simpleName: String
-        get() = rawType.simpleName
-
     override val containedType: GenericType<*>
         get() {
             if (rawType.isArray) {
