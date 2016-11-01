@@ -3,7 +3,7 @@ package com.mercateo.jsonschema.property;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class UnwrappedPropertyBuilderClasses {
+public class UnwrappedPropertyMapperClasses {
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface Unwrap {}

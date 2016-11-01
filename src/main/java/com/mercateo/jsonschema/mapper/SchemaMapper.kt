@@ -2,7 +2,7 @@ package com.mercateo.jsonschema.mapper
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.property.PropertyDescriptorReference
+import com.mercateo.jsonschema.property.PropertyDescriptor
 import com.mercateo.jsonschema.property.PropertyType
 
 class SchemaMapper {
@@ -14,15 +14,20 @@ class SchemaMapper {
 
         val propertyDescriptor = property.propertyDescriptor
 
-        if (propertyDescriptor is PropertyDescriptorReference) {
-
-            result.put("\$ref", propertyDescriptor.reference)
-            return result
-        } else {
-            when (propertyDescriptor.propertyType) {
-                PropertyType.OBJECT -> {
+        when (propertyDescriptor.context) {
+            is PropertyDescriptor.Context.Children -> {
+                when (propertyDescriptor.propertyType) {
+                    PropertyType.OBJECT -> {
+                    }
                 }
             }
+            is PropertyDescriptor.Context.InnerReference -> {
+                // should not happen
+            }
+        }
+
+        property.reference.let { reference ->
+            result.put("\$ref", reference)
         }
 
         return result

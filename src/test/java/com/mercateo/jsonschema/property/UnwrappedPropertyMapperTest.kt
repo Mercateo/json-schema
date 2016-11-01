@@ -1,27 +1,28 @@
 package com.mercateo.jsonschema.property
 
-import com.mercateo.jsonschema.property.UnwrappedPropertyBuilderClasses.*
+import com.mercateo.jsonschema.property.UnwrappedPropertyMapperClasses.*
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.IterableAssert
 import org.junit.Before
 import org.junit.Test
 
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.IterableAssert
+class UnwrappedPropertyMapperTest {
 
-class UnwrappedPropertyBuilderTest {
-
-    private var unwrappedPropertyBuilder: UnwrappedPropertyBuilder? = null
+    private lateinit var propertyBuilder: PropertyBuilder
 
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        val propertyBuilder = PropertyBuilderDefault(listOf(FieldCollector(FieldCollectorConfig())))
-        unwrappedPropertyBuilder = UnwrappedPropertyBuilder(propertyBuilder, Unwrap::class.java)
+        propertyBuilder = PropertyBuilderWrapper(
+                PropertyBuilderDefault(FieldCollector(FieldCollectorConfig())),
+                UnwrappedPropertyMapper(Unwrap::class.java)
+        )
     }
 
     @Test
     @Throws(Exception::class)
     fun singleLevelUnwrap() {
-        val unwrappedProperty = unwrappedPropertyBuilder!!.from(PropertyHolder::class.java)
+        val unwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
 
         assertThat(unwrappedProperty.children).extracting("name").containsExactlyInAnyOrder("foo", "bar")
     }
@@ -29,7 +30,7 @@ class UnwrappedPropertyBuilderTest {
     @Test
     @Throws(Exception::class)
     fun twoLevelUnwrap() {
-        val unwrappedProperty = unwrappedPropertyBuilder!!.from(SecondLevelPropertyHolder::class.java)
+        val unwrappedProperty = propertyBuilder.from(SecondLevelPropertyHolder::class.java)
 
         assertThat(unwrappedProperty.children).extracting("name").containsExactlyInAnyOrder("foo", "bar")
     }
@@ -39,7 +40,7 @@ class UnwrappedPropertyBuilderTest {
     @Test
     @Throws(Exception::class)
     fun singleLevelUnwrapGetValue() {
-        val unwrappedProperty = unwrappedPropertyBuilder!!.from(PropertyHolder::class.java)
+        val unwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
 
         val propertyHolder = PropertyHolder()
         propertyHolder.unwrappedPropertyHolder = UnwrappedPropertyHolder()

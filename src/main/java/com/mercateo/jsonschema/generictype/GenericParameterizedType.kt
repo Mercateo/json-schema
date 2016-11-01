@@ -8,7 +8,10 @@ import java.lang.reflect.Type
 internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Class<T>) : GenericTypeAbstract<T, ParameterizedType>(rawType, type) {
 
     override val simpleName: String
-        get() = rawType.simpleName
+        get() = type.typeName
+
+    override val name: String
+        get() = type.typeName
 
     override val containedType: GenericType<*>
         get() {

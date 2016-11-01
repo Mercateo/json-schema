@@ -3,9 +3,9 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.generictype.GenericType
 import java.util.concurrent.ConcurrentHashMap
 
-class UnwrappedPropertyBuilder
+class UnwrappedPropertyMapper
 @SafeVarargs
-constructor(private val propertyBuilder: PropertyBuilder, vararg unwrapAnnotations: Class<out Annotation>) : PropertyBuilder {
+constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
 
     private val unwrapAnnotations: Set<Class<out Annotation>>
 
@@ -20,19 +20,15 @@ constructor(private val propertyBuilder: PropertyBuilder, vararg unwrapAnnotatio
         this.unwrappedPropertyDescriptors = ConcurrentHashMap<GenericType<*>, PropertyDescriptor>()
     }
 
-    override fun from(clazz: Class<*>): Property {
-        return from(GenericType.of(clazz))
+    override fun from(property: Property): Property {
+        return unwrappedProperties.computeIfAbsent(property.genericType, { unwrap(property) })
     }
 
-    override fun from(genericType: GenericType<*>): Property {
-        return unwrappedProperties.computeIfAbsent(genericType, { unwrap(it) })
-    }
-
-    private fun unwrap(genericType: GenericType<*>): Property {
+    private fun unwrap(property: Property): Property {
         val addedUnwrappedPropertyDescriptors = mutableMapOf<GenericType<*>, PropertyDescriptor>()
-        val property = unwrap(propertyBuilder.from(genericType), addedUnwrappedPropertyDescriptors)
+        val unwrappedProperty = unwrap(property, addedUnwrappedPropertyDescriptors)
         unwrappedPropertyDescriptors.putAll(addedUnwrappedPropertyDescriptors)
-        return property
+        return unwrappedProperty
     }
 
     private fun unwrap(
@@ -61,7 +57,7 @@ constructor(private val propertyBuilder: PropertyBuilder, vararg unwrapAnnotatio
         val children = getChildren(property, addedUnwrappedProperties)
         val propertyType = property.propertyType
         val genericType = property.genericType
-        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, children, property.propertyDescriptor.annotations)
+        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(children), property.propertyDescriptor.annotations)
         addedUnwrappedProperties.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }
@@ -73,15 +69,14 @@ constructor(private val propertyBuilder: PropertyBuilder, vararg unwrapAnnotatio
         return property.children
                 .map {
                     unwrap(it, addedUnwrappedPropertyDescriptors)
-                }
-                .flatMap {
-                    val doUnwrapChild = !unwrapAnnotations.intersect(it.annotations.keys).isEmpty()
-                    if (doUnwrapChild) {
-                        getChildren(updateValueAccessors(it), addedUnwrappedPropertyDescriptors)
-                    } else {
-                        listOf(it)
-                    }
-                }
+                }.flatMap {
+            val doUnwrapChild = !unwrapAnnotations.intersect(it.annotations.keys).isEmpty()
+            if (doUnwrapChild) {
+                getChildren(updateValueAccessors(it), addedUnwrappedPropertyDescriptors)
+            } else {
+                listOf(it)
+            }
+        }
     }
 
     private fun updateValueAccessors(child: Property): Property {
@@ -94,12 +89,11 @@ constructor(private val propertyBuilder: PropertyBuilder, vararg unwrapAnnotatio
         }
 
         val propertyDescriptor = child.propertyDescriptor
-        val updatedPropertyDescriptor = PropertyDescriptorDefault(
+        val updatedPropertyDescriptor = PropertyDescriptor(
                 propertyDescriptor.propertyType,
                 propertyDescriptor.genericType,
-                children,
+                PropertyDescriptor.Context.Children(children),
                 propertyDescriptor.annotations)
         return Property(child.name, updatedPropertyDescriptor, child.valueAccessor, child.annotations)
     }
-
 }

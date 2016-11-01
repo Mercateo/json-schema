@@ -12,6 +12,9 @@ internal class GenericArray<T>(
     override val simpleName: String
         get() = type.typeName
 
+    override val name: String
+        get() = type.typeName
+
     override val containedType: GenericType<*>
         get() = GenericType.of(GenericTypeReflector.getArrayComponentType(type), rawType.componentType)
 

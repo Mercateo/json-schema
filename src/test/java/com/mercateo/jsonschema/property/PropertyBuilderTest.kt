@@ -16,7 +16,7 @@ class PropertyBuilderTest {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        propertyBuilder = PropertyBuilderDefault(listOf(FieldCollector(FieldCollectorConfig()), MethodCollector()))
+        propertyBuilder = PropertyBuilderDefault(FieldCollector(FieldCollectorConfig()), MethodCollector())
     }
 
     @Test
@@ -204,7 +204,7 @@ class PropertyBuilderTest {
 
     @Test
     @Throws(Exception::class)
-    fun returnPropertyReferenceIfRecursive() {
+    fun returnsPropertyWithoutChildrenIfRecursive() {
         val property = propertyBuilder.from(RecursivePropertyHolder::class.java)
         val childrenIterator = property.children.iterator()
         val firstElement = childrenIterator.next()
@@ -215,7 +215,7 @@ class PropertyBuilderTest {
         assertThat(firstSubelement.name).isEmpty()
         assertThat(firstSubelement.genericType.rawType).isEqualTo(RecursivePropertyHolder::class.java)
         val propertyDescriptor = firstSubelement.propertyDescriptor
-        assertThat(propertyDescriptor.children).hasSize(2)
+        assertThat(propertyDescriptor.children).isEmpty()
 
         val secondElement = childrenIterator.next()
         assertThat(secondElement.name).isEqualTo("name")

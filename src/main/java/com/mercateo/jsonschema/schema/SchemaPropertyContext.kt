@@ -6,7 +6,7 @@ import java.util.Objects.requireNonNull
 
 data class SchemaPropertyContext(
         val propertyChecker: PropertyChecker,
-        val unwrapAnnotations: Array<Annotation>,
+        val unwrapAnnotations: List<Class<out Annotation>>,
         val propertyCollectors: List<RawPropertyCollector>
 ) {
 
