@@ -27,13 +27,6 @@ class PropertyBuilderTest {
     }
 
     @Test
-    fun callingValueAccessorOfRootElementThrows() {
-        val property = propertyBuilder.from(PropertyHolder::class.java)
-
-        assertThatThrownBy { property.getValue(Any()) }.isInstanceOf(IllegalStateException::class.java).hasMessage("cannot call value accessor for root element")
-    }
-
-    @Test
     @Throws(Exception::class)
     fun containsChildFromField() {
         val property = propertyBuilder.from(PropertyHolder::class.java)
@@ -97,7 +90,7 @@ class PropertyBuilderTest {
 
     fun <T> assertThat(actual: Iterable<T>) = IterableAssert(actual)
 
-    private fun getAnnotations(firstElement1: Property): Set<Class<out Annotation>> {
+    private fun getAnnotations(firstElement1: Property<*,*>): Set<Class<out Annotation>> {
         return firstElement1.annotations.keys
     }
 
@@ -167,9 +160,9 @@ class PropertyBuilderTest {
     @Test
     @Throws(Exception::class)
     fun followCollectionProperties() {
-        val property = propertyBuilder.from(CollectionPropertyHolder::class.java)
-        val collectionElement = property.children.first()
-        val collectionTypeElement = collectionElement.children.first()
+        val property: Property<Void, CollectionPropertyHolder> = propertyBuilder.from(CollectionPropertyHolder::class.java)
+        val collectionElement: Property<CollectionPropertyHolder, Any> = property.children.first()
+        val collectionTypeElement: Property<Any, out Any?> = collectionElement.children.first()
 
         assertThat(collectionTypeElement).isNotNull()
         assertThat(collectionTypeElement.name).isEqualTo("")

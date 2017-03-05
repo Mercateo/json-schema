@@ -10,7 +10,7 @@ data class SchemaPropertyContext(
         val propertyCollectors: List<RawPropertyCollector>
 ) {
 
-    fun isApplicable(property: Property): Boolean {
+    fun isApplicable(property: Property<*, *>): Boolean {
         return propertyChecker.test(requireNonNull(property))
     }
 }

@@ -1,11 +1,9 @@
 package com.mercateo.jsonschema.property
 
-import java.util.Arrays
-import java.util.HashSet
+import java.util.*
 
 enum class PropertyType {
     OBJECT, STRING, BOOLEAN, INTEGER, NUMBER, ARRAY;
-
 
     companion object {
 

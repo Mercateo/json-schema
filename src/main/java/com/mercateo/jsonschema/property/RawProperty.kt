@@ -2,9 +2,8 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
 
-data class RawProperty(
+data class RawProperty<S, T>(
         val name: String,
-        val genericType: GenericType<*>,
+        val genericType: GenericType<T>,
         val annotations: Map<Class<out Annotation>, Set<Annotation>>,
-        val valueAccessor: (Any) -> Any?) {
-}
+        val valueAccessor: (S) -> T?)

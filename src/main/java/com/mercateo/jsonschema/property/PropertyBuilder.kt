@@ -3,7 +3,7 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.generictype.GenericType
 
 interface PropertyBuilder {
-    fun from(propertyClass: Class<*>): Property
+    fun <T> from(propertyClass: Class<T>): Property<Void, T>
 
-    fun from(genericType: GenericType<*>): Property
+    fun <T> from(genericType: GenericType<T>): Property<Void, T>
 }

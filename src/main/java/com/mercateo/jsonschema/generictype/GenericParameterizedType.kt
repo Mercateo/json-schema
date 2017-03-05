@@ -22,9 +22,9 @@ internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Cla
             return GenericType.of(actualTypeArguments[0], rawType)
         }
 
-    override val superType: GenericType<in T>?
+    override val superType: GenericType<Any>?
         get() {
-            val superclass = rawType.superclass as Class<T>?
+            val superclass = rawType.superclass as Class<out Any>?
             return if (superclass != null) {
                 val exactSuperType: Type = GenericTypeReflector.getExactSuperType(type,
                         superclass)

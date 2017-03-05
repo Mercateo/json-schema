@@ -6,8 +6,8 @@ import java.lang.reflect.*
 
 import java.util.Objects.requireNonNull
 
-interface GenericType<T> {
-    val rawType: Class<T>
+interface GenericType<out T> {
+    val rawType: Class<out T>
 
     val simpleName: String
 
@@ -25,12 +25,16 @@ interface GenericType<T> {
 
     val declaredMethods: Array<Method>
 
-    val superType: GenericType<in T>?
+    val superType: GenericType<Any>?
 
     companion object {
 
-        fun of(type: Type): GenericType<*> {
+        fun of(type: Type): GenericType<Any> {
             return of<Any>(type, null)
+        }
+
+        fun <T> of(type: Class<T>): GenericType<T> {
+            return of(type, null)
         }
 
         @SuppressWarnings("unchecked")
@@ -45,13 +49,13 @@ interface GenericType<T> {
             run { throw IllegalStateException("unhandled type " + type) }
         }
 
-        fun ofField(field: Field, type: Type): GenericType<*> {
+        fun ofField(field: Field, type: Type): GenericType<Any> {
             val fieldClass = field.type
             val fieldType = GenericTypeReflector.getExactFieldType(field, type)
             return of(fieldType, fieldClass)
         }
 
-        fun ofMethod(method: Method, type: Type): GenericType<*> {
+        fun ofMethod(method: Method, type: Type): GenericType<Any> {
             val returnClass = method.returnType
             val returnType = GenericTypeReflector.getExactReturnType(method, type)
             return of(returnType, returnClass)

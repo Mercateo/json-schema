@@ -39,7 +39,9 @@ class FieldCollectorTest {
     @Test
     @Throws(Exception::class)
     fun mapAllDaeclaredFields() {
-        val hidden = fieldCollector.forType(PropertyHolder::class.java).filter { p -> p.name == "hidden" }.first()
+        @Suppress("UNCHECKED_CAST")
+        val hidden: RawProperty<PropertyHolder, String> = fieldCollector.forType(PropertyHolder::class.java).filter { p -> p.name == "hidden" }.first()
+                as RawProperty<PropertyHolder, String>
 
         val propertyHolder = PropertyHolder()
         hidden.valueAccessor(propertyHolder)

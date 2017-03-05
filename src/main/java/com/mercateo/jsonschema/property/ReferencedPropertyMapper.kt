@@ -4,13 +4,14 @@ import java.util.concurrent.ConcurrentHashMap
 
 class ReferencedPropertyMapper : PropertyMapper {
 
-    private val knownRootElements: ConcurrentHashMap<String, Property> = ConcurrentHashMap()
+    private val knownRootElements: ConcurrentHashMap<String, Property<*, *>> = ConcurrentHashMap()
 
-    override fun from(property: Property): Property {
-        return knownRootElements.computeIfAbsent(property.genericType.name, { addPathAndReference(property, "#", mutableMapOf()) })
+    override fun <S, T> from(property: Property<S,T>): Property<S,T> {
+        @Suppress("UNCHECKED_CAST")
+        return knownRootElements.computeIfAbsent(property.genericType.name, { addPathAndReference(property, "#", mutableMapOf()) }) as Property<S, T>
     }
 
-    private fun addPathAndReference(property: Property, path: String, knownPaths: MutableMap<String, String>): Property {
+    private fun <S, T> addPathAndReference(property: Property<S, T>, path: String, knownPaths: MutableMap<String, String>): Property<S, T> {
         val reference = knownPaths.get(property.genericType.name)
 
         if (reference == null && property.propertyType == PropertyType.OBJECT) {
@@ -23,7 +24,7 @@ class ReferencedPropertyMapper : PropertyMapper {
             emptyList()
         }
 
-        val propertyDescriptor = property.propertyDescriptor.copy(context = PropertyDescriptor.Context.Children(children))
+        val propertyDescriptor = (property.propertyDescriptor as PropertyDescriptorDefault).copy(context = PropertyDescriptor.Context.Children(children))
         
         return property.copy(propertyDescriptor = propertyDescriptor, context = Property.Context.Connected(path, reference))
     }

@@ -9,13 +9,13 @@ class SchemaMapper {
 
     internal var objectNodeFactory = ObjectNodeFactory()
 
-    fun map(property: Property): ObjectNode {
+    fun <S, T> map(property: Property<S, T>): ObjectNode {
         val result = objectNodeFactory.createNode()
 
         val propertyDescriptor = property.propertyDescriptor
 
         when (propertyDescriptor.context) {
-            is PropertyDescriptor.Context.Children -> {
+            is PropertyDescriptor.Context.Children<*> -> {
                 when (propertyDescriptor.propertyType) {
                     PropertyType.OBJECT -> {
                     }
