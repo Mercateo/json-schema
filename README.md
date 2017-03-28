@@ -11,4 +11,51 @@ Generic JSON-Schema generator.
  * Handles Generics
  * Configurable
  * Supports allowed values and default values
+ 
+## Property structure
 
+```
+class Foo {
+    String bar;
+    Baz baz;
+}
+
+class Baz {
+    String qux;
+}
+```
+
+`bar`, `baz` and `qux` are properties.
+
+### Property representation
+
+Properties are represented as Property Objects specified by containing and contained type:
+
+```
+Property<Foo, String> bar;
+Property<Foo, Baz> baz;
+Property<Baz, String> qux;
+```
+
+Tha part of the property which is represented by its type is contained in a `PropertyDescriptor` which has a generic type representing its contained type.
+
+### Property unwrapping
+
+
+```
+class Foo {
+    String bar;
+    
+    @JsonUnwrapped
+    Baz baz;
+}
+
+class Baz {
+    String qux;
+}
+```
+
+```
+Property<Foo, String> bar;
+Property<Foo, String> qux;
+```

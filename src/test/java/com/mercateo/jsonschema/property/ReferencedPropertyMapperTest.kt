@@ -42,7 +42,7 @@ class ReferencedPropertyMapperTest {
         assertThat(property.name).isEqualTo("#")
         assertThat(property.path).isEqualTo("#")
 
-        val listChild: Property = property.children.find { it.name == "children" }!!
+        val listChild = property.children.find { it.name == "children" }!!
         assertThat(listChild.children).hasSize(1)
         assertThat(listChild.name).isEqualTo("children")
         assertThat(listChild.path).isEqualTo("#/children")
@@ -64,13 +64,13 @@ class ReferencedPropertyMapperTest {
         assertThat(property.name).isEqualTo("#")
         assertThat(property.path).isEqualTo("#")
 
-        val holder1: Property = property.children.find { it.name == "holder1" }!!
+        val holder1 = property.children.find { it.name == "holder1" }!!
         assertThat(holder1.children).hasSize(1)
         assertThat(holder1.name).isEqualTo("holder1")
         assertThat(holder1.path).isEqualTo("#/holder1")
         assertThat(holder1.reference).isNull()
 
-        val holder2: Property = property.children.find { it.name == "holder2" }!!
+        val holder2 = property.children.find { it.name == "holder2" }!!
         assertThat(holder2.children).isEmpty()
         assertThat(holder2.name).isEqualTo("holder2")
         assertThat(holder2.path).isEqualTo("#/holder2")

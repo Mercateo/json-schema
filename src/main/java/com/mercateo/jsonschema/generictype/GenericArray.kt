@@ -15,10 +15,10 @@ internal class GenericArray<T>(
     override val name: String
         get() = type.typeName
 
-    override val containedType: GenericType<*>
+    override val containedType: GenericType<Any>
         get() = GenericType.of(GenericTypeReflector.getArrayComponentType(type), rawType.componentType)
 
-    override val superType: GenericType<in T>?
+    override val superType: GenericType<Any>?
         get() = null
 
     override val isIterable: Boolean

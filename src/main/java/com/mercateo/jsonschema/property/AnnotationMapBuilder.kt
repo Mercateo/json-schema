@@ -19,10 +19,10 @@ class AnnotationMapBuilder {
         other.forEach { e ->
             val existing = result[e.key]
 
-            if (existing == null) {
-                result[e.key] = e.value
+            result[e.key] = if (existing == null) {
+                e.value
             } else {
-                result[e.key] = reduce(e.value, existing)
+                reduce(e.value, existing)
             }
         }
 

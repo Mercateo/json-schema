@@ -2,26 +2,26 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
 import java.lang.reflect.Method
-import java.lang.reflect.Type
 
 class MethodCollector(
         private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
 ) : RawPropertyCollector {
 
-    override fun forType(genericType: GenericType<*>): Sequence<RawProperty> {
+    override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
         return sequenceOf(*genericType.declaredMethods)
                 .filter { !it.isSynthetic }
                 .filter { it.declaringClass != Any::class.java }
                 .filter { it.returnType != Void.TYPE }
                 .filter { it.parameterCount == 0 }
-                .map { mapRawDataProperty(it, genericType.type) }
+                .map { mapRawDataProperty(method = it, genericType = genericType) }
     }
 
-    private fun mapRawDataProperty(method: Method, type: Type): RawProperty {
-        return RawProperty(getPropertyName(method),
-                GenericType.ofMethod(method, type),
+    private fun <S> mapRawDataProperty(method: Method, genericType: GenericType<S>): RawProperty<S, *> {
+        val methodType = GenericType.ofMethod(method, genericType.type) as GenericType<Any>
+        return RawProperty<S, Any>(getPropertyName(method),
+                methodType,
                 annotationMapBuilder.createMap(*method.annotations),
-                { instance: Any -> valueAccessor(method, instance) })
+                { instance: S -> valueAccessor(method, instance) })
     }
 
     private fun getPropertyName(method: Method): String {
@@ -35,7 +35,7 @@ class MethodCollector(
         return methodName
     }
 
-    private fun valueAccessor(method: Method, instance: Any): Any {
+    private fun <S> valueAccessor(method: Method, instance: S): Any? {
         return method.invoke(instance)
     }
 }

@@ -6,8 +6,8 @@ import java.lang.reflect.Type
 import java.util.*
 import java.util.Objects.requireNonNull
 
-internal abstract class GenericTypeAbstract<T, out U : Type>(
-        override val rawType: Class<T>,
+internal abstract class GenericTypeAbstract<out T, out U : Type>(
+        override val rawType: Class<out T>,
         override val type: U
 ) : GenericType<T> {
 

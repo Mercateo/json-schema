@@ -2,18 +2,18 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
 
-data class Property(
+data class Property<in S, T>(
         val name: String,
-        val propertyDescriptor: PropertyDescriptor,
-        val valueAccessor: (Any) -> Any?,
+        val propertyDescriptor: PropertyDescriptor<T>,
+        val valueAccessor: (S) -> T?,
         val annotations: Map<Class<out Annotation>, Set<Annotation>>,
         val context: Context = Property.Context.Unconnected
 ) {
-    fun getValue(instance: Any): Any? {
+    fun getValue(instance: S): T? {
         return valueAccessor(instance)
     }
 
-    val children: List<Property> = propertyDescriptor.children
+    val children: List<Property<T, Any>> = propertyDescriptor.children
 
     val reference: String? = when (context) {
         is Context.Connected -> {
@@ -33,7 +33,7 @@ data class Property(
         }
     }
 
-    val genericType: GenericType<*> = propertyDescriptor.genericType
+    val genericType: GenericType<T> = propertyDescriptor.genericType
 
     val propertyType: PropertyType = propertyDescriptor.propertyType
 
