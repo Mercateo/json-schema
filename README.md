@@ -37,7 +37,7 @@ Property<Foo, Baz> baz;
 Property<Baz, String> qux;
 ```
 
-Tha part of the property which is represented by its type is contained in a `PropertyDescriptor` which has a generic type representing its contained type.
+The part of the property which is represented by its type is contained in a `PropertyDescriptor` which has a generic type representing its contained type.
 
 ### Property unwrapping
 
