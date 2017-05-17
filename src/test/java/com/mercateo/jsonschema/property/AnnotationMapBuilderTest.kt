@@ -3,7 +3,7 @@ package com.mercateo.jsonschema.property
 import org.assertj.core.api.MapAssert
 import org.junit.Before
 import org.junit.Test
-import kotlin.reflect.memberProperties
+import kotlin.reflect.full.memberProperties
 
 class AnnotationMapBuilderTest {
 
