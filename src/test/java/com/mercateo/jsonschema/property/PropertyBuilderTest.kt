@@ -1,9 +1,8 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.property.PropertyBuilderClasses.*
-import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.IterableAssert
-import org.assertj.core.api.KotlinAssertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
@@ -14,7 +13,6 @@ class PropertyBuilderTest {
     private lateinit var propertyBuilder: PropertyBuilder
 
     @Before
-    @Throws(Exception::class)
     fun setUp() {
         propertyBuilder = PropertyBuilderDefault(FieldCollector(FieldCollectorConfig()), MethodCollector())
     }
@@ -27,7 +25,6 @@ class PropertyBuilderTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun containsChildFromField() {
         val property = propertyBuilder.from(PropertyHolder::class.java)
 
@@ -35,7 +32,14 @@ class PropertyBuilderTest {
     }
 
     @Test
-    @Throws(Exception::class)
+    fun containsEnumChildAsString() {
+        val property = propertyBuilder.from(EnumPropertyHolder::class.java)
+
+        assertThat(property.children).extracting("name").containsExactly("enumProperty")
+        assertThat(property.children).extracting("propertyType").containsExactly(PropertyType.STRING)
+    }
+
+    @Test
     fun buildsPropertiesRecursively() {
         val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
 
@@ -47,7 +51,6 @@ class PropertyBuilderTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun createsPropertyWithGenerics() {
 
         val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
@@ -58,7 +61,6 @@ class PropertyBuilderTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun propertyReturnsPropertyValue() {
         val property = propertyBuilder.from(PropertyHolder::class.java)
 
@@ -71,7 +73,6 @@ class PropertyBuilderTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun propertyReturnsClassAnnotation() {
         val property = propertyBuilder.from(PropertyHolder::class.java)
 
@@ -90,7 +91,7 @@ class PropertyBuilderTest {
 
     fun <T> assertThat(actual: Iterable<T>) = IterableAssert(actual)
 
-    private fun getAnnotations(firstElement1: Property<*,*>): Set<Class<out Annotation>> {
+    private fun getAnnotations(firstElement1: Property<*, *>): Set<Class<out Annotation>> {
         return firstElement1.annotations.keys
     }
 

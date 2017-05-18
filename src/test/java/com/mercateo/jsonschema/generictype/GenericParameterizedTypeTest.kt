@@ -11,7 +11,6 @@ class GenericParameterizedTypeTest {
 
 
     @Test
-    @Throws(NoSuchFieldException::class)
     fun testGetNameContainedType() {
         val field = TestClass::class.java.getDeclaredField("doubleList")
         val type = GenericTypeReflector.getExactFieldType(field, TestClass::class.java)
@@ -25,7 +24,6 @@ class GenericParameterizedTypeTest {
     }
 
     @Test
-    @Throws(NoSuchFieldException::class)
     fun testGetContainedType() {
         val field = TestClass::class.java.getDeclaredField("doubleList")
         val type = GenericTypeReflector.getExactFieldType(field, TestClass::class.java)
@@ -42,7 +40,6 @@ class GenericParameterizedTypeTest {
     }
 
     @Test
-    @Throws(NoSuchFieldException::class)
     fun testGetContainedTypeWithGenericTypeParameter() {
         val superclass = TestClass::class.java.superclass
         val field = superclass.getDeclaredField("object")
@@ -51,6 +48,18 @@ class GenericParameterizedTypeTest {
         val genericType = GenericType.of(type)
 
         assertThat(genericType.rawType).isEqualTo(java.lang.Boolean::class.java)
+    }
+
+    @Test
+    fun supertypeShouldBeNullIfNotApplicable() {
+        val field = TestClass::class.java.getDeclaredField("doubleList")
+        val type = GenericTypeReflector.getExactFieldType(field, TestClass::class.java)
+
+        val genericType = GenericType.of(type)
+
+        val superType = genericType.superType
+
+        assertThat(superType).isNull();
     }
 
 }
