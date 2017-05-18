@@ -6,20 +6,13 @@ import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
 
 class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
 
-    private val rawPropertyCollectors: Array<out RawPropertyCollector>
+    private val rawPropertyCollectors: Array<out RawPropertyCollector> = rawPropertyCollectors
 
-    private val genericTypeHierarchy: GenericTypeHierarchy
+    private val genericTypeHierarchy: GenericTypeHierarchy = GenericTypeHierarchy()
 
-    private val annotationMapBuilder: AnnotationMapBuilder
+    private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
 
-    private val knownDescriptors: MutablePropertyDescriptorMap
-
-    init {
-        this.rawPropertyCollectors = rawPropertyCollectors
-        this.genericTypeHierarchy = GenericTypeHierarchy()
-        this.annotationMapBuilder = AnnotationMapBuilder()
-        this.knownDescriptors = MutablePropertyDescriptorMap()
-    }
+    private val knownDescriptors: MutablePropertyDescriptorMap = MutablePropertyDescriptorMap()
 
     override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
         return from(GenericType.of(propertyClass))

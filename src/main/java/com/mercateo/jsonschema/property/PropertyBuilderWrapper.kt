@@ -4,11 +4,7 @@ import com.mercateo.jsonschema.generictype.GenericType
 
 class PropertyBuilderWrapper(private val propertyBuilder: PropertyBuilder, vararg propertyMappers: PropertyMapper) : PropertyBuilder {
 
-    private val propertyMappers: Array<out PropertyMapper>
-
-    init {
-        this.propertyMappers = propertyMappers
-    }
+    private val propertyMappers: Array<out PropertyMapper> = propertyMappers
 
     override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
         return from(GenericType.Companion.of(propertyClass))

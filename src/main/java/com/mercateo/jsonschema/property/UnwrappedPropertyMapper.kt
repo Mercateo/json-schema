@@ -2,6 +2,7 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.property.PropertyDescriptor.Context.Children
 import java.util.concurrent.ConcurrentHashMap
 
 class UnwrappedPropertyMapper
@@ -57,7 +58,7 @@ constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
         val children = getChildren(property, addedUnwrappedProperties)
         val propertyType = property.propertyType
         val genericType = property.genericType
-        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, PropertyDescriptor.Context.Children(children), property.propertyDescriptor.annotations)
+        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, Children(children), property.propertyDescriptor.annotations)
         addedUnwrappedProperties.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }
@@ -72,13 +73,13 @@ constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
     }
 
     private fun <T> unwrapChildrenIfApplicable(child: Property<T, Any>): List<Property<T, Any>> {
-            val doUnwrapChild: Boolean = !unwrapAnnotations.intersect(child.annotations.keys).isEmpty()
+        val doUnwrapChild: Boolean = !unwrapAnnotations.intersect(child.annotations.keys).isEmpty()
 
-            return if (doUnwrapChild) {
-                unwrapChildren(child)
-            } else {
-                listOf(child)
-            }
+        return if (doUnwrapChild) {
+            unwrapChildren(child)
+        } else {
+            listOf(child)
+        }
     }
 
     private fun <T, U> unwrapChildren(child: Property<T, U>): List<Property<T, Any>> {

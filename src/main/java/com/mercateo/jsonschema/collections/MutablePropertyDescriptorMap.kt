@@ -18,6 +18,7 @@ class MutablePropertyDescriptorMap {
     }
 
     operator fun <T> get(genericType: GenericType<T>): PropertyDescriptor<T> {
+        @Suppress("UNCHECKED_CAST")
         return map[genericType] as PropertyDescriptor<T>
     }
 
