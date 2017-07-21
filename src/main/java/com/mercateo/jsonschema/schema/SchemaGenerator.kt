@@ -8,12 +8,12 @@ import com.mercateo.jsonschema.property.UnwrappedPropertyMapper
 
 class SchemaGenerator {
 
-    fun generateSchema(objectContext: ObjectContext<*>,
-                       context: SchemaPropertyContext): JsonPropertyResult? {
+    fun <T> generateSchema(clazz: Class<T>, propertyContext: PropertyContext<T> = PropertyContext(),
+                           context: SchemaPropertyContext = SchemaPropertyContext()): JsonPropertyResult? {
 
         val propertyBuilder = createPropertyBuilder(context)
 
-        val property = propertyBuilder.from(objectContext.javaClass)
+        val property = propertyBuilder.from(clazz)
         return null
     }
 

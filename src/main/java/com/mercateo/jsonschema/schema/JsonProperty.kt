@@ -6,13 +6,13 @@ data class JsonProperty(
         val id: String,
         val name: String,
         val type: PropertyType,
-        val ref: String,
-        val defaultValue: String,
+        val ref: String?,
+        val defaultValue: String?,
         val isRequired: Boolean = false,
         val properties: List<JsonProperty>,
         val sizeConstraints: SizeConstraints,
         val valueConstraints: ValueConstraints,
-        val allowedValues: List<String>,
+        val allowedValues: Set<String>,
         val path: String
 )
 
