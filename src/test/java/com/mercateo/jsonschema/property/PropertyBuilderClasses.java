@@ -22,6 +22,12 @@ public class PropertyBuilderClasses {
         String property;
     }
 
+    static enum TestEnum {VALUE_1, VALUE_2}
+
+    static class EnumPropertyHolder {
+        TestEnum enumProperty;
+    }
+
     @Annotation1
     static class MethodPropertyHolder {
         @Annotation2
