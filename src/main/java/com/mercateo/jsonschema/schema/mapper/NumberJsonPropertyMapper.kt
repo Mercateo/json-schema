@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.DoubleNode
 import com.fasterxml.jackson.databind.node.FloatNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.schema.JsonProperty
+import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 
@@ -15,12 +15,12 @@ internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
         primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
     }
 
-    override fun toJson(jsonProperty: JsonProperty): ObjectNode {
-        return primitiveJsonPropertyBuilder.forProperty(jsonProperty) //
-                .withType("number").withDefaultAndAllowedValues { value: Any -> createNode(value) }.build()
+    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
+        return primitiveJsonPropertyBuilder.forProperty(jsonProperty as ObjectContext<Number>) //
+                .withType("number").withDefaultAndAllowedValues(this::createNode).build()
     }
 
-    private fun createNode(value: Any): JsonNode {
+    private fun createNode(value: Number): JsonNode {
         return when (value) {
             is Float -> FloatNode(value)
             is Double -> DoubleNode(value)

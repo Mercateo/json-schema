@@ -3,40 +3,45 @@ package com.mercateo.jsonschema.schema.mapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.schema.JsonProperty
-import com.mercateo.jsonschema.schema.PropertyJsonSchemaMapperForRoot
+import com.mercateo.jsonschema.mapper.SchemaMapper
+import com.mercateo.jsonschema.property.Property
+import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class ObjectJsonPropertyMapper(
-        private val propertyJsonSchemaMapper: PropertyJsonSchemaMapperForRoot,
+        private val propertyJsonSchemaMapper: SchemaMapper
+        ,
         private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
 
-    override fun toJson(jsonProperty: JsonProperty): ObjectNode {
+    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)
         propertyNode.put("type", "object")
-        propertyNode.set("properties", createProperties(jsonProperty.properties))
-        val requiredElements = createRequiredElementsArray(jsonProperty.properties)
+        propertyNode.set("properties", createProperties(jsonProperty))
+        val requiredElements = createRequiredElementsArray(jsonProperty.propertyDescriptor.children)
         if (requiredElements.size() > 0) {
             propertyNode.set("required", requiredElements)
         }
         return propertyNode
     }
 
-    private fun createProperties(properties: List<JsonProperty>): ObjectNode {
+    private fun <T> createProperties(properties: ObjectContext<T>): ObjectNode {
         val result = ObjectNode(nodeFactory)
-        for (jsonProperty in properties) {
-            result.set(jsonProperty.name, propertyJsonSchemaMapper.toJson(jsonProperty))
+        for (property in properties.propertyDescriptor.children) {
+            val defaultValue = if (properties.defaultValue != null) property.valueAccessor.invoke(properties.defaultValue) else null
+            val allowedValues = properties.allowedValues.map(property.valueAccessor).filterNotNull()
+            val childContext = ObjectContext(property, defaultValue, allowedValues)
+            result.set(property.name, propertyJsonSchemaMapper.toJson(childContext))
         }
         return result
     }
 
-    private fun createRequiredElementsArray(properties: List<JsonProperty>): ArrayNode {
+    private fun createRequiredElementsArray(properties: List<Property<Nothing, Any>>): ArrayNode {
         val result = ArrayNode(nodeFactory)
-        for ((_, name, _, _, _, isRequired) in properties) {
+        /*for ((_, name, _, _, _, isRequired) in properties) {
             if (isRequired) {
                 result.add(name)
             }
-        }
+        }*/
         return result
     }
 }

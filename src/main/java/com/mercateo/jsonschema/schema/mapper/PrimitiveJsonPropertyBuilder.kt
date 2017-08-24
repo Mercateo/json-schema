@@ -3,9 +3,8 @@ package com.mercateo.jsonschema.schema.mapper
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.schema.JsonProperty
-
-import java.util.function.Function
+import com.mercateo.jsonschema.property.Property
+import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFactory) {
     private val genericJsonPropertyMapper: GenericJsonPropertyMapper
@@ -14,28 +13,28 @@ internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFac
         this.genericJsonPropertyMapper = GenericJsonPropertyMapper(nodeFactory)
     }
 
-    fun forProperty(jsonProperty: JsonProperty): Builder {
+    fun <T> forProperty(jsonProperty: ObjectContext<T>): Builder<T> {
         return Builder(jsonProperty)
     }
 
-    internal inner class Builder(private val jsonProperty: JsonProperty) {
+    internal inner class Builder<T>(private val jsonProperty: ObjectContext<T>) {
         private val propertyNode: ObjectNode
 
         init {
             propertyNode = ObjectNode(nodeFactory)
         }
 
-        fun withType(type: String): Builder {
+        fun withType(type: String): Builder<T> {
             propertyNode.put("type", type)
             return this
         }
 
-        fun withDefaultAndAllowedValues(nodeCreator: (Any) -> JsonNode): Builder {
+        fun withDefaultAndAllowedValues(nodeCreator: (T) -> JsonNode): Builder<T> {
             genericJsonPropertyMapper.addDefaultAndAllowedValues(propertyNode, this.jsonProperty, nodeCreator)
             return this
         }
 
-        fun withDefaultValue(value: JsonNode): Builder {
+        fun withDefaultValue(value: JsonNode): Builder<T> {
             propertyNode.set("default", value)
             return this
         }

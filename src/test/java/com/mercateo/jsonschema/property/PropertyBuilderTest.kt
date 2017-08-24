@@ -216,5 +216,81 @@ class PropertyBuilderTest {
         assertThat(secondElement.genericType.rawType).isEqualTo(String::class.java)
     }
 
+    @Test
+    fun shouldMapStringType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
 
+        assertThat(property.children.find { it.name == "string" }).extracting("propertyType").contains(PropertyType.STRING)
+    }
+
+    @Test
+    fun shouldMapPrimitiveBooleanType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "booleanPrimitive" }).extracting("propertyType").contains(PropertyType.BOOLEAN)
+    }
+
+    @Test
+    fun shouldMapBooleanType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "booleanValue" }).extracting("propertyType").contains(PropertyType.BOOLEAN)
+    }
+
+    @Test
+    fun shouldMapPrimitiveIntegerType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "integerPrimitive" }).extracting("propertyType").contains(PropertyType.INTEGER)
+    }
+
+    @Test
+    fun shouldMapIntegerType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "integerValue" }).extracting("propertyType").contains(PropertyType.INTEGER)
+    }
+
+    @Test
+    fun shouldMapPrimitiveLongType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "longPrimitive" }).extracting("propertyType").contains(PropertyType.INTEGER)
+    }
+
+    @Test
+    fun shouldMapLongType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "longValue" }).extracting("propertyType").contains(PropertyType.INTEGER)
+    }
+
+    @Test
+    fun shouldMapPrimitiveFloatType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "floatPrimitive" }).extracting("propertyType").contains(PropertyType.NUMBER)
+    }
+
+    @Test
+    fun shouldMapFloatType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "floatValue" }).extracting("propertyType").contains(PropertyType.NUMBER)
+    }
+
+
+    @Test
+    fun shouldMapPrimitiveDoubleType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "doublePrimitive" }).extracting("propertyType").contains(PropertyType.NUMBER)
+    }
+
+    @Test
+    fun shouldMapDoubleType() {
+        val property = propertyBuilder.from(TypesPropertyHolder::class.java)
+
+        assertThat(property.children.find { it.name == "doubleValue" }).extracting("propertyType").contains(PropertyType.NUMBER)
+    }
 }

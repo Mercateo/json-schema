@@ -67,4 +67,28 @@ public class PropertyBuilderClasses {
         String name;
     }
 
+    static class TypesPropertyHolder {
+        String string;
+
+        int integerPrimitive;
+
+        Integer integerValue;
+
+        long longPrimitive;
+
+        Long longValue;
+
+        boolean booleanPrimitive;
+
+        Boolean booleanValue;
+
+        float floatPrimitive;
+
+        Float floatValue;
+
+        double doublePrimitive;
+
+        Double doubleValue;
+    }
+
 }

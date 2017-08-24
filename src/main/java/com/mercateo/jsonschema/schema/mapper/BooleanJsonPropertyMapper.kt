@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.BooleanNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.schema.JsonProperty
+import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 
@@ -14,7 +15,7 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
         primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
     }
 
-    override fun toJson(jsonProperty: JsonProperty): ObjectNode {
+    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
         val nodeCreator: (Boolean) -> JsonNode = {
             if (it)
                 BooleanNode.TRUE
@@ -22,10 +23,10 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
                 BooleanNode.FALSE
         }
 
-        return primitiveJsonPropertyBuilder.forProperty(jsonProperty)
+        return primitiveJsonPropertyBuilder.forProperty(jsonProperty as ObjectContext<Boolean>)
                 .withType("boolean")
                 .withDefaultValue(BooleanNode.FALSE)
-                .withDefaultAndAllowedValues(nodeCreator as (Any) -> JsonNode).build()
+                .withDefaultAndAllowedValues(nodeCreator).build()
     }
 
 }

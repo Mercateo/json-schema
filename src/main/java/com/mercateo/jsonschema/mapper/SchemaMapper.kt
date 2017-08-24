@@ -2,34 +2,41 @@ package com.mercateo.jsonschema.mapper
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.property.PropertyDescriptor
 import com.mercateo.jsonschema.property.PropertyType
+import com.mercateo.jsonschema.schema.ObjectContext
+import com.mercateo.jsonschema.schema.mapper.*
 
 class SchemaMapper {
 
-    internal var objectNodeFactory = ObjectNodeFactory()
+    internal var nodeFactory = ObjectNodeFactory.nodeFactory
 
-    fun <S, T> map(property: Property<S, T>): ObjectNode {
-        val result = objectNodeFactory.createNode()
+    val referencedElements: Set<Property<*, *>> = emptySet()
 
-        val propertyDescriptor = property.propertyDescriptor
+    private val primitivePropertyMappers = mapOf(Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
+            Pair(PropertyType.INTEGER, IntegerJsonPropertyMapper(nodeFactory)),
+            Pair(PropertyType.NUMBER, NumberJsonPropertyMapper(nodeFactory)),
+            Pair(PropertyType.BOOLEAN, BooleanJsonPropertyMapper(nodeFactory)),
+            Pair(PropertyType.ARRAY, ArrayJsonPropertyMapper(this, nodeFactory)),
+            Pair(PropertyType.OBJECT, ObjectJsonPropertyMapper(this, nodeFactory))
+    )
 
-        when (propertyDescriptor.context) {
-            is PropertyDescriptor.Context.Children<*> -> {
-                when (propertyDescriptor.propertyType) {
-                    PropertyType.OBJECT -> {
-                    }
-                }
+    fun <T> toJson(context: ObjectContext<T>): ObjectNode {
+        val result = nodeFactory.objectNode()
+
+        val propertyDescriptor = context.propertyDescriptor
+
+        if (context.reference != null) {
+            result.put("\$ref", context.reference)
+            return result
+        } else {
+            val propertyNode = primitivePropertyMappers.get(propertyDescriptor.propertyType)!!.toJson(context)
+            if (referencedElements.contains(context.property)) {
+                propertyNode.put("id", context.property.path)
             }
-            is PropertyDescriptor.Context.InnerReference -> {
-                // should not happen
-            }
+
+            return propertyNode
         }
 
-        property.reference.let { reference ->
-            result.put("\$ref", reference)
-        }
-
-        return result
     }
+
 }
