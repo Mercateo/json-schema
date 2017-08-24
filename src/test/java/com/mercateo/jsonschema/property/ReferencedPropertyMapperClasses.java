@@ -5,18 +5,18 @@ import java.util.List;
 public class ReferencedPropertyMapperClasses {
 
     static class PropertyHolder {
-        String property;
+        public String property;
     }
 
     static class RecursivePropertyHolder {
-        List<RecursivePropertyHolder> children;
+        public List<RecursivePropertyHolder> children;
 
-        String name;
+        public String name;
     }
 
     static class IdenticalPropertyHolder {
-        PropertyHolder holder1;
+        public PropertyHolder holder1;
 
-        PropertyHolder holder2;
+        public PropertyHolder holder2;
     }
 }

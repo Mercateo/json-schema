@@ -10,17 +10,17 @@ public class UnwrappedPropertyMapperClasses {
 
     static class SecondLevelPropertyHolder {
         @Unwrap
-        PropertyHolder propertyHolder;
+        public PropertyHolder propertyHolder;
     }
 
     static class PropertyHolder {
         @Unwrap
-        UnwrappedPropertyHolder unwrappedPropertyHolder;
+        public UnwrappedPropertyHolder unwrappedPropertyHolder;
     }
 
     static class UnwrappedPropertyHolder {
-        String foo;
+        public String foo;
 
-        String bar;
+        public String bar;
     }
 }

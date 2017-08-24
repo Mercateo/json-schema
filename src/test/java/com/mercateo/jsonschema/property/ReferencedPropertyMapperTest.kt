@@ -12,7 +12,7 @@ class ReferencedPropertyMapperTest {
     @Before
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                PropertyBuilderDefault(FieldCollector(FieldCollectorConfig())),
+                PropertyBuilderDefault(FieldCollector()),
                 ReferencedPropertyMapper()
         )
     }

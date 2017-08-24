@@ -15,7 +15,7 @@ class FieldCollectorTest {
     @Before
     @Throws(Exception::class)
     fun setUp() {
-        fieldCollector = FieldCollector(FieldCollectorConfig())
+        fieldCollector = FieldCollector(FieldCollectorConfig(includePrivateFields = true))
     }
 
     @Test

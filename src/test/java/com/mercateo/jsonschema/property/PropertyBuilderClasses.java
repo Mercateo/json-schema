@@ -19,76 +19,76 @@ public class PropertyBuilderClasses {
 
     @Annotation1
     static class PropertyHolder {
-        String property;
+        public String property;
     }
 
     static enum TestEnum {VALUE_1, VALUE_2}
 
     static class EnumPropertyHolder {
-        TestEnum enumProperty;
+        public TestEnum enumProperty;
     }
 
     @Annotation1
     static class MethodPropertyHolder {
         @Annotation2
-        String getProperty() {
+        public String getProperty() {
             return "foo";
         }
     }
 
     static class TwoLevelMethodPropertyHolder {
         @Annotation3
-        MethodPropertyHolder holder;
+        public MethodPropertyHolder holder;
     }
 
     static class TwoLevelPropertyHolder {
         @Annotation1
-        GenericPropertyHolder<String> holder;
+        public GenericPropertyHolder<String> holder;
     }
 
     @Annotation2
     static class GenericPropertyHolder<T> {
-        T property;
+        public T property;
     }
 
     static class InheritedPropertyHolder extends PropertyHolder {}
 
     static class CollectionPropertyHolder {
-        List<String> values;
+        public List<String> values;
     }
 
     static class NestedCollectionPropertyHolder {
-        List<String[]> values;
+        public List<String[]> values;
     }
 
     static class RecursivePropertyHolder {
-        List<RecursivePropertyHolder> children;
+        public List<RecursivePropertyHolder> children;
 
-        String name;
+        public String name;
     }
 
     static class TypesPropertyHolder {
-        String string;
+        public String string;
 
-        int integerPrimitive;
+        public int integerPrimitive;
 
-        Integer integerValue;
+        public Integer integerValue;
 
-        long longPrimitive;
+        public long longPrimitive;
 
-        Long longValue;
+        public Long longValue;
 
-        boolean booleanPrimitive;
+        public boolean booleanPrimitive;
 
-        Boolean booleanValue;
+        public Boolean booleanValue;
 
-        float floatPrimitive;
+        public float floatPrimitive;
 
-        Float floatValue;
+        public Float floatValue;
 
-        double doublePrimitive;
+        public double doublePrimitive;
 
-        Double doubleValue;
+        public Double doubleValue;
     }
 
 }

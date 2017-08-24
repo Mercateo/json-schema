@@ -14,7 +14,7 @@ class PropertyBuilderTest {
 
     @Before
     fun setUp() {
-        propertyBuilder = PropertyBuilderDefault(FieldCollector(FieldCollectorConfig()), MethodCollector())
+        propertyBuilder = PropertyBuilderDefault(FieldCollector(), MethodCollector())
     }
 
     @Test
