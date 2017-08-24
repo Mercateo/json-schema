@@ -54,7 +54,7 @@ class SchemaGeneratorTest {
         allowedValue.baz = 4.8f;
         allowedValue.qux = true;
 
-        val schema = schemaGenerator.generateSchema(schemaClass, allowedValues = listOf(allowedValue), context = schemaPropertyContext)
+        val schema = schemaGenerator.generateSchema(schemaClass, allowedValues = setOf(allowedValue), context = schemaPropertyContext)
 
         assertThat(schema).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"qux\":{\"type\":\"boolean\",\"default\":false,\"enum\":[true]}}}")
     }

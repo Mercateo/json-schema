@@ -3,8 +3,6 @@ package com.mercateo.jsonschema.schema.mapper
 import com.fasterxml.jackson.databind.node.IntNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.schema.JsonProperty
 import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class IntegerJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {

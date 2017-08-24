@@ -4,13 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.schema.JsonProperty
 import com.mercateo.jsonschema.schema.ObjectContext
 
 internal class GenericJsonPropertyMapper(private val nodeFactory: JsonNodeFactory) {
 
     fun <T> addDefaultAndAllowedValues(propertyNode: ObjectNode, property: ObjectContext<T>,
-                                   nodeCreator: (T) -> JsonNode) {
+                                       nodeCreator: (T) -> JsonNode) {
         if (hasDefaultValue(property)) {
             propertyNode.set("default", getDefaultValue(property, nodeCreator))
         }

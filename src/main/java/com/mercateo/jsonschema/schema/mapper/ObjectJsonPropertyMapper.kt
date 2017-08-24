@@ -27,10 +27,8 @@ internal class ObjectJsonPropertyMapper(
     private fun <T> createProperties(properties: ObjectContext<T>): ObjectNode {
         val result = ObjectNode(nodeFactory)
         for (property in properties.propertyDescriptor.children) {
-            val defaultValue = if (properties.defaultValue != null) property.valueAccessor.invoke(properties.defaultValue) else null
-            val allowedValues = properties.allowedValues.map(property.valueAccessor).filterNotNull()
-            val childContext = ObjectContext(property, defaultValue, allowedValues)
-            result.set(property.name, propertyJsonSchemaMapper.toJson(childContext))
+            val child = properties.createInner(property, property.valueAccessor)
+            result.set(property.name, propertyJsonSchemaMapper.toJson(child))
         }
         return result
     }
