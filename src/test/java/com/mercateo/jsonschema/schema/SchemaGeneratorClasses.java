@@ -2,16 +2,12 @@ package com.mercateo.jsonschema.schema;
 
 public class SchemaGeneratorClasses {
     public static class Simple {
-        String foo;
+        public String foo;
 
-        public String getFoo() {
-            return "foo";
-        }
+        public Integer bar;
 
-        Integer bar;
+        public Float baz;
 
-        public Integer getBar() {
-            return 12;
-        }
+        public Boolean qux;
     }
 }

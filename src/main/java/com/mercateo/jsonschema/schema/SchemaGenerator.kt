@@ -10,7 +10,7 @@ import com.mercateo.jsonschema.property.UnwrappedPropertyMapper
 
 class SchemaGenerator {
 
-    fun <T> generateSchema(elementClass : Class<T>, defaultValue: T?, allowedValues: List<T>,
+    fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, allowedValues: List<T> = emptyList(),
                        context: SchemaPropertyContext): String {
 
         val propertyBuilder = createPropertyBuilder(context)

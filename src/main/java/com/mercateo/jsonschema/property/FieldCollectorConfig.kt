@@ -1,5 +1,5 @@
 package com.mercateo.jsonschema.property
 
 data class FieldCollectorConfig(
-        val includePrivateFields: Boolean = true
+        val includePrivateFields: Boolean = false
 )

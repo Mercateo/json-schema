@@ -5,7 +5,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 class FieldCollector(
-        private val config: FieldCollectorConfig,
+        private val config: FieldCollectorConfig = FieldCollectorConfig(),
         private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
 ) : RawPropertyCollector {
 
