@@ -18,12 +18,12 @@ data class PropertyB(
 
 class ObjectContextTest {
 
-    lateinit var propertyA : Property<Any, PropertyA>
+    lateinit var outer: Property<Nothing, PropertyA>
     lateinit var inner : Property<PropertyA, PropertyB>
 
     @Before
     fun setup() {
-        propertyA = Property("property", mock<PropertyDescriptor<PropertyA>> {}, {x: Any -> null}, emptyMap(), Property.Context.Unconnected )
+        outer = Property("#", mock<PropertyDescriptor<PropertyA>> {}, { x: Nothing -> null}, emptyMap(), Property.Context.Unconnected )
         inner = Property("inner", mock<PropertyDescriptor<PropertyB>> {}, {x: PropertyA -> x.inner}, emptyMap(), Property.Context.Unconnected )
     }
 
@@ -31,7 +31,7 @@ class ObjectContextTest {
     fun shouldCreateInnerWithDefaultValue() {
         val defaultValue = createProperty("foo", 5)
 
-        val propertyAContext = ObjectContext(propertyA, defaultValue = defaultValue)
+        val propertyAContext = ObjectContext(outer, defaultValue = defaultValue)
 
         val propertyBContext = propertyAContext.createInner(inner, PropertyA::inner)
 
@@ -40,7 +40,7 @@ class ObjectContextTest {
 
     @Test
     fun shouldCreateInnerWithoutDefaultValue() {
-        val propertyAContext = ObjectContext(propertyA)
+        val propertyAContext = ObjectContext(outer)
 
         val propertyBContext = propertyAContext.createInner(inner,
                 PropertyA::inner)
@@ -52,7 +52,7 @@ class ObjectContextTest {
     fun shouldCreateInnerWithNullResultForDefaultValue() {
         val defaultValue = PropertyA()
 
-        val propertyAContext = ObjectContext(propertyA, defaultValue = defaultValue)
+        val propertyAContext = ObjectContext(outer, defaultValue = defaultValue)
 
         val propertyBContext = propertyAContext.createInner(inner,
                 { propA -> propA.inner })
@@ -65,7 +65,7 @@ class ObjectContextTest {
         val propertyA1 = createProperty("bar", 6)
         val propertyA2 = createProperty("baz", 7)
 
-        val propertyAContext = ObjectContext(propertyA, allowedValues = setOf(propertyA1, propertyA2))
+        val propertyAContext = ObjectContext(outer, allowedValues = setOf(propertyA1, propertyA2))
 
         val propertyBContext = propertyAContext.createInner(inner,
                 { propA -> propA.inner })
