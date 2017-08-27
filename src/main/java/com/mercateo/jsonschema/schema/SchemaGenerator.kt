@@ -11,8 +11,8 @@ import com.mercateo.jsonschema.property.UnwrappedPropertyMapper
 class SchemaGenerator {
 
     @JvmOverloads
-    fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, allowedValues: Set<T> = emptySet(),
-                       context: SchemaPropertyContext): String {
+    fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, vararg allowedValues: T,
+                                          context: SchemaPropertyContext): String {
 
         val propertyBuilder = createPropertyBuilder(context)
 
@@ -20,7 +20,7 @@ class SchemaGenerator {
 
         val mapper = SchemaMapper()
 
-        val objectContext = ObjectContext(property, defaultValue, allowedValues)
+        val objectContext = ObjectContext(property, defaultValue, setOf(*allowedValues))
 
         val map: ObjectNode = mapper.toJson(objectContext)
 

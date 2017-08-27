@@ -46,7 +46,6 @@ jacocoTestReport {
     }
 }
 
-/*
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -69,6 +68,7 @@ signing {
     sign configurations.archives
 }
 
+/*
 if (!hasProperty('sonatypeUsername')) {
     ext.sonatypeUsername = ''
 }
