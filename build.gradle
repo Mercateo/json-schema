@@ -22,7 +22,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'com.mercateo'
-version = '0.1.0-SNAPSHOT'
+version = '0.1.0'
 archivesBaseName = "json-schema"
 
 description = """json-schema"""
