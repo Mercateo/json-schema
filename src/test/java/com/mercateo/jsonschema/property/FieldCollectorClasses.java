@@ -6,4 +6,10 @@ public class FieldCollectorClasses {
 
         private String hidden;
     }
+
+    public static class StaticPropertyHolder {
+        public String member;
+
+        public static String staticField;
+    }
 }

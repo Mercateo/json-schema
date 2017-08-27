@@ -1,6 +1,7 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.property.FieldCollectorClasses.PropertyHolder
+import com.mercateo.jsonschema.property.FieldCollectorClasses.StaticPropertyHolder
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -47,5 +48,10 @@ class FieldCollectorTest {
         hidden.valueAccessor(propertyHolder)
     }
 
+    @Test
+    fun ignoresStaticFields() {
+        val properties = fieldCollector.forType(StaticPropertyHolder::class.java).toList()
 
+        assertThat(properties).extracting("name").containsExactly("visible")
+    }
 }

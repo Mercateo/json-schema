@@ -77,7 +77,7 @@ if (!hasProperty('sonatypePassword')) {
 }
 
 uploadArchives {
-    repositories {
+  ^  repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 

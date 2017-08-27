@@ -2,6 +2,7 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
 import java.lang.reflect.Method
+import java.lang.reflect.Modifier
 
 class MethodCollector(
         private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
@@ -13,6 +14,7 @@ class MethodCollector(
                 .filter { it.declaringClass != Any::class.java }
                 .filter { it.returnType != Void.TYPE }
                 .filter { it.parameterCount == 0 }
+                .filter { !Modifier.isStatic(it.modifiers) }
                 .map { mapRawDataProperty(method = it, genericType = genericType) }
     }
 

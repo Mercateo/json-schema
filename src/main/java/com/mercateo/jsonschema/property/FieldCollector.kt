@@ -12,6 +12,7 @@ class FieldCollector(
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
         return sequenceOf(*genericType.declaredFields)
                 .filter { !it.isSynthetic }
+                .filter { !Modifier.isStatic(it.modifiers) }
                 .filter { config.includePrivateFields || Modifier.isPublic(it.modifiers) }
                 .map { mapRawDataProperty(it, genericType) }
     }

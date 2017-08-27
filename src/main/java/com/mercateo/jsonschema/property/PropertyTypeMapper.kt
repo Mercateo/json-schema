@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.generictype.GenericType
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.time.Instant
 import java.util.*
 
 object PropertyTypeMapper {
@@ -21,7 +22,8 @@ object PropertyTypeMapper {
             Pair(java.lang.Double::class.java, PropertyType.NUMBER),
             Pair(BigInteger::class.java, PropertyType.INTEGER),
             Pair(BigDecimal::class.java, PropertyType.NUMBER),
-            Pair(UUID::class.java, PropertyType.STRING))
+            Pair(UUID::class.java, PropertyType.STRING),
+            Pair(Instant::class.java, PropertyType.STRING))
 
     fun of(type: GenericType<*>): PropertyType {
         if (type.isIterable) {
