@@ -10,6 +10,7 @@ import com.mercateo.jsonschema.property.UnwrappedPropertyMapper
 
 class SchemaGenerator {
 
+    @JvmOverloads
     fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, allowedValues: Set<T> = emptySet(),
                        context: SchemaPropertyContext): String {
 
