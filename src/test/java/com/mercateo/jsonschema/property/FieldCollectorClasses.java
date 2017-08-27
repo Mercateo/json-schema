@@ -8,7 +8,7 @@ public class FieldCollectorClasses {
     }
 
     public static class StaticPropertyHolder {
-        public String member;
+        public String property;
 
         public static String staticField;
     }

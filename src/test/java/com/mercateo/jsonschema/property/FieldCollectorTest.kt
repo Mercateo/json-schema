@@ -52,6 +52,6 @@ class FieldCollectorTest {
     fun ignoresStaticFields() {
         val properties = fieldCollector.forType(StaticPropertyHolder::class.java).toList()
 
-        assertThat(properties).extracting("name").containsExactly("visible")
+        assertThat(properties).extracting("name").containsExactly("property")
     }
 }
