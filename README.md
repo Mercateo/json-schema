@@ -17,8 +17,9 @@ Generic JSON-Schema generator.
 
 ```$java
     SchemaGenerator schemaGenerator = new SchemaGenerator(
-            Collections.singletonList(new FieldCollector()),
-            Collections.emptyList());
+            Collections.emptyList(),
+            Collections.<RawPropertyCollector>singletonList(new FieldCollector()),
+            new HashMap<>());
     
     ObjectNode schema = schemaGenerator.generateSchema(Foo.class);
     
