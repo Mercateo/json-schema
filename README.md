@@ -11,8 +11,42 @@ Generic JSON-Schema generator.
 
  * Handles Generics
  * Configurable
- * Supports allowed values and default values
+ * Supports dynamic schema with allowed values and default values
  
+## Example
+
+```$java
+    SchemaPropertyContext context = new SchemaPropertyContext(
+            property -> true,
+            Collections.emptyList(),
+            Collections.singletonList(new FieldCollector())
+    );
+    SchemaGenerator schemaGenerator = new SchemaGenerator();
+    
+    ObjectNode schema = schemaGenerator.generateSchema(Foo.class, null, null, context);
+    
+    String schemaString = schema.toString();
+```
+
+Generates the following result:
+```$javascript
+{
+  "type": "object", 
+  "properties": {
+    "baz": {
+      "type": "object", 
+      "properties": {
+        "qux": {
+          "type": "string"
+        }
+      }
+    }, 
+    "bar": {
+      "type": "string"
+    }
+  }
+}}
+```
 ## Property structure
 
 ```
