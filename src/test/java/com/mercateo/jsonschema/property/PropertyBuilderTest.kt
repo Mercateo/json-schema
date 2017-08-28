@@ -6,6 +6,7 @@ import org.assertj.core.api.IterableAssert
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
+import java.util.*
 
 class PropertyBuilderTest {
     private val log = LoggerFactory.getLogger(PropertyBuilderTest::class.java)
@@ -37,6 +38,28 @@ class PropertyBuilderTest {
 
         assertThat(property.children).extracting("name").containsExactly("property")
         assertThat(property.children).extracting("propertyType").containsExactly(PropertyType.STRING)
+    }
+
+    @Test
+    fun accessValueOfExistingOptionalType() {
+        val value = OptionalPropertyHolder().also { it.property = Optional.of("foo") }
+
+        val rootProperty = propertyBuilder.from(OptionalPropertyHolder::class.java)
+        val optionalProperty: Property<OptionalPropertyHolder, Any>? = rootProperty.children.find { it.name == "property" }
+        val propertyValue = optionalProperty?.getValue(value)
+
+        assertThat(propertyValue).isEqualTo("foo")
+    }
+
+    @Test
+    fun accessValueOfEmptyOptionalType() {
+        val value = OptionalPropertyHolder().also { it.property = Optional.empty() }
+
+        val rootProperty = propertyBuilder.from(OptionalPropertyHolder::class.java)
+        val optionalProperty: Property<OptionalPropertyHolder, Any>? = rootProperty.children.find { it.name == "property" }
+        val propertyValue = optionalProperty?.getValue(value)
+
+        assertThat(propertyValue).isNull()
     }
 
     @Test
@@ -286,7 +309,6 @@ class PropertyBuilderTest {
 
         assertThat(property.children.find { it.name == "floatValue" }).extracting("propertyType").contains(PropertyType.NUMBER)
     }
-
 
     @Test
     fun shouldMapPrimitiveDoubleType() {

@@ -120,18 +120,21 @@ class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector)
             addedDescriptors: MutablePropertyDescriptorMap,
             nestedTypes: Set<GenericType<*>>
     ): Property<S, Any> {
-        if (optionUnwrapper.containsKey(rawProperty.genericType.rawType)) {
-            val unwrapper = optionUnwrapper.get(rawProperty.genericType.rawType)!!
-            val genericType: GenericType<*> = rawProperty.genericType.containedType
-            val function: (S) -> Any? = { it: S ->
-                val inner = rawProperty.valueAccessor.invoke(it)
-                if (inner != null) unwrapper.invoke(inner) else null
-            }
-            return from(rawProperty.name, genericType, rawProperty.annotations, function, nestedTypes) as Property<S, Any>
-        } else {
-            return from(rawProperty.name, rawProperty.genericType, rawProperty.annotations,
-                    rawProperty.valueAccessor, addedDescriptors, nestedTypes) as Property<S, Any>
+        val genericType = rawProperty.genericType
+        val customUnwrapper = optionUnwrapper.get(genericType.rawType)
+
+        val targetGenericType = (if (customUnwrapper == null) genericType else {
+            genericType.containedType
+        }) as GenericType<Any>
+
+        val valueAccessor: (S) -> Any? = if (customUnwrapper == null) rawProperty.valueAccessor else { it: S ->
+            val inner = rawProperty.valueAccessor.invoke(it)
+            if (inner != null) customUnwrapper.invoke(inner) else null
         }
+        return from(rawProperty.name,
+                targetGenericType,
+                rawProperty.annotations,
+                valueAccessor, addedDescriptors, nestedTypes)
     }
 
     companion object {
