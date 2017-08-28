@@ -16,14 +16,11 @@ Generic JSON-Schema generator.
 ## Example
 
 ```$java
-    SchemaPropertyContext context = new SchemaPropertyContext(
-            property -> true,
-            Collections.emptyList(),
-            Collections.singletonList(new FieldCollector())
-    );
-    SchemaGenerator schemaGenerator = new SchemaGenerator();
+    SchemaGenerator schemaGenerator = new SchemaGenerator(
+            Collections.singletonList(new FieldCollector()),
+            Collections.emptyList());
     
-    ObjectNode schema = schemaGenerator.generateSchema(Foo.class, null, null, context);
+    ObjectNode schema = schemaGenerator.generateSchema(Foo.class);
     
     String schemaString = schema.toString();
 ```
