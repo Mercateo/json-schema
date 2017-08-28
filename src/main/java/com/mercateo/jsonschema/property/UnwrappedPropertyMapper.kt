@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.property.PropertyDescriptor.Context.Children
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class UnwrappedPropertyMapper

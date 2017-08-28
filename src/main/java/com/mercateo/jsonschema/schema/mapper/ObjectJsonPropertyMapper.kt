@@ -6,12 +6,15 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.mapper.SchemaMapper
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.schema.ObjectContext
+import java.util.*
 
 internal class ObjectJsonPropertyMapper(
         private val propertyJsonSchemaMapper: SchemaMapper
         ,
         private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
+
+    private val wrapperTypes: Map<Class<*>, (Any) -> Any?> = mapOf(Pair(Optional::class.java, { opt -> (opt as Optional<*>).get() }))
 
     override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)

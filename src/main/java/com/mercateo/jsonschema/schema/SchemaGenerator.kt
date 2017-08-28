@@ -12,7 +12,7 @@ class SchemaGenerator {
 
     @JvmOverloads
     fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
-                                          context: SchemaPropertyContext = SchemaPropertyContext()): String {
+                                          context: SchemaPropertyContext = SchemaPropertyContext()): ObjectNode {
 
         val propertyBuilder = createPropertyBuilder(context)
 
@@ -22,9 +22,7 @@ class SchemaGenerator {
 
         val objectContext = ObjectContext(property, defaultValue, if (allowedValues != null) setOf(*allowedValues) else emptySet())
 
-        val map: ObjectNode = mapper.toJson(objectContext)
-
-        return map.toString()
+        return mapper.toJson(objectContext)
     }
 
     private fun createPropertyBuilder(context: SchemaPropertyContext): PropertyBuilder {
@@ -44,7 +42,6 @@ class SchemaGenerator {
                     return unwrappedPropertyMapper.from(property)
                 }
             }
-
         }
         return propertyBuilder
     }

@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.property;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
+import java.util.Optional;
 
 public class PropertyBuilderClasses {
     @Retention(RetentionPolicy.RUNTIME)
@@ -20,6 +21,10 @@ public class PropertyBuilderClasses {
     @Annotation1
     static class PropertyHolder {
         public String property;
+    }
+
+    static class OptionalPropertyHolder {
+        public Optional<String> property;
     }
 
     static enum TestEnum {VALUE_1, VALUE_2}

@@ -32,6 +32,14 @@ class PropertyBuilderTest {
     }
 
     @Test
+    fun unwrapsOptionalTypes() {
+        val property = propertyBuilder.from(OptionalPropertyHolder::class.java)
+
+        assertThat(property.children).extracting("name").containsExactly("property")
+        assertThat(property.children).extracting("propertyType").containsExactly(PropertyType.STRING)
+    }
+
+    @Test
     fun containsEnumChildAsString() {
         val property = propertyBuilder.from(EnumPropertyHolder::class.java)
 

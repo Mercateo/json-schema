@@ -10,15 +10,16 @@ class SchemaGeneratorTest {
 
     private lateinit var schemaGenerator: SchemaGenerator
 
+    private lateinit var schemaPropertyContext: SchemaPropertyContext
+
     @Before
     fun setUp() {
         schemaGenerator = SchemaGenerator()
+        schemaPropertyContext = SchemaPropertyContext(PropertyChecker.fromPredicate(Predicate { property -> true }), emptyList(), listOf(FieldCollector()))
     }
 
     @Test
     fun shouldCreateSchema() {
-        val schemaPropertyContext = SchemaPropertyContext(PropertyChecker.fromPredicate(Predicate { property -> true }), emptyList(), listOf(FieldCollector()))
-
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass, context = schemaPropertyContext)
 
@@ -27,8 +28,6 @@ class SchemaGeneratorTest {
 
     @Test
     fun shouldIgnoreStaticMethods() {
-        val schemaPropertyContext = SchemaPropertyContext(PropertyChecker.fromPredicate(Predicate { property -> true }), emptyList(), listOf(FieldCollector()))
-
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass, context = schemaPropertyContext)
 
@@ -37,8 +36,6 @@ class SchemaGeneratorTest {
 
     @Test
     fun shouldCreateSchemaWithDefaultValues() {
-        val schemaPropertyContext = SchemaPropertyContext(PropertyChecker.fromPredicate(Predicate { property -> true }), emptyList(), listOf(FieldCollector()))
-
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
 
         val defaultValue = SchemaGeneratorClasses.Simple()
@@ -54,8 +51,6 @@ class SchemaGeneratorTest {
 
     @Test
     fun shouldCreateSchemaWithAllowedValues() {
-        val schemaPropertyContext = SchemaPropertyContext(PropertyChecker.fromPredicate(Predicate { property -> true }), emptyList(), listOf(FieldCollector()))
-
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
 
         val allowedValue = SchemaGeneratorClasses.Simple()
@@ -69,4 +64,17 @@ class SchemaGeneratorTest {
         assertThat(schema).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"qux\":{\"type\":\"boolean\",\"default\":false,\"enum\":[true]}}}")
     }
 
+    @Test
+    fun handlesJavaOptional() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.OptionTypes::class.java, context = schemaPropertyContext)
+
+        assertThat(schema).isEqualTo("{\"type\":\"object\",\"properties\":{\"optionalString\":{\"type\":\"string\"}}}")
+    }
+
+    @Test
+    fun handlesJavaCollections() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Collections::class.java, context = schemaPropertyContext)
+
+        assertThat(schema).isEqualTo("{\"type\":\"object\",\"properties\":{\"strings\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}}")
+    }
 }

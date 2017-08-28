@@ -3,8 +3,19 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
+import java.util.*
 
 class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
+
+    private val optionUnwrapper: Map<Class<*>, (Any) -> Any?> = mapOf(
+            Pair(Optional::class.java, { option ->
+                if (option is Optional<*>) {
+                    option.orElse(null)
+                } else {
+                    null
+                }
+            })
+    )
 
     private val rawPropertyCollectors: Array<out RawPropertyCollector> = rawPropertyCollectors
 
@@ -108,9 +119,19 @@ class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector)
             rawProperty: RawProperty<S, T>,
             addedDescriptors: MutablePropertyDescriptorMap,
             nestedTypes: Set<GenericType<*>>
-    ): Property<S, T> {
-        return from(rawProperty.name, rawProperty.genericType, rawProperty.annotations,
-                rawProperty.valueAccessor, addedDescriptors, nestedTypes)
+    ): Property<S, Any> {
+        if (optionUnwrapper.containsKey(rawProperty.genericType.rawType)) {
+            val unwrapper = optionUnwrapper.get(rawProperty.genericType.rawType)!!
+            val genericType: GenericType<*> = rawProperty.genericType.containedType
+            val function: (S) -> Any? = { it: S ->
+                val inner = rawProperty.valueAccessor.invoke(it)
+                if (inner != null) unwrapper.invoke(inner) else null
+            }
+            return from(rawProperty.name, genericType, rawProperty.annotations, function, nestedTypes) as Property<S, Any>
+        } else {
+            return from(rawProperty.name, rawProperty.genericType, rawProperty.annotations,
+                    rawProperty.valueAccessor, addedDescriptors, nestedTypes) as Property<S, Any>
+        }
     }
 
     companion object {
