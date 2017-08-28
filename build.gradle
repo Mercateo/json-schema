@@ -22,7 +22,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'com.mercateo'
-version = '0.1.1-SNAPSHOT'
+version = '0.1.1'
 archivesBaseName = "json-schema"
 
 description = """json-schema"""
@@ -68,16 +68,16 @@ signing {
     sign configurations.archives
 }
 
-/*
 if (!hasProperty('sonatypeUsername')) {
     ext.sonatypeUsername = ''
 }
+
 if (!hasProperty('sonatypePassword')) {
     ext.sonatypePassword = ''
 }
 
 uploadArchives {
-  ^  repositories {
+    repositories {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
@@ -120,7 +120,6 @@ uploadArchives {
         }
     }
 }
-*/
 
 def jackson_version = '2.8.8'
 
