@@ -10,8 +10,6 @@ class SchemaGeneratorTest {
 
     private lateinit var schemaGenerator: SchemaGenerator
 
-    private lateinit var schemaPropertyContext: SchemaPropertyContext
-
     @Before
     fun setUp() {
         schemaGenerator = SchemaGenerator(propertyCollectors = listOf(FieldCollector()))
