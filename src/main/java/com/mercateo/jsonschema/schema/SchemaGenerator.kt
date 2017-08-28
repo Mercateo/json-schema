@@ -3,35 +3,40 @@ package com.mercateo.jsonschema.schema
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.mapper.SchemaMapper
-import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.property.PropertyBuilder
-import com.mercateo.jsonschema.property.PropertyBuilderDefault
-import com.mercateo.jsonschema.property.UnwrappedPropertyMapper
+import com.mercateo.jsonschema.property.*
 
-class SchemaGenerator {
+class SchemaGenerator(
+        unwrapAnnotations: List<Class<out Annotation>> = emptyList(),
+        propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector())
+) {
+
+    private val propertyBuilder: PropertyBuilder
+
+    private val schemaMapper: SchemaMapper
+
+    init {
+        propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations)
+        schemaMapper = SchemaMapper()
+    }
 
     @JvmOverloads
-    fun <T> generateSchema(elementClass : Class<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
-                                          context: SchemaPropertyContext = SchemaPropertyContext()): ObjectNode {
-
-        val propertyBuilder = createPropertyBuilder(context)
+    fun <T> generateSchema(elementClass: Class<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
+                           propertyChecker: PropertyChecker = defaultPropertyChecker
+    ): ObjectNode {
 
         val property = propertyBuilder.from(elementClass)
 
-        val mapper = SchemaMapper()
-
         val objectContext = ObjectContext(property, defaultValue, if (allowedValues != null) setOf(*allowedValues) else emptySet())
 
-        return mapper.toJson(objectContext)
+        return schemaMapper.toJson(objectContext)
     }
 
-    private fun createPropertyBuilder(context: SchemaPropertyContext): PropertyBuilder {
-        val unwrapAnnotations = context.unwrapAnnotations
-        var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(*context.propertyCollectors.toTypedArray())
+    private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>, unwrapAnnotations: List<Class<out Annotation>>): PropertyBuilder {
+        var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(*propertyCollectors.toTypedArray())
         if (unwrapAnnotations.isNotEmpty()) {
             propertyBuilder = object : PropertyBuilder {
 
-                val unwrappedPropertyMapper = UnwrappedPropertyMapper(*context.unwrapAnnotations.toTypedArray())
+                val unwrappedPropertyMapper = UnwrappedPropertyMapper(*unwrapAnnotations.toTypedArray())
 
                 override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
                     return from(GenericType.of(propertyClass))
@@ -45,4 +50,13 @@ class SchemaGenerator {
         }
         return propertyBuilder
     }
+
+    companion object {
+        val defaultPropertyChecker: PropertyChecker = object : PropertyChecker {
+            override fun test(t: Property<*, *>): Boolean {
+                return true
+            }
+        }
+    }
+
 }
