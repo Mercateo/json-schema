@@ -5,17 +5,20 @@ import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
 import java.util.*
 
-class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
+class PropertyBuilderDefault(customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(), vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
 
-    private val optionUnwrapper: Map<Class<*>, (Any) -> Any?> = mapOf(
-            Pair(Optional::class.java, { option ->
-                if (option is Optional<*>) {
-                    option.orElse(null)
-                } else {
-                    null
-                }
-            })
-    )
+    private val customUnwrappers: Map<Class<*>, (Any) -> Any?>;
+
+     init {
+         this.customUnwrappers = customUnwrappers + Pair(Optional::class.java, { option ->
+             if (option is Optional<*>) {
+                 option.orElse(null)
+             } else {
+                 null
+             }
+         })
+     }
+
 
     private val rawPropertyCollectors: Array<out RawPropertyCollector> = rawPropertyCollectors
 
@@ -121,7 +124,7 @@ class PropertyBuilderDefault(vararg rawPropertyCollectors: RawPropertyCollector)
             nestedTypes: Set<GenericType<*>>
     ): Property<S, Any> {
         val genericType = rawProperty.genericType
-        val customUnwrapper = optionUnwrapper.get(genericType.rawType)
+        val customUnwrapper = customUnwrappers.get(genericType.rawType)
 
         val targetGenericType = (if (customUnwrapper == null) genericType else {
             genericType.containedType

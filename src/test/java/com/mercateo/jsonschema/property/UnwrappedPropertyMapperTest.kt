@@ -14,7 +14,7 @@ class UnwrappedPropertyMapperTest {
     @Throws(Exception::class)
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                PropertyBuilderDefault(FieldCollector()),
+                PropertyBuilderDefault(emptyMap(), FieldCollector()),
                 UnwrappedPropertyMapper(Unwrap::class.java)
         )
     }

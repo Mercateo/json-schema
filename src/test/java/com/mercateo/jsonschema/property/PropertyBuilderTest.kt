@@ -15,7 +15,7 @@ class PropertyBuilderTest {
 
     @Before
     fun setUp() {
-        propertyBuilder = PropertyBuilderDefault(FieldCollector(), MethodCollector())
+        propertyBuilder = PropertyBuilderDefault(emptyMap(), FieldCollector(), MethodCollector())
     }
 
     @Test
@@ -37,6 +37,21 @@ class PropertyBuilderTest {
         val property = propertyBuilder.from(OptionalPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("property")
+        assertThat(property.children).extracting("propertyType").containsExactly(PropertyType.STRING)
+    }
+
+    @Test
+    fun unwrapsCustomTypes() {
+        propertyBuilder = PropertyBuilderDefault(mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
+            if (wrapper is GenericPropertyHolder<*>) {
+                wrapper.property
+            } else {
+                null
+            }
+        })), FieldCollector())
+        val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
+
+        assertThat(property.children).extracting("name").containsExactly("holder")
         assertThat(property.children).extracting("propertyType").containsExactly(PropertyType.STRING)
     }
 

@@ -7,7 +7,8 @@ import com.mercateo.jsonschema.property.*
 
 class SchemaGenerator(
         unwrapAnnotations: List<Class<out Annotation>> = emptyList(),
-        propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector())
+        propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector()),
+        customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap()
 ) {
 
     private val propertyBuilder: PropertyBuilder
@@ -15,7 +16,7 @@ class SchemaGenerator(
     private val schemaMapper: SchemaMapper
 
     init {
-        propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations)
+        propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations, customUnwrappers)
         schemaMapper = SchemaMapper()
     }
 
@@ -31,8 +32,10 @@ class SchemaGenerator(
         return schemaMapper.toJson(objectContext)
     }
 
-    private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>, unwrapAnnotations: List<Class<out Annotation>>): PropertyBuilder {
-        var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(*propertyCollectors.toTypedArray())
+    private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>,
+                                      unwrapAnnotations: List<Class<out Annotation>>,
+                                      customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilder {
+        var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(customUnwrappers, *propertyCollectors.toTypedArray())
         if (unwrapAnnotations.isNotEmpty()) {
             propertyBuilder = object : PropertyBuilder {
 
