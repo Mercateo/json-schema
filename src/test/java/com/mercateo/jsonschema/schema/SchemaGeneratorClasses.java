@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.schema;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -34,5 +35,15 @@ public class SchemaGeneratorClasses {
         public UUID id;
 
         public String name;
+    }
+
+    public static class Required {
+        public String foo;
+
+        @NotNull
+        public String bar;
+
+        @NotNull
+        public Optional<String> baz;
     }
 }

@@ -7,6 +7,7 @@ import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.schema.ObjectContext
 import java.util.*
+import javax.validation.constraints.NotNull
 
 internal class ObjectJsonPropertyMapper(
         private val schemaPropertyMapper: SchemaPropertyMapper
@@ -38,11 +39,13 @@ internal class ObjectJsonPropertyMapper(
 
     private fun createRequiredElementsArray(properties: List<Property<Nothing, Any>>): ArrayNode {
         val result = ArrayNode(nodeFactory)
-        /*for ((_, name, _, _, _, isRequired) in properties) {
-            if (isRequired) {
-                result.add(name)
-            }
-        }*/
+
+        properties.filter(this::isRequired).forEach { result.add(it.name) }
+
         return result
+    }
+
+    private fun isRequired(property: Property<*, *>) : Boolean {
+        return property.annotations.containsKey(NotNull::class.java)
     }
 }

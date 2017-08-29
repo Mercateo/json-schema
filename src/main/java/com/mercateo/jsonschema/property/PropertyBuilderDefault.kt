@@ -136,7 +136,7 @@ class PropertyBuilderDefault(customUnwrappers: Map<Class<*>, (Any) -> Any?> = em
         }
         return from(rawProperty.name,
                 targetGenericType,
-                rawProperty.annotations,
+                if (customUnwrapper == null) rawProperty.annotations else emptyMap(),
                 valueAccessor, addedDescriptors, nestedTypes)
     }
 
