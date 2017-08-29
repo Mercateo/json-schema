@@ -4,7 +4,6 @@ import com.mercateo.jsonschema.property.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import java.util.function.Predicate
 
 class SchemaGeneratorTest {
 
@@ -73,5 +72,12 @@ class SchemaGeneratorTest {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Collections::class.java)
 
         assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"strings\":{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}}")
+    }
+
+    @Test
+    fun handlesReferences() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.References::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"}},\"id\":\"#/foo\"},\"bar\":{\"\$ref\":\"#/foo\"}}}")
     }
 }

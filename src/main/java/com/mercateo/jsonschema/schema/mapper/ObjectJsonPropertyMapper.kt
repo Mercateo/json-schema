@@ -3,13 +3,13 @@ package com.mercateo.jsonschema.schema.mapper
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.mapper.SchemaMapper
+import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.schema.ObjectContext
 import java.util.*
 
 internal class ObjectJsonPropertyMapper(
-        private val propertyJsonSchemaMapper: SchemaMapper
+        private val schemaPropertyMapper: SchemaPropertyMapper
         ,
         private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
@@ -31,7 +31,7 @@ internal class ObjectJsonPropertyMapper(
         val result = ObjectNode(nodeFactory)
         for (property in properties.propertyDescriptor.children) {
             val child = properties.createInner(property, property.valueAccessor)
-            result.set(property.name, propertyJsonSchemaMapper.toJson(child))
+            result.set(property.name, schemaPropertyMapper.toJson(child))
         }
         return result
     }

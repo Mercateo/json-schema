@@ -12,10 +12,12 @@ class ReferencedPropertyMapper : PropertyMapper {
     }
 
     private fun <S, T> addPathAndReference(property: Property<S, T>, path: String, knownPaths: MutableMap<String, String>): Property<S, T> {
-        val reference = knownPaths.get(property.genericType.name)
+        val typeName = property.genericType.name
+
+        val reference = knownPaths.get(typeName)
 
         if (reference == null && property.propertyType == PropertyType.OBJECT) {
-            knownPaths.put(property.genericType.name, path)
+            knownPaths.put(typeName, path)
         }
 
         val children = if (reference == null) {

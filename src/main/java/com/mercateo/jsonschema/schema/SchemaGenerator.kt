@@ -1,8 +1,8 @@
 package com.mercateo.jsonschema.schema
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.mapper.SchemaMapper
+import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.*
 
 class SchemaGenerator(
@@ -36,22 +36,16 @@ class SchemaGenerator(
                                       unwrapAnnotations: List<Class<out Annotation>>,
                                       customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilder {
         var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(customUnwrappers, *propertyCollectors.toTypedArray())
+
+        var propertyMappers : MutableList<PropertyMapper> = mutableListOf()
+
+        PropertyBuilderWrapper(propertyBuilder)
         if (unwrapAnnotations.isNotEmpty()) {
-            propertyBuilder = object : PropertyBuilder {
-
-                val unwrappedPropertyMapper = UnwrappedPropertyMapper(*unwrapAnnotations.toTypedArray())
-
-                override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
-                    return from(GenericType.of(propertyClass))
-                }
-
-                override fun <T> from(genericType: GenericType<T>): Property<Void, T> {
-                    val property = propertyBuilder.from(genericType)
-                    return unwrappedPropertyMapper.from(property)
-                }
-            }
+            propertyMappers.add(UnwrappedPropertyMapper(*unwrapAnnotations.toTypedArray()))
         }
-        return propertyBuilder
+        propertyMappers.add(ReferencedPropertyMapper())
+
+        return PropertyBuilderWrapper(propertyBuilder, *propertyMappers.toTypedArray())
     }
 
     companion object {
