@@ -28,6 +28,10 @@ public class MethodCollectorClasses {
         public String getFoo() {
             return "foo";
         }
+
+        public String getBar() {
+            return "bar";
+        }
     }
 
     interface MethodInterface {
@@ -48,6 +52,10 @@ public class MethodCollectorClasses {
         @Override
         public String getFoo() {
             return "foo";
+        }
+
+        public String getBar() {
+            return "bar";
         }
     }
 }
