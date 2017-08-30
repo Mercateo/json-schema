@@ -8,7 +8,7 @@ class SchemaPropertyMapper(private val referencedElements: Set<String>) {
 
     internal var nodeFactory = ObjectNodeFactory.nodeFactory
 
-    private val primitivePropertyMappers = mapOf(Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
+    private val propertyMappers = mapOf(Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.INTEGER, IntegerJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.NUMBER, NumberJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.BOOLEAN, BooleanJsonPropertyMapper(nodeFactory)),
@@ -18,23 +18,20 @@ class SchemaPropertyMapper(private val referencedElements: Set<String>) {
 
     fun <T> toJson(context: ObjectContext<T>): ObjectNode {
 
-        val propertyDescriptor = context.propertyDescriptor
-
-        if (context.reference != null) {
-            val result = nodeFactory.objectNode()
-            result.put("\$ref", context.reference)
-            return result
+        return if (context.reference != null) {
+            nodeFactory.objectNode().apply { put("\$ref", context.reference) }
         } else {
-            val propertyNode = primitivePropertyMappers.get(propertyDescriptor.propertyType)!!.toJson(context)
-            val name = context.property.path
+            propertyMappers.get(context.propertyDescriptor.propertyType)!!.toJson(context).apply {
+                val name = context.property.path
 
-            if (referencedElements.contains(name)) {
-                propertyNode.put("id", name)
+                if (referencedElements.contains(name)) {
+                    put("id", name)
+                }
             }
-
-            return propertyNode
         }
-
     }
 
+    companion object {
+        internal var nodeFactory = ObjectNodeFactory.nodeFactory
+    }
 }
