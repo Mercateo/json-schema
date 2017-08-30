@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.property
 import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
+import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
 import java.util.*
 
 class PropertyBuilderDefault(customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(), vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {

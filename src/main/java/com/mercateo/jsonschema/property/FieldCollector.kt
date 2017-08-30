@@ -1,12 +1,13 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.property.annotation.AnnotationProcessor
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 class FieldCollector(
         private val config: FieldCollectorConfig = FieldCollectorConfig(),
-        private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
+        private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
 ) : RawPropertyCollector {
 
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
@@ -22,7 +23,7 @@ class FieldCollector(
 
         return RawProperty<S, Any>(field.name,
                 fieldType,
-                annotationMapBuilder.createMap(*field.annotations),
+                annotationProcessor.collectAndGroup(*field.annotations),
                 { instance: S -> valueAccessor(field, instance)})
     }
 

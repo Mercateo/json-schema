@@ -128,7 +128,7 @@ dependencies {
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: jackson_version
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jackson_version
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-    compile(group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final') {
+    compile(group: 'javax.validation', name: 'validation-api', version: '2.0.0.Final') {
         exclude(module: 'testng')
     }
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version: kotlin_version
@@ -142,6 +142,8 @@ dependencies {
     testCompile group: 'org.openjdk.jmh', name: 'jmh-generator-annprocess', version: '1.19'
     testCompile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
     testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test', version: kotlin_version
+    testCompile group: 'org.hibernate', name: 'hibernate-validator', version: '6.0.2.Final'
+
 }
 
 kotlin {

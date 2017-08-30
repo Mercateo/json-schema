@@ -1,11 +1,13 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
+import com.mercateo.jsonschema.property.annotation.AnnotationProcessor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 
 class MethodCollector(
-        private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
+        private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
 ) : RawPropertyCollector {
 
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
@@ -22,7 +24,7 @@ class MethodCollector(
         val methodType = GenericType.ofMethod(method, genericType.type) as GenericType<Any>
         return RawProperty<S, Any>(getPropertyName(method),
                 methodType,
-                annotationMapBuilder.createMap(*method.annotations),
+                annotationProcessor.collectAndGroup(*method.annotations),
                 { instance: S -> valueAccessor(method, instance) })
     }
 

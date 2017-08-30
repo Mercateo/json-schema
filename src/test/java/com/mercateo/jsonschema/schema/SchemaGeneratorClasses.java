@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.schema;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -45,5 +46,11 @@ public class SchemaGeneratorClasses {
 
         @NotNull
         public Optional<String> baz;
+
+        @org.hibernate.validator.constraints.NotEmpty
+        public String qux;
+
+        @NotEmpty
+        public String quux;
     }
 }

@@ -1,5 +1,6 @@
-package com.mercateo.jsonschema.property
+package com.mercateo.jsonschema.property.annotation
 
+import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
 import org.assertj.core.api.MapAssert
 import org.junit.Before
 import org.junit.Test
