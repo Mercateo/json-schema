@@ -4,6 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 
 import com.mercateo.jsonschema.property.MethodCollectorClasses.StaticMethod
+import com.mercateo.jsonschema.property.MethodCollectorClasses.SubClass
+import com.mercateo.jsonschema.property.MethodCollectorClasses.ImplementingClass
 
 class MethodCollectorTest {
     @Test
@@ -20,6 +22,24 @@ class MethodCollectorTest {
         val rawProperties = methodCollector.forType(StaticMethod::class.java).toList()
 
         assertThat(rawProperties).extracting("name").containsExactly("string")
+    }
+
+    @Test
+    fun inheritsAnnotationFromSuperclassMethod() {
+        val methodCollector = MethodCollector()
+        val rawProperties = methodCollector.forType(SubClass::class.java).toList()
+
+        assertThat(rawProperties).extracting("name").containsExactly("foo")
+        assertThat(rawProperties.first().annotations).containsKey(MethodCollectorClasses.MethodAnnotation::class.java)
+    }
+
+    @Test
+    fun inheritsAnnotationFromInterfaceMethod() {
+        val methodCollector = MethodCollector()
+        val rawProperties = methodCollector.forType(ImplementingClass::class.java).toList()
+
+        assertThat(rawProperties).extracting("name").containsExactly("foo")
+        assertThat(rawProperties.first().annotations).containsKeys(MethodCollectorClasses.MethodAnnotation::class.java, MethodCollectorClasses.OtherMethodAnnotation::class.java)
     }
 
     internal class TestClass {

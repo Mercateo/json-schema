@@ -1,10 +1,10 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
-import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
 import com.mercateo.jsonschema.property.annotation.AnnotationProcessor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
+import java.util.*
 
 class MethodCollector(
         private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
@@ -24,7 +24,7 @@ class MethodCollector(
         val methodType = GenericType.ofMethod(method, genericType.type) as GenericType<Any>
         return RawProperty<S, Any>(getPropertyName(method),
                 methodType,
-                annotationProcessor.collectAndGroup(*method.annotations),
+                annotationProcessor.collectAndGroup(*collectAnnotations(method).toTypedArray()),
                 { instance: S -> valueAccessor(method, instance) })
     }
 
@@ -41,5 +41,44 @@ class MethodCollector(
 
     private fun <S> valueAccessor(method: Method, instance: S): Any? {
         return method.invoke(instance)
+    }
+
+    fun collectAnnotations(rootMethod: Method): Set<Annotation> {
+        val annotations : MutableSet<Annotation> = mutableSetOf()
+
+        val stack : Stack<Method> = Stack()
+        stack.push(rootMethod)
+
+        while (stack.isNotEmpty()) {
+            val method = stack.pop()
+
+            annotations.addAll(method.annotations)
+
+            addSuperclassMethod(method.declaringClass, method, stack)
+            addInterfaceMethods(method.declaringClass, method, stack)
+        }
+        return annotations
+    }
+
+    private fun addInterfaceMethods(declaringClass: Class<*>, method: Method, stack: Stack<Method>) {
+        val interfaces = declaringClass.interfaces
+        for (`interface` in interfaces) {
+            try {
+                val interfaceMethod = `interface`.getDeclaredMethod(method.name, *method.parameterTypes)
+                stack.push(interfaceMethod)
+            } catch (e: NoSuchMethodException) {
+            }
+        }
+    }
+
+    private fun addSuperclassMethod(declaringClass: Class<*>, method: Method, stack: Stack<Method>) {
+        val superclass = declaringClass.superclass
+        if (superclass != null && superclass != Object::class.java) {
+            try {
+                val superMethod = superclass.getDeclaredMethod(method.name, *method.parameterTypes)
+                stack.push(superMethod)
+            } catch (e: NoSuchMethodException) {
+            }
+        }
     }
 }
