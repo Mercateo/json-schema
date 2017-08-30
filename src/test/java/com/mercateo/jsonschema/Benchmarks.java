@@ -1,8 +1,6 @@
 package com.mercateo.jsonschema;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mercateo.jsonschema.schema.SchemaGenerator;
-import com.mercateo.jsonschema.schema.SchemaGeneratorClasses;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;

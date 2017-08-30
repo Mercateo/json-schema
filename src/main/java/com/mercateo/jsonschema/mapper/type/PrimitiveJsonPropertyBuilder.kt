@@ -1,10 +1,10 @@
-package com.mercateo.jsonschema.schema.mapper
+package com.mercateo.jsonschema.mapper.type
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.schema.ObjectContext
+import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFactory) {
     private val genericJsonPropertyMapper: GenericJsonPropertyMapper

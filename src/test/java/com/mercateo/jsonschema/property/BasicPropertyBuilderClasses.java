@@ -5,7 +5,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Optional;
 
-public class PropertyBuilderClasses {
+public class BasicPropertyBuilderClasses {
     @Retention(RetentionPolicy.RUNTIME)
     @interface Annotation1 {
     }
@@ -19,60 +19,60 @@ public class PropertyBuilderClasses {
     }
 
     @Annotation1
-    static class PropertyHolder {
+    static public class PropertyHolder {
         public String property;
     }
 
-    static class OptionalPropertyHolder {
+    static public class OptionalPropertyHolder {
         public Optional<String> property;
     }
 
-    static enum TestEnum {VALUE_1, VALUE_2}
+    public enum TestEnum {VALUE_1, VALUE_2}
 
-    static class EnumPropertyHolder {
+    static public class EnumPropertyHolder {
         public TestEnum enumProperty;
     }
 
     @Annotation1
-    static class MethodPropertyHolder {
+    static public class MethodPropertyHolder {
         @Annotation2
         public String getProperty() {
             return "foo";
         }
     }
 
-    static class TwoLevelMethodPropertyHolder {
+    static public class TwoLevelMethodPropertyHolder {
         @Annotation3
         public MethodPropertyHolder holder;
     }
 
-    static class TwoLevelPropertyHolder {
+    static public class TwoLevelPropertyHolder {
         @Annotation1
         public GenericPropertyHolder<String> holder;
     }
 
     @Annotation2
-    static class GenericPropertyHolder<T> {
+    static public class GenericPropertyHolder<T> {
         public T property;
     }
 
-    static class InheritedPropertyHolder extends PropertyHolder {}
+    static public class InheritedPropertyHolder extends PropertyHolder {}
 
-    static class CollectionPropertyHolder {
+    static public class CollectionPropertyHolder {
         public List<String> values;
     }
 
-    static class NestedCollectionPropertyHolder {
+    static public class NestedCollectionPropertyHolder {
         public List<String[]> values;
     }
 
-    static class RecursivePropertyHolder {
+    static public class RecursivePropertyHolder {
         public List<RecursivePropertyHolder> children;
 
         public String name;
     }
 
-    static class TypesPropertyHolder {
+    static public class TypesPropertyHolder {
         public String string;
 
         public int integerPrimitive;

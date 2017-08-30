@@ -1,4 +1,4 @@
-package com.mercateo.jsonschema.schema
+package com.mercateo.jsonschema.mapper
 
 import com.mercateo.jsonschema.property.Property
 

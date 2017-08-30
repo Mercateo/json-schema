@@ -1,6 +1,6 @@
-package com.mercateo.jsonschema.schema
+package com.mercateo.jsonschema
 
-import com.mercateo.jsonschema.property.FieldCollector
+import com.mercateo.jsonschema.property.collector.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test

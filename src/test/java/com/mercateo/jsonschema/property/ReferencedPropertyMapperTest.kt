@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.property
 
+import com.mercateo.jsonschema.property.collector.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -12,7 +13,7 @@ class ReferencedPropertyMapperTest {
     @Before
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                PropertyBuilderDefault(emptyMap(), FieldCollector()),
+                BasicPropertyBuilder(emptyMap(), FieldCollector()),
                 ReferencedPropertyMapper()
         )
     }

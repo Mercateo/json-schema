@@ -1,6 +1,8 @@
-package com.mercateo.jsonschema.property
+package com.mercateo.jsonschema.property.collector
 
 import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.property.RawProperty
+import com.mercateo.jsonschema.property.RawPropertyCollector
 import com.mercateo.jsonschema.property.annotation.AnnotationProcessor
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
@@ -24,7 +26,7 @@ class FieldCollector(
         return RawProperty<S, Any>(field.name,
                 fieldType,
                 annotationProcessor.collectAndGroup(*field.annotations),
-                { instance: S -> valueAccessor(field, instance)})
+                { instance: S -> valueAccessor(field, instance) })
     }
 
     private fun <S> valueAccessor(field: Field, instance: S): Any? {

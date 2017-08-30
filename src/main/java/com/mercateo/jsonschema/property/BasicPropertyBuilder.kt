@@ -6,7 +6,7 @@ import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
 import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
 import java.util.*
 
-class PropertyBuilderDefault(customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(), vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
+class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(), vararg rawPropertyCollectors: RawPropertyCollector) : PropertyBuilder {
 
     private val customUnwrappers: Map<Class<*>, (Any) -> Any?>;
 

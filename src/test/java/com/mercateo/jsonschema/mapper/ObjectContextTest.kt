@@ -1,5 +1,6 @@
-package com.mercateo.jsonschema.schema
+package com.mercateo.jsonschema.mapper
 
+import com.mercateo.jsonschema.mapper.ObjectContext
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyDescriptor
 import com.nhaarman.mockito_kotlin.mock
@@ -24,7 +25,7 @@ class ObjectContextTest {
     @Before
     fun setup() {
         outer = Property("#", mock<PropertyDescriptor<PropertyA>> {}, { x: Nothing -> null}, emptyMap(), Property.Context.Unconnected )
-        inner = Property("inner", mock<PropertyDescriptor<PropertyB>> {}, {x: PropertyA -> x.inner}, emptyMap(), Property.Context.Unconnected )
+        inner = Property("inner", mock<PropertyDescriptor<PropertyB>> {}, { x: PropertyA -> x.inner}, emptyMap(), Property.Context.Unconnected )
     }
 
     @Test

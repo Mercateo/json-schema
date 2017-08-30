@@ -1,11 +1,11 @@
-package com.mercateo.jsonschema.schema.mapper
+package com.mercateo.jsonschema.mapper.type
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.DoubleNode
 import com.fasterxml.jackson.databind.node.FloatNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.schema.ObjectContext
+import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 

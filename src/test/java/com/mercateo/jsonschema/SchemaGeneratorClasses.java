@@ -1,4 +1,4 @@
-package com.mercateo.jsonschema.schema;
+package com.mercateo.jsonschema;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

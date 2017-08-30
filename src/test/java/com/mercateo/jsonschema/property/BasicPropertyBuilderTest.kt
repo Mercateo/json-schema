@@ -1,6 +1,8 @@
 package com.mercateo.jsonschema.property
 
-import com.mercateo.jsonschema.property.PropertyBuilderClasses.*
+import com.mercateo.jsonschema.property.BasicPropertyBuilderClasses.*
+import com.mercateo.jsonschema.property.collector.FieldCollector
+import com.mercateo.jsonschema.property.collector.MethodCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.IterableAssert
 import org.junit.Before
@@ -8,14 +10,14 @@ import org.junit.Test
 import org.slf4j.LoggerFactory
 import java.util.*
 
-class PropertyBuilderTest {
-    private val log = LoggerFactory.getLogger(PropertyBuilderTest::class.java)
+class BasicPropertyBuilderTest {
+    private val log = LoggerFactory.getLogger(BasicPropertyBuilderTest::class.java)
 
     private lateinit var propertyBuilder: PropertyBuilder
 
     @Before
     fun setUp() {
-        propertyBuilder = PropertyBuilderDefault(emptyMap(), FieldCollector(), MethodCollector())
+        propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector(), MethodCollector())
     }
 
     @Test
@@ -42,7 +44,7 @@ class PropertyBuilderTest {
 
     @Test
     fun unwrapsCustomTypes() {
-        propertyBuilder = PropertyBuilderDefault(mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
+        propertyBuilder = BasicPropertyBuilder(mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
             if (wrapper is GenericPropertyHolder<*>) {
                 wrapper.property
             } else {
@@ -144,7 +146,7 @@ class PropertyBuilderTest {
     @Test
     @Throws(Exception::class)
     fun returnInheritedProperty() {
-        val property = propertyBuilder.from(PropertyBuilderClasses.InheritedPropertyHolder::class.java)
+        val property = propertyBuilder.from(BasicPropertyBuilderClasses.InheritedPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("property")
     }

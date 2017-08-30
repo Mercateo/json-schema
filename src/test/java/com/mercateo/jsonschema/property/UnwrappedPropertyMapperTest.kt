@@ -1,6 +1,7 @@
 package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.property.UnwrappedPropertyMapperClasses.*
+import com.mercateo.jsonschema.property.collector.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.IterableAssert
 import org.junit.Before
@@ -13,7 +14,7 @@ class UnwrappedPropertyMapperTest {
     @Before
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                PropertyBuilderDefault(emptyMap(), FieldCollector()),
+                BasicPropertyBuilder(emptyMap(), FieldCollector()),
                 UnwrappedPropertyMapper(Unwrap::class.java)
         )
     }

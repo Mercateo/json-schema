@@ -1,4 +1,4 @@
-package com.mercateo.jsonschema.property;
+package com.mercateo.jsonschema.property.collector;
 
 public class FieldCollectorClasses {
     public static class PropertyHolder {

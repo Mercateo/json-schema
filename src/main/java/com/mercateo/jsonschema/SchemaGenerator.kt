@@ -1,9 +1,11 @@
-package com.mercateo.jsonschema.schema
+package com.mercateo.jsonschema
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.mapper.SchemaMapper
-import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.*
+import com.mercateo.jsonschema.property.collector.MethodCollector
+import com.mercateo.jsonschema.mapper.ObjectContext
+import com.mercateo.jsonschema.mapper.PropertyChecker
 
 class SchemaGenerator(
         unwrapAnnotations: List<Class<out Annotation>> = emptyList(),
@@ -35,9 +37,9 @@ class SchemaGenerator(
     private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>,
                                       unwrapAnnotations: List<Class<out Annotation>>,
                                       customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilder {
-        var propertyBuilder: PropertyBuilder = PropertyBuilderDefault(customUnwrappers, *propertyCollectors.toTypedArray())
+        var propertyBuilder: PropertyBuilder = BasicPropertyBuilder(customUnwrappers, *propertyCollectors.toTypedArray())
 
-        var propertyMappers : MutableList<PropertyMapper> = mutableListOf()
+        var propertyMappers: MutableList<PropertyMapper> = mutableListOf()
 
         PropertyBuilderWrapper(propertyBuilder)
         if (unwrapAnnotations.isNotEmpty()) {

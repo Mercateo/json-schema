@@ -1,6 +1,8 @@
-package com.mercateo.jsonschema.property
+package com.mercateo.jsonschema.property.collector
 
 import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.property.RawProperty
+import com.mercateo.jsonschema.property.RawPropertyCollector
 import com.mercateo.jsonschema.property.annotation.AnnotationProcessor
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier

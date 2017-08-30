@@ -9,21 +9,21 @@ public class UnwrappedPropertyMapperClasses {
     @interface Unwrap {
     }
 
-    static class SecondLevelPropertyHolder {
+    static public class SecondLevelPropertyHolder {
         public String quux;
 
         @Unwrap
         public PropertyHolder propertyHolder;
     }
 
-    static class PropertyHolder {
+    static public class PropertyHolder {
         public String qux;
 
         @Unwrap
         public UnwrappedPropertyHolder unwrappedPropertyHolder;
     }
 
-    static class UnwrappedPropertyHolder {
+    static public class UnwrappedPropertyHolder {
         public String foo;
 
         public String bar;

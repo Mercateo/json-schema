@@ -1,4 +1,4 @@
-package com.mercateo.jsonschema.property;
+package com.mercateo.jsonschema.property.collector;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -18,12 +18,12 @@ public class MethodCollectorClasses {
     public @interface MethodAnnotation {
     }
 
-    static abstract class SuperClass {
+    static public abstract class SuperClass {
         @MethodAnnotation
         public abstract String getFoo();
     }
 
-    static class SubClass extends SuperClass {
+    static public class SubClass extends SuperClass {
         @Override
         public String getFoo() {
             return "foo";
@@ -43,12 +43,12 @@ public class MethodCollectorClasses {
     public @interface OtherMethodAnnotation {
     }
 
-    interface OtherMethodInterface {
+    public interface OtherMethodInterface {
         @OtherMethodAnnotation
         String getFoo();
     }
 
-    static class ImplementingClass implements MethodInterface, OtherMethodInterface {
+    static public class ImplementingClass implements MethodInterface, OtherMethodInterface {
         @Override
         public String getFoo() {
             return "foo";
