@@ -6,14 +6,19 @@ import java.lang.annotation.RetentionPolicy;
 public class UnwrappedPropertyMapperClasses {
 
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Unwrap {}
+    @interface Unwrap {
+    }
 
     static class SecondLevelPropertyHolder {
+        public String quux;
+
         @Unwrap
         public PropertyHolder propertyHolder;
     }
 
     static class PropertyHolder {
+        public String qux;
+
         @Unwrap
         public UnwrappedPropertyHolder unwrappedPropertyHolder;
     }

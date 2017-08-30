@@ -49,4 +49,14 @@ public class SchemaGeneratorClasses {
         @org.hibernate.validator.constraints.NotEmpty
         public String qux;
     }
+
+    public static class Superclass {
+        public String foo;
+    }
+
+    public static class Subclass extends Superclass {
+        public String bar;
+
+        public String qux;
+    }
 }

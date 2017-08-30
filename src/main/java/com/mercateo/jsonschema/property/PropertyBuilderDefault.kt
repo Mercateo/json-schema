@@ -102,7 +102,8 @@ class PropertyBuilderDefault(customUnwrappers: Map<Class<*>, (Any) -> Any?> = em
         }
 
         val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
-        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, PropertyDescriptor.Context.Children(children), annotationMapBuilder.createMap(*annotations))
+        val sortedChildren = children.sortedBy { it.name }
+        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations))
         addedDescriptors.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }

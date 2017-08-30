@@ -19,7 +19,7 @@ class SchemaGeneratorTest {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
     }
 
     @Test
@@ -27,7 +27,7 @@ class SchemaGeneratorTest {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
     }
 
     @Test
@@ -42,7 +42,7 @@ class SchemaGeneratorTest {
 
         val schema = schemaGenerator.generateSchema(schemaClass, defaultValue = defaultValue)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\",\"default\":\"foo\"},\"bar\":{\"type\":\"integer\",\"default\":10},\"baz\":{\"type\":\"number\",\"default\":4.8},\"qux\":{\"type\":\"boolean\",\"default\":true}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\",\"default\":10},\"baz\":{\"type\":\"number\",\"default\":4.8},\"foo\":{\"type\":\"string\",\"default\":\"foo\"},\"qux\":{\"type\":\"boolean\",\"default\":true}}}")
     }
 
     @Test
@@ -57,7 +57,7 @@ class SchemaGeneratorTest {
 
         val schema = schemaGenerator.generateSchema(schemaClass, allowedValues = arrayOf(allowedValue))
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"qux\":{\"type\":\"boolean\",\"default\":false,\"enum\":[true]}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"qux\":{\"type\":\"boolean\",\"default\":false,\"enum\":[true]}}}")
     }
 
     @Test
@@ -78,13 +78,20 @@ class SchemaGeneratorTest {
     fun handlesReferences() {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.References::class.java)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"}},\"id\":\"#/foo\"},\"bar\":{\"\$ref\":\"#/foo\"}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"string\"},\"name\":{\"type\":\"string\"}},\"id\":\"#/bar\"},\"foo\":{\"\$ref\":\"#/bar\"}}}")
+    }
+
+    @Test
+    fun handlesClassHierarchies() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Subclass::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"string\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"string\"}}}")
     }
 
     @Test
     fun showsRequiredProperties() {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Required::class.java)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"foo\":{\"type\":\"string\"},\"bar\":{\"type\":\"string\"},\"baz\":{\"type\":\"string\"},\"qux\":{\"type\":\"string\"}},\"required\":[\"bar\",\"qux\"]}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"string\"},\"baz\":{\"type\":\"string\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"string\"}},\"required\":[\"bar\",\"qux\"]}")
     }
 }

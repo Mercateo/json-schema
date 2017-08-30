@@ -11,7 +11,6 @@ class UnwrappedPropertyMapperTest {
     private lateinit var propertyBuilder: PropertyBuilder
 
     @Before
-    @Throws(Exception::class)
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
                 PropertyBuilderDefault(emptyMap(), FieldCollector()),
@@ -20,25 +19,22 @@ class UnwrappedPropertyMapperTest {
     }
 
     @Test
-    @Throws(Exception::class)
     fun singleLevelUnwrap() {
         val unwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
 
-        assertThat(unwrappedProperty.children).extracting("name").containsExactlyInAnyOrder("foo", "bar")
+        assertThat(unwrappedProperty.children).extracting("name").containsExactly("bar", "foo", "qux")
     }
 
     @Test
-    @Throws(Exception::class)
     fun twoLevelUnwrap() {
         val unwrappedProperty = propertyBuilder.from(SecondLevelPropertyHolder::class.java)
 
-        assertThat(unwrappedProperty.children).extracting("name").containsExactlyInAnyOrder("foo", "bar")
+        assertThat(unwrappedProperty.children).extracting("name").containsExactly("bar", "foo", "quux", "qux")
     }
 
     fun <T> assertThat(actual: Iterable<T>) = IterableAssert(actual)
 
     @Test
-    @Throws(Exception::class)
     fun singleLevelUnwrapGetValue() {
         val unwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
 
@@ -46,7 +42,7 @@ class UnwrappedPropertyMapperTest {
         propertyHolder.unwrappedPropertyHolder = UnwrappedPropertyHolder()
         propertyHolder.unwrappedPropertyHolder!!.foo = "value1"
 
-        val firstElement = unwrappedProperty.children.first()
+        val firstElement = unwrappedProperty.children.first { it.name == "foo" }
 
         assertThat(firstElement.getValue(propertyHolder)).isEqualTo("value1")
     }

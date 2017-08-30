@@ -71,6 +71,7 @@ constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
         return property.children
                 .map { unwrap(it, addedUnwrappedPropertyDescriptors) }
                 .flatMap(this::unwrapChildrenIfApplicable)
+                .sortedBy { it.name }
     }
 
     private fun <T> unwrapChildrenIfApplicable(child: Property<T, Any>): List<Property<T, Any>> {
