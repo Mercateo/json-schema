@@ -7,7 +7,6 @@ import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.schema.ObjectContext
 import java.util.*
-import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.NotNull
 
 internal class ObjectJsonPropertyMapper(
@@ -48,6 +47,6 @@ internal class ObjectJsonPropertyMapper(
 
     private fun isRequired(property: Property<*, *>) : Boolean {
         val annotations = property.annotations
-        return annotations.containsKey(NotNull::class.java) || annotations.containsKey(NotEmpty::class.java)
+        return annotations.containsKey(NotNull::class.java)
     }
 }
