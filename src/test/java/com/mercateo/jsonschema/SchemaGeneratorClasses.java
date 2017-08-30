@@ -17,6 +17,14 @@ public class SchemaGeneratorClasses {
         public Boolean qux;
     }
 
+    public static class Benchmark {
+        public Simple simple;
+
+        public References references;
+
+        public Required required;
+    }
+
     public static class OptionTypes {
         public Optional<String> optionalString;
     }

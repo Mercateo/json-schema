@@ -13,16 +13,14 @@ public class Benchmarks {
 
     @Benchmark
     public static void createRepeatedSchema() {
-        final ObjectNode nodes = schemaGenerator.generateSchema(SchemaGeneratorClasses.Simple.class);
-        final String schemaString = nodes.toString();
+        final ObjectNode nodes = schemaGenerator.generateSchema(SchemaGeneratorClasses.Benchmark.class);
     }
 
     @Benchmark
     public static void createSchema() {
         final SchemaGenerator schemaGenerator = new SchemaGenerator();
 
-        final ObjectNode nodes = schemaGenerator.generateSchema(SchemaGeneratorClasses.Simple.class);
-        final String schemaString = nodes.toString();
+        final ObjectNode nodes = schemaGenerator.generateSchema(SchemaGeneratorClasses.Benchmark.class);
     }
 
     public static void main(String[] args) throws RunnerException, InterruptedException {
