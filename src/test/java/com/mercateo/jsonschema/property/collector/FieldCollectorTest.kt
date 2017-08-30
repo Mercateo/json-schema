@@ -3,8 +3,6 @@ package com.mercateo.jsonschema.property.collector
 import com.mercateo.jsonschema.property.RawProperty
 import com.mercateo.jsonschema.property.collector.FieldCollectorClasses.PropertyHolder
 import com.mercateo.jsonschema.property.collector.FieldCollectorClasses.StaticPropertyHolder
-import com.mercateo.jsonschema.property.collector.FieldCollector
-import com.mercateo.jsonschema.property.collector.FieldCollectorConfig
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test

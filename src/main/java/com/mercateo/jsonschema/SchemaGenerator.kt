@@ -1,11 +1,11 @@
 package com.mercateo.jsonschema
 
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.mercateo.jsonschema.mapper.ObjectContext
+import com.mercateo.jsonschema.mapper.PropertyChecker
 import com.mercateo.jsonschema.mapper.SchemaMapper
 import com.mercateo.jsonschema.property.*
 import com.mercateo.jsonschema.property.collector.MethodCollector
-import com.mercateo.jsonschema.mapper.ObjectContext
-import com.mercateo.jsonschema.mapper.PropertyChecker
 
 class SchemaGenerator(
         unwrapAnnotations: List<Class<out Annotation>> = emptyList(),

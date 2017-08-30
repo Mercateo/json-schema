@@ -1,12 +1,8 @@
 package com.mercateo.jsonschema.property.collector
 
+import com.mercateo.jsonschema.property.collector.MethodCollectorClasses.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
-
-import com.mercateo.jsonschema.property.collector.MethodCollectorClasses.StaticMethod
-import com.mercateo.jsonschema.property.collector.MethodCollectorClasses.SubClass
-import com.mercateo.jsonschema.property.collector.MethodCollectorClasses.ImplementingClass
-import com.mercateo.jsonschema.property.collector.MethodCollector
 
 class MethodCollectorTest {
     @Test

@@ -1,11 +1,9 @@
 package com.mercateo.jsonschema.generictype
 
 import com.googlecode.gentyref.GenericTypeReflector
-import org.junit.Test
-
-import java.lang.reflect.ParameterizedType
-
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import java.lang.reflect.ParameterizedType
 
 class GenericParameterizedTypeTest {
 

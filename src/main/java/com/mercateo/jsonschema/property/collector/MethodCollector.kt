@@ -46,9 +46,9 @@ class MethodCollector(
     }
 
     fun collectAnnotations(rootMethod: Method): Set<Annotation> {
-        val annotations : MutableSet<Annotation> = mutableSetOf()
+        val annotations: MutableSet<Annotation> = mutableSetOf()
 
-        val stack : Stack<Method> = Stack()
+        val stack: Stack<Method> = Stack()
         stack.push(rootMethod)
 
         while (stack.isNotEmpty()) {

@@ -3,9 +3,9 @@ package com.mercateo.jsonschema.mapper.type
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.mercateo.jsonschema.mapper.ObjectContext
 import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.property.Property
-import com.mercateo.jsonschema.mapper.ObjectContext
 import java.util.*
 import javax.validation.constraints.NotNull
 
@@ -45,7 +45,7 @@ internal class ObjectJsonPropertyMapper(
         return result
     }
 
-    private fun isRequired(property: Property<*, *>) : Boolean {
+    private fun isRequired(property: Property<*, *>): Boolean {
         val annotations = property.annotations
         return annotations.containsKey(NotNull::class.java)
     }

@@ -1,7 +1,6 @@
 package com.mercateo.jsonschema.mapper
 
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.mapper.ObjectContext
 
 class SchemaMapper(private val referencedElementCollector: ReferencedElementCollector = ReferencedElementCollector()) {
 

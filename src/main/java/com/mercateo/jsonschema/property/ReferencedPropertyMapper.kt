@@ -6,7 +6,7 @@ class ReferencedPropertyMapper : PropertyMapper {
 
     private val knownRootElements: ConcurrentHashMap<String, Property<*, *>> = ConcurrentHashMap()
 
-    override fun <S, T> from(property: Property<S,T>): Property<S,T> {
+    override fun <S, T> from(property: Property<S, T>): Property<S, T> {
         @Suppress("UNCHECKED_CAST")
         return knownRootElements.computeIfAbsent(property.genericType.name, { addPathAndReference(property, "#", mutableMapOf()) }) as Property<S, T>
     }
@@ -27,7 +27,7 @@ class ReferencedPropertyMapper : PropertyMapper {
         }
 
         val propertyDescriptor = (property.propertyDescriptor as PropertyDescriptorDefault).copy(context = PropertyDescriptor.Context.Children(children))
-        
+
         return property.copy(propertyDescriptor = propertyDescriptor, context = Property.Context.Connected(path, reference))
     }
 

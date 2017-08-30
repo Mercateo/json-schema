@@ -2,8 +2,8 @@ package com.mercateo.jsonschema.mapper.type
 
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 import com.mercateo.jsonschema.mapper.ObjectContext
+import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 
 internal class ArrayJsonPropertyMapper(
         private val schemaPropertyMapper: SchemaPropertyMapper,

@@ -10,15 +10,15 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
 
     private val customUnwrappers: Map<Class<*>, (Any) -> Any?>;
 
-     init {
-         this.customUnwrappers = customUnwrappers + Pair(Optional::class.java, { option ->
-             if (option is Optional<*>) {
-                 option.orElse(null)
-             } else {
-                 null
-             }
-         })
-     }
+    init {
+        this.customUnwrappers = customUnwrappers + Pair(Optional::class.java, { option ->
+            if (option is Optional<*>) {
+                option.orElse(null)
+            } else {
+                null
+            }
+        })
+    }
 
 
     private val rawPropertyCollectors: Array<out RawPropertyCollector> = rawPropertyCollectors

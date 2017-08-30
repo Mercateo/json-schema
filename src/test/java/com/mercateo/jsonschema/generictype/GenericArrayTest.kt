@@ -1,9 +1,8 @@
 package com.mercateo.jsonschema.generictype
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-
-import org.assertj.core.api.Assertions.assertThat
 
 class GenericArrayTest {
 

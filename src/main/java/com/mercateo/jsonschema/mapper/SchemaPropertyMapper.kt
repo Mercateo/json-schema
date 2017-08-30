@@ -2,10 +2,7 @@ package com.mercateo.jsonschema.mapper
 
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.mapper.type.*
-import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyType
-import com.mercateo.jsonschema.mapper.ObjectContext
-import com.mercateo.jsonschema.schema.mapper.*
 
 class SchemaPropertyMapper(private val referencedElements: Set<String>) {
 

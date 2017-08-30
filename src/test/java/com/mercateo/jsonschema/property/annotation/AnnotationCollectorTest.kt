@@ -1,12 +1,12 @@
 package com.mercateo.jsonschema.property.annotation
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
-import org.assertj.core.api.Assertions.*
 
 class AnnotationCollectorTest {
 
-    private lateinit var annotationCollector : AnnotationCollector
+    private lateinit var annotationCollector: AnnotationCollector
 
     @Before
     fun setUp() {

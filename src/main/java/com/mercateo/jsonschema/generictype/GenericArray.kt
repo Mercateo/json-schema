@@ -1,8 +1,7 @@
 package com.mercateo.jsonschema.generictype
 
-import java.lang.reflect.GenericArrayType
-
 import com.googlecode.gentyref.GenericTypeReflector
+import java.lang.reflect.GenericArrayType
 
 internal class GenericArray<T>(
         arrayType: GenericArrayType,

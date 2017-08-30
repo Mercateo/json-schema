@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class BasicPropertyBuilderClasses {
+    public enum TestEnum {VALUE_1, VALUE_2}
+
     @Retention(RetentionPolicy.RUNTIME)
     @interface Annotation1 {
     }
@@ -26,8 +28,6 @@ public class BasicPropertyBuilderClasses {
     static public class OptionalPropertyHolder {
         public Optional<String> property;
     }
-
-    public enum TestEnum {VALUE_1, VALUE_2}
 
     static public class EnumPropertyHolder {
         public TestEnum enumProperty;
@@ -56,7 +56,8 @@ public class BasicPropertyBuilderClasses {
         public T property;
     }
 
-    static public class InheritedPropertyHolder extends PropertyHolder {}
+    static public class InheritedPropertyHolder extends PropertyHolder {
+    }
 
     static public class CollectionPropertyHolder {
         public List<String> values;

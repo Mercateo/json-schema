@@ -4,18 +4,32 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class MethodCollectorClasses {
-    static class StaticMethod {
-        String getString() {
-            return "foo";
-        }
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface MethodAnnotation {
+    }
 
-        static Integer getNumber() {
-            return 0;
-        }
+    interface MethodInterface {
+        @MethodAnnotation
+        String getFoo();
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface MethodAnnotation {
+    public @interface OtherMethodAnnotation {
+    }
+
+    public interface OtherMethodInterface {
+        @OtherMethodAnnotation
+        String getFoo();
+    }
+
+    static class StaticMethod {
+        static Integer getNumber() {
+            return 0;
+        }
+
+        String getString() {
+            return "foo";
+        }
     }
 
     static public abstract class SuperClass {
@@ -32,20 +46,6 @@ public class MethodCollectorClasses {
         public String getBar() {
             return "bar";
         }
-    }
-
-    interface MethodInterface {
-        @MethodAnnotation
-        String getFoo();
-    }
-
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface OtherMethodAnnotation {
-    }
-
-    public interface OtherMethodInterface {
-        @OtherMethodAnnotation
-        String getFoo();
     }
 
     static public class ImplementingClass implements MethodInterface, OtherMethodInterface {
