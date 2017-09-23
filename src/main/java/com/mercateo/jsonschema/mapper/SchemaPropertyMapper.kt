@@ -1,12 +1,11 @@
 package com.mercateo.jsonschema.mapper
 
+import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.mercateo.jsonschema.mapper.type.*
 import com.mercateo.jsonschema.property.PropertyType
 
 class SchemaPropertyMapper(private val referencedElements: Set<String>) {
-
-    internal var nodeFactory = ObjectNodeFactory.nodeFactory
 
     private val propertyMappers = mapOf(Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.INTEGER, IntegerJsonPropertyMapper(nodeFactory)),
@@ -32,6 +31,6 @@ class SchemaPropertyMapper(private val referencedElements: Set<String>) {
     }
 
     companion object {
-        internal var nodeFactory = ObjectNodeFactory.nodeFactory
+        internal val nodeFactory = JsonNodeFactory(true)
     }
 }
