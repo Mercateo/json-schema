@@ -27,7 +27,7 @@ class MethodCollectorTest {
         val rawProperties = methodCollector.forType(SubClass::class.java).toList()
 
         assertThat(rawProperties).extracting("name").containsExactlyInAnyOrder("foo", "bar")
-        assertThat(rawProperties.first().annotations).containsKey(MethodCollectorClasses.MethodAnnotation::class.java)
+        assertThat(rawProperties.first { it.name == "foo" }.annotations).containsKey(MethodCollectorClasses.MethodAnnotation::class.java)
     }
 
     @Test
@@ -36,7 +36,7 @@ class MethodCollectorTest {
         val rawProperties = methodCollector.forType(ImplementingClass::class.java).toList()
 
         assertThat(rawProperties).extracting("name").containsExactlyInAnyOrder("foo", "bar")
-        assertThat(rawProperties.first().annotations).containsKeys(MethodCollectorClasses.MethodAnnotation::class.java, MethodCollectorClasses.OtherMethodAnnotation::class.java)
+        assertThat(rawProperties.first { it.name == "foo" }.annotations).containsKeys(MethodCollectorClasses.MethodAnnotation::class.java, MethodCollectorClasses.OtherMethodAnnotation::class.java)
     }
 
     internal class TestClass {
