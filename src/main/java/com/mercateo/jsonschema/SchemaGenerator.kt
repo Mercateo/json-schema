@@ -6,11 +6,12 @@ import com.mercateo.jsonschema.mapper.PropertyChecker
 import com.mercateo.jsonschema.mapper.SchemaMapper
 import com.mercateo.jsonschema.property.*
 import com.mercateo.jsonschema.property.collector.MethodCollector
+import java.util.function.Function
 
 class SchemaGenerator(
         unwrapAnnotations: List<Class<out Annotation>> = emptyList(),
         propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector()),
-        customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap()
+        customUnwrappers: Map<Class<*>, Function<Any, Any?>> = emptyMap()
 ) {
 
     private val propertyBuilder: PropertyBuilder
@@ -18,7 +19,9 @@ class SchemaGenerator(
     private val schemaMapper: SchemaMapper
 
     init {
-        propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations, customUnwrappers)
+        val convertedCustomUnwrappers: Map<Class<*>, (Any) -> Any?> = customUnwrappers.mapValues { entry -> { x: Any -> entry.value.apply(x) } }
+
+        propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations, convertedCustomUnwrappers)
         schemaMapper = SchemaMapper()
     }
 
