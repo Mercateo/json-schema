@@ -13,10 +13,12 @@ class MethodCollector(
 ) : RawPropertyCollector {
 
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
-        return sequenceOf(*genericType.declaredMethods)
+        val declaredMethods = genericType.declaredMethods
+        return sequenceOf(*declaredMethods)
                 .filter { !it.isSynthetic }
                 .filter { it.declaringClass != Any::class.java }
                 .filter { it.returnType != Void.TYPE }
+                .filter { !it.overridesObject }
                 .filter { it.parameterCount == 0 }
                 .filter { !Modifier.isStatic(it.modifiers) }
                 .map { mapRawDataProperty(method = it, genericType = genericType) }
@@ -62,6 +64,7 @@ class MethodCollector(
         return annotations
     }
 
+
     private fun addInterfaceMethods(declaringClass: Class<*>, method: Method, stack: Stack<Method>) {
         val interfaces = declaringClass.interfaces
         for (`interface` in interfaces) {
@@ -84,3 +87,21 @@ class MethodCollector(
         }
     }
 }
+
+private val Method.overridesObject: Boolean
+    get() {
+        var clazz = this.declaringClass
+
+        while (clazz != null) {
+            val overridesMethod = clazz.declaredMethods.filter { it.name == this.name }
+                    .filter { Arrays.equals(it.parameterTypes, this.parameterTypes) }
+                    .isNotEmpty()
+
+            if (overridesMethod && clazz == Object::class.java) {
+                return true
+            }
+            clazz = clazz.superclass
+        }
+        return false
+    }
+

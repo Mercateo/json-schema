@@ -39,6 +39,14 @@ class MethodCollectorTest {
         assertThat(rawProperties.first { it.name == "foo" }.annotations).containsKeys(MethodCollectorClasses.MethodAnnotation::class.java, MethodCollectorClasses.OtherMethodAnnotation::class.java)
     }
 
+    @Test
+    fun ignoresOverriddenObjectMethods() {
+        val methodCollector = MethodCollector()
+        val rawProperties = methodCollector.forType(OverridingHashCode::class.java).toList()
+
+        assertThat(rawProperties).isEmpty()
+    }
+
     internal class TestClass {
 
         var value: Float?

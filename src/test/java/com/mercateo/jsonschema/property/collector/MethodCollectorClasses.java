@@ -58,4 +58,11 @@ public class MethodCollectorClasses {
             return "bar";
         }
     }
+
+    static public class OverridingHashCode {
+        @Override
+        public int hashCode() {
+            return super.hashCode();
+        }
+    }
 }
