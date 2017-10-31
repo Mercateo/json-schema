@@ -23,6 +23,14 @@ class SchemaGeneratorTest {
     }
 
     @Test
+    fun shouldCreateSchemaForOtherTypes() {
+        val schemaClass = SchemaGeneratorClasses.SimpleOther::class.java
+        val schema = schemaGenerator.generateSchema(schemaClass)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"number\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"integer\"}}}")
+    }
+
+    @Test
     fun shouldIgnoreStaticMethods() {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)

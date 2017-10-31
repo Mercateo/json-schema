@@ -20,6 +20,14 @@ public class SchemaGeneratorClasses {
         public Boolean qux;
     }
 
+    public static class SimpleOther {
+        public Long foo;
+
+        public Double bar;
+
+        public Number baz;
+    }
+
     public static class Benchmark {
         public Simple simple;
 

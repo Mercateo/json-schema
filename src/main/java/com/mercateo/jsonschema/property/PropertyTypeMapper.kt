@@ -20,6 +20,8 @@ object PropertyTypeMapper {
             Pair(java.lang.Float::class.java, PropertyType.NUMBER),
             Pair(Double::class.java, PropertyType.NUMBER),
             Pair(java.lang.Double::class.java, PropertyType.NUMBER),
+            Pair(Number::class.java, PropertyType.NUMBER),
+            Pair(java.lang.Number::class.java, PropertyType.NUMBER),
             Pair(BigInteger::class.java, PropertyType.INTEGER),
             Pair(BigDecimal::class.java, PropertyType.NUMBER),
             Pair(UUID::class.java, PropertyType.STRING),
