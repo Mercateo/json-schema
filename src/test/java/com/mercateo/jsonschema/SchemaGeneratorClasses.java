@@ -1,6 +1,9 @@
 package com.mercateo.jsonschema;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -56,6 +59,25 @@ public class SchemaGeneratorClasses {
 
         @org.hibernate.validator.constraints.NotEmpty
         public String qux;
+    }
+
+    public static class IntValidation {
+        @Max(10)
+        public Integer max;
+
+        @Min(5)
+        public Integer min;
+    }
+
+    public static class StringValidation {
+        @Size(max = 10)
+        public String max;
+
+        @Size(min = 5)
+        public String min;
+
+        @Size(min = 6, max = 9)
+        public String range;
     }
 
     public static class Superclass {

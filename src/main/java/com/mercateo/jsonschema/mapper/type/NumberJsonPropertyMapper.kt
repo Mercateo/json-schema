@@ -15,8 +15,8 @@ internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
         primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
     }
 
-    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
-        return primitiveJsonPropertyBuilder.forProperty(jsonProperty as ObjectContext<Number>) //
+    override fun toJson(property: ObjectContext<*>): ObjectNode {
+        return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Number>) //
                 .withType("number").withDefaultAndAllowedValues(this::createNode).build()
     }
 

@@ -14,7 +14,7 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
         primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
     }
 
-    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
+    override fun toJson(property: ObjectContext<*>): ObjectNode {
         val nodeCreator: (Boolean) -> JsonNode = {
             if (it)
                 BooleanNode.TRUE
@@ -22,7 +22,7 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
                 BooleanNode.FALSE
         }
 
-        return primitiveJsonPropertyBuilder.forProperty(jsonProperty as ObjectContext<Boolean>)
+        return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Boolean>)
                 .withType("boolean")
                 .withDefaultValue(BooleanNode.FALSE)
                 .withDefaultAndAllowedValues(nodeCreator).build()

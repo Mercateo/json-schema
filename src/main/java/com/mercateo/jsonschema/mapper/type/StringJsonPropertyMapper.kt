@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.mercateo.jsonschema.mapper.ObjectContext
+import javax.validation.constraints.Size
 
 internal class StringJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 
@@ -14,11 +15,21 @@ internal class StringJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
         primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
     }
 
-    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
+    override fun toJson(property: ObjectContext<*>): ObjectNode {
         val nodeCreator: (String) -> JsonNode = { value -> TextNode(value) }
-        val propertyNode = primitiveJsonPropertyBuilder.forProperty(jsonProperty as ObjectContext<String>).withType("string").withDefaultAndAllowedValues(nodeCreator).build()
-        /*jsonProperty.sizeConstraints.min?.let { propertyNode.put("minLength", it) }
-        jsonProperty.sizeConstraints.min?.let { propertyNode.put("maxLength", it) }*/
+        val propertyNode = primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<String>).withType("string").withDefaultAndAllowedValues(nodeCreator).build()
+
+        val sizeAnnotations = property.property.annotations.get(Size::class.java)
+        sizeAnnotations
+                ?.fold(Int.MAX_VALUE, { max, ann -> if ((ann as Size).max < max) ann.max else max })
+                ?.takeIf { it < Int.MAX_VALUE }
+                ?.let { propertyNode.put("maxLength", it) }
+
+        sizeAnnotations
+                ?.fold(0, { min, ann -> if ((ann as Size).min > min) ann.min else min })
+                ?.takeIf { it > 0 }
+                ?.let { propertyNode.put("minLength", it) }
+
         return propertyNode
     }
 }

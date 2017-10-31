@@ -17,11 +17,11 @@ internal class ObjectJsonPropertyMapper(
 
     private val wrapperTypes: Map<Class<*>, (Any) -> Any?> = mapOf(Pair(Optional::class.java, { opt -> (opt as Optional<*>).get() }))
 
-    override fun toJson(jsonProperty: ObjectContext<*>): ObjectNode {
+    override fun toJson(property: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)
         propertyNode.put("type", "object")
-        propertyNode.set("properties", createProperties(jsonProperty))
-        val requiredElements = createRequiredElementsArray(jsonProperty.propertyDescriptor.children)
+        propertyNode.set("properties", createProperties(property))
+        val requiredElements = createRequiredElementsArray(property.propertyDescriptor.children)
         if (requiredElements.size() > 0) {
             propertyNode.set("required", requiredElements)
         }
