@@ -100,7 +100,7 @@ class SchemaGeneratorTest {
     fun showsRequiredProperties() {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Required::class.java)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"string\"},\"baz\":{\"type\":\"string\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"string\"}},\"required\":[\"bar\",\"qux\"]}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"string\"},\"baz\":{\"type\":\"string\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"string\",\"minLength\":1}},\"required\":[\"bar\",\"qux\"]}")
     }
 
     @Test
