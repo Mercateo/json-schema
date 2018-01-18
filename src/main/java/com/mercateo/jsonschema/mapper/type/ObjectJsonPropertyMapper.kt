@@ -15,8 +15,6 @@ internal class ObjectJsonPropertyMapper(
         private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
 
-    private val wrapperTypes: Map<Class<*>, (Any) -> Any?> = mapOf(Pair(Optional::class.java, { opt -> (opt as Optional<*>).get() }))
-
     override fun toJson(property: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)
         propertyNode.put("type", "object")
