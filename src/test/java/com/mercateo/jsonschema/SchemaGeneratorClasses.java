@@ -97,4 +97,12 @@ public class SchemaGeneratorClasses {
 
         public String qux;
     }
+
+    public static class IntegerAnnotations {
+        @Max(value = 10)
+        public Integer max;
+
+        @Min(value = 5)
+        public Integer min;
+    }
 }

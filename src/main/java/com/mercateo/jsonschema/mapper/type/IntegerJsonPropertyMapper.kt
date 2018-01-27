@@ -27,7 +27,7 @@ internal class IntegerJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
         property.property.annotations.get(Min::class.java)
                 ?.fold(Long.MIN_VALUE, { min, ann -> if ((ann as Min).value > min) ann.value else min })
                 ?.let { propertyNode.put("minimum", it) }
-        
+
         return propertyNode
     }
 }

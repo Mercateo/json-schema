@@ -116,4 +116,11 @@ class SchemaGeneratorTest {
 
         assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"max\":{\"type\":\"string\",\"maxLength\":10},\"min\":{\"type\":\"string\",\"minLength\":5},\"range\":{\"type\":\"string\",\"maxLength\":9,\"minLength\":6}}}")
     }
+
+    @Test
+    fun showsIntegerValidationProperties() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.IntegerAnnotations::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"max\":{\"type\":\"integer\",\"maximum\":10},\"min\":{\"type\":\"integer\",\"minimum\":5}}}")
+    }
 }
