@@ -35,11 +35,6 @@ internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFac
             return this
         }
 
-        fun withDefaultValue(value: JsonNode): Builder<T> {
-            propertyNode.set("default", value)
-            return this
-        }
-
         fun withAllowedValuesDefault(enumConstants: Array<Enum<*>>, nodeCreator: (Any) -> JsonNode): Builder<T> {
             if (!propertyNode.has("enum")) {
                 val arrayNode = ArrayNode(nodeFactory)
