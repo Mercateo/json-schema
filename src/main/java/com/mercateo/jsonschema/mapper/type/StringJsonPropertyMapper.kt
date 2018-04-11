@@ -16,8 +16,26 @@ internal class StringJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
     }
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {
-        val nodeCreator: (String) -> JsonNode = { value -> TextNode(value) }
-        val propertyNode = primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<String>).withType("string").withDefaultAndAllowedValues(nodeCreator).build()
+        val enum = property.propertyDescriptor.genericType.isEnum
+
+        val nodeCreator: (Any) -> JsonNode =
+                if (enum) {
+                    { value -> TextNode((value as Enum<*>).name) }
+                } else {
+                    { value -> TextNode(value as String) }
+                }
+
+        val propertyNodeBuilder = primitiveJsonPropertyBuilder
+                .forProperty(property as ObjectContext<String>)
+                .withType("string")
+                .withDefaultAndAllowedValues(nodeCreator)
+
+        if (enum) {
+            propertyNodeBuilder.withAllowedValuesDefault(
+                    property.propertyDescriptor.genericType.rawType.enumConstants as Array<Enum<*>>, nodeCreator)
+        }
+
+        val propertyNode = propertyNodeBuilder.build()
 
         val sizeAnnotations = property.property.annotations.get(Size::class.java)
         sizeAnnotations

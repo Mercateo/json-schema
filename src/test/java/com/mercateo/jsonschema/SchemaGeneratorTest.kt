@@ -123,4 +123,19 @@ class SchemaGeneratorTest {
 
         assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"max\":{\"type\":\"integer\",\"maximum\":10},\"min\":{\"type\":\"integer\",\"minimum\":5}}}")
     }
+
+    @Test
+    fun showsEnumValuesAllowedValues() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.EnumValue::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"enumValue\":{\"type\":\"string\",\"enum\":[\"TRUE\",\"FALSE\"]}}}")
+    }
+
+    @Test
+    fun showsAllowedValuesForEnum() {
+        val allowedValues = arrayOf(SchemaGeneratorClasses.EnumValue().apply { enumValue = SchemaGeneratorClasses.Value.TRUE })
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.EnumValue::class.java, null, allowedValues)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"enumValue\":{\"type\":\"string\",\"enum\":[\"TRUE\"]}}}")
+    }
 }

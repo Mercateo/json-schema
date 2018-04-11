@@ -21,6 +21,8 @@ interface GenericType<out T> {
 
     val isIterable: Boolean
 
+    val isEnum: Boolean
+
     val declaredFields: Array<Field>
 
     val declaredMethods: Array<Method>

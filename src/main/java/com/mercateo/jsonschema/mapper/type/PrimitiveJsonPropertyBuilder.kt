@@ -1,8 +1,10 @@
 package com.mercateo.jsonschema.mapper.type
 
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.databind.node.TextNode
 import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFactory) {
@@ -35,6 +37,15 @@ internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFac
 
         fun withDefaultValue(value: JsonNode): Builder<T> {
             propertyNode.set("default", value)
+            return this
+        }
+
+        fun withAllowedValuesDefault(enumConstants: Array<Enum<*>>, nodeCreator: (Any) -> JsonNode): Builder<T> {
+            if (!propertyNode.has("enum")) {
+                val arrayNode = ArrayNode(nodeFactory)
+                enumConstants.map(nodeCreator).forEach({ arrayNode.add(it) })
+                propertyNode.set("enum", arrayNode)
+            }
             return this
         }
 

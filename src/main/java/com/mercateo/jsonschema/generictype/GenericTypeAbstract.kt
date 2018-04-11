@@ -24,6 +24,9 @@ internal abstract class GenericTypeAbstract<out T, out U : Type>(
     override val isIterable: Boolean
         get() = Iterable::class.java.isAssignableFrom(rawType)
 
+    override val isEnum: Boolean
+        get() = rawType.isEnum
+
     override val declaredFields: Array<Field>
         get() = rawType.declaredFields
 

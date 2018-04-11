@@ -105,4 +105,10 @@ public class SchemaGeneratorClasses {
         @Min(value = 5)
         public Integer min;
     }
+
+    public enum Value {TRUE, FALSE}
+
+    public static class EnumValue {
+        public Value enumValue;
+    }
 }

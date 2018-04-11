@@ -8,6 +8,7 @@ data class PropertyDescriptorDefault<T>(
         override val context: PropertyDescriptor.Context,
         override val annotations: Map<Class<out Annotation>, Set<Annotation>>
 ) : PropertyDescriptor<T> {
+    @Suppress("UNCHECKED_CAST")
     override val children: List<Property<T, Any>> =
             when (context) {
                 is PropertyDescriptor.Context.Children<*> -> context.children as List<Property<T, Any>>
