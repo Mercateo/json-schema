@@ -15,9 +15,13 @@ public class SchemaGeneratorClasses {
 
         public Integer bar;
 
+        public Long baar;
+
         public Float baz;
 
-        public Boolean qux;
+        public Double qux;
+
+        public Boolean quux;
     }
 
     public static class SimpleOther {

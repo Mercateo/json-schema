@@ -24,7 +24,6 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
 
         return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Boolean>)
                 .withType("boolean")
-                .withDefaultValue(BooleanNode.FALSE)
                 .withDefaultAndAllowedValues(nodeCreator).build()
     }
 

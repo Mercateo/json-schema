@@ -19,7 +19,7 @@ class SchemaGeneratorTest {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"quux\":{\"type\":\"boolean\"},\"qux\":{\"type\":\"number\"}}}")
     }
 
     @Test
@@ -35,7 +35,7 @@ class SchemaGeneratorTest {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"qux\":{\"type\":\"boolean\",\"default\":false}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"quux\":{\"type\":\"boolean\"},\"qux\":{\"type\":\"number\"}}}")
     }
 
     @Test
@@ -44,13 +44,15 @@ class SchemaGeneratorTest {
 
         val defaultValue = SchemaGeneratorClasses.Simple()
         defaultValue.foo = "foo"
-        defaultValue.bar = 10;
-        defaultValue.baz = 4.8f;
-        defaultValue.qux = true;
+        defaultValue.bar = 10
+        defaultValue.baar = 100L
+        defaultValue.baz = 4.8f
+        defaultValue.qux = 5.1
+        defaultValue.quux = true;
 
         val schema = schemaGenerator.generateSchema(schemaClass, defaultValue = defaultValue)
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\",\"default\":10},\"baz\":{\"type\":\"number\",\"default\":4.8},\"foo\":{\"type\":\"string\",\"default\":\"foo\"},\"qux\":{\"type\":\"boolean\",\"default\":true}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\",\"default\":100},\"bar\":{\"type\":\"integer\",\"default\":10},\"baz\":{\"type\":\"number\",\"default\":4.8},\"foo\":{\"type\":\"string\",\"default\":\"foo\"},\"quux\":{\"type\":\"boolean\",\"default\":true},\"qux\":{\"type\":\"number\",\"default\":5.1}}}")
     }
 
     @Test
@@ -60,12 +62,14 @@ class SchemaGeneratorTest {
         val allowedValue = SchemaGeneratorClasses.Simple()
         allowedValue.foo = "foo"
         allowedValue.bar = 10;
+        allowedValue.baar = 100L
         allowedValue.baz = 4.8f;
-        allowedValue.qux = true;
+        allowedValue.qux = 5.1
+        allowedValue.quux = true;
 
         val schema = schemaGenerator.generateSchema(schemaClass, allowedValues = arrayOf(allowedValue))
 
-        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"qux\":{\"type\":\"boolean\",\"default\":false,\"enum\":[true]}}}")
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\",\"enum\":[100]},\"bar\":{\"type\":\"integer\",\"enum\":[10]},\"baz\":{\"type\":\"number\",\"enum\":[4.8]},\"foo\":{\"type\":\"string\",\"enum\":[\"foo\"]},\"quux\":{\"type\":\"boolean\",\"enum\":[true]},\"qux\":{\"type\":\"number\",\"enum\":[5.1]}}}")
     }
 
     @Test
