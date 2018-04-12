@@ -1,5 +1,7 @@
 package com.mercateo.jsonschema;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -114,5 +116,10 @@ public class SchemaGeneratorClasses {
 
     public static class EnumValue {
         public Value enumValue;
+    }
+
+    public static class Unwrapped {
+        @JsonUnwrapped
+        public Superclass unwrapped;
     }
 }
