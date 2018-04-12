@@ -16,6 +16,14 @@ public class UnwrappedPropertyMapperClasses {
         public PropertyHolder propertyHolder;
     }
 
+    static public class WrappedPropertyHolder1 {
+        public PropertyHolder holder;
+    }
+
+    static public class WrappedPropertyHolder2 {
+        public PropertyHolder holder;
+    }
+
     static public class PropertyHolder {
         public String qux;
 

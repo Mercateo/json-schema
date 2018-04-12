@@ -27,6 +27,25 @@ class UnwrappedPropertyMapperTest {
     }
 
     @Test
+    fun cachesResult() {
+        val firstUnwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
+        val secondUnwrappedProperty = propertyBuilder.from(PropertyHolder::class.java)
+
+        assertThat(firstUnwrappedProperty).isSameAs(secondUnwrappedProperty)
+    }
+
+    @Test
+    fun cachesIntermediateProperties() {
+        val firstUnwrappedPropertyHolder = propertyBuilder.from(WrappedPropertyHolder1::class.java)
+        val secondUnwrappedPropertyHolder = propertyBuilder.from(WrappedPropertyHolder2::class.java)
+
+        val firstUnwrappedProperty = firstUnwrappedPropertyHolder.children.first()
+        val secondUnwrappedProperty = firstUnwrappedPropertyHolder.children.first()
+
+        assertThat(firstUnwrappedProperty).isSameAs(secondUnwrappedProperty)
+    }
+
+    @Test
     fun twoLevelUnwrap() {
         val unwrappedProperty = propertyBuilder.from(SecondLevelPropertyHolder::class.java)
 

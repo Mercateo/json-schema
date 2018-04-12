@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.generictype
 import com.googlecode.gentyref.GenericTypeReflector
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
 
 class GenericClassTest {
@@ -39,6 +40,15 @@ class GenericClassTest {
         val genericType2 = GenericType.of(String::class.java)
 
         assertThat(genericType1).isEqualTo(genericType2)
+    }
+
+    @Test
+    fun shouldThrowWithoutContainedType() {
+        val genericType = GenericType.of(String::class.java)
+
+        assertThatThrownBy { genericType.containedType }
+                .hasCauseInstanceOf(IllegalAccessError::class.java)
+                .hasMessage("test")
     }
 
     @Test
