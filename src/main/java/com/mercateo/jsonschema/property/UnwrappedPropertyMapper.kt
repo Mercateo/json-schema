@@ -6,16 +6,16 @@ import com.mercateo.jsonschema.property.PropertyDescriptor.Context.Children
 import java.util.concurrent.ConcurrentHashMap
 
 class UnwrappedPropertyMapper
-constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
+(vararg unwrapProperties: UnwrappedPropertyUpdater<*>) : PropertyMapper {
 
-    private val unwrapAnnotations: Set<Class<out Annotation>>
+    private val unwrappers: Map<Class<out Annotation>, UnwrappedPropertyUpdater<*>>
 
     private val unwrappedProperties: ConcurrentHashMap<GenericType<*>, Property<*, *>>
 
     private val unwrappedPropertyDescriptors = MutablePropertyDescriptorMap()
 
     init {
-        this.unwrapAnnotations = setOf(*unwrapAnnotations)
+        this.unwrappers = unwrapProperties.groupBy { it.annotation }.mapValues { it.value.first() }
 
         this.unwrappedProperties = ConcurrentHashMap<GenericType<*>, Property<*, *>>()
     }
@@ -74,25 +74,29 @@ constructor(vararg unwrapAnnotations: Class<out Annotation>) : PropertyMapper {
     }
 
     private fun <T> unwrapChildrenIfApplicable(child: Property<T, Any>): List<Property<T, Any>> {
-        val doUnwrapChild: Boolean = !unwrapAnnotations.intersect(child.annotations.keys).isEmpty()
-
-        return if (doUnwrapChild) {
-            unwrapChildren(child)
-        } else {
-            listOf(child)
-        }
+        return child.annotations.keys.firstOrNull { unwrappers.keys.contains(it) }
+                ?.let { Pair(child.annotations[it]!!.first(), unwrappers[it]!! as UnwrappedPropertyUpdater<Annotation>) }
+                ?.let { { name: String -> it.second.updateName(name, it.first) } }
+                ?.let { unwrapChildren(child, it) }
+                ?: listOf(child)
     }
 
-    private fun <T, U> unwrapChildren(child: Property<T, U>): List<Property<T, Any>> {
-        return child.children.map({ mapUnwrappedProperty(child, it) })
+    private fun <T, U> unwrapChildren(child: Property<T, U>, unwrapper: (String) -> String): List<Property<T, Any>> {
+        return child.children.map({ mapUnwrappedProperty(child, it, unwrapper) })
     }
 
-    private fun <T, U, V> mapUnwrappedProperty(property: Property<T, U>, child: Property<U, V>): Property<T, V> {
+    private fun <T, U, V> mapUnwrappedProperty(property: Property<T, U>, child: Property<U, V>, unwrapper: (String) -> String): Property<T, V> {
         val valueAccessor: (T) -> V? = { instance ->
             val intermediateObject: U? = property.valueAccessor(instance)
             val intermediateValueAccessor: (U) -> V? = child.valueAccessor
             if (intermediateObject != null) intermediateValueAccessor(intermediateObject) else null
         }
-        return Property(child.name, child.propertyDescriptor, valueAccessor, child.annotations)
+        return Property(unwrapper.invoke(child.name), child.propertyDescriptor, valueAccessor, child.annotations)
     }
+}
+
+abstract class UnwrappedPropertyUpdater<T : Annotation>(
+        val annotation: Class<T>
+) {
+    abstract fun updateName(name: String, annotation: T): String
 }

@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.property
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped
 import com.mercateo.jsonschema.property.UnwrappedPropertyMapperClasses.*
 import com.mercateo.jsonschema.property.collector.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
@@ -15,7 +16,11 @@ class UnwrappedPropertyMapperTest {
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
                 BasicPropertyBuilder(emptyMap(), FieldCollector()),
-                UnwrappedPropertyMapper(Unwrap::class.java)
+                UnwrappedPropertyMapper(object : UnwrappedPropertyUpdater<JsonUnwrapped>(JsonUnwrapped::class.java) {
+                    override fun updateName(name: String, annotation: JsonUnwrapped): String {
+                        return annotation.prefix + name + annotation.suffix
+                    }
+                })
         )
     }
 
@@ -67,5 +72,22 @@ class UnwrappedPropertyMapperTest {
         assertThat(firstElement.getValue(propertyHolder)).isEqualTo("value1")
     }
 
+    @Test
+    fun doubleSingleLevelUnwrapGetValue() {
+
+        val unwrappedProperty = propertyBuilder.from(DoubleUnwrappedPropertyHolder::class.java)
+
+        val propertyHolder = DoubleUnwrappedPropertyHolder()
+        propertyHolder.unwrappedPropertyHolder1 = UnwrappedPropertyHolder()
+        propertyHolder.unwrappedPropertyHolder1!!.foo = "value1"
+        propertyHolder.unwrappedPropertyHolder2 = UnwrappedPropertyHolder()
+        propertyHolder.unwrappedPropertyHolder2!!.bar = "value2"
+
+        val firstElement = unwrappedProperty.children.first { it.name == "bazfoo" }
+        assertThat(firstElement.getValue(propertyHolder)).isEqualTo("value1")
+
+        val secondElement = unwrappedProperty.children.first { it.name == "barqux" }
+        assertThat(secondElement.getValue(propertyHolder)).isEqualTo("value2")
+    }
 
 }

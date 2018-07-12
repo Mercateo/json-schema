@@ -1,18 +1,16 @@
 package com.mercateo.jsonschema.property;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class UnwrappedPropertyMapperClasses {
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @interface Unwrap {
-    }
-
     static public class SecondLevelPropertyHolder {
         public String quux;
 
-        @Unwrap
+        @JsonUnwrapped
         public PropertyHolder propertyHolder;
     }
 
@@ -27,8 +25,18 @@ public class UnwrappedPropertyMapperClasses {
     static public class PropertyHolder {
         public String qux;
 
-        @Unwrap
+        @JsonUnwrapped
         public UnwrappedPropertyHolder unwrappedPropertyHolder;
+    }
+
+    static public class DoubleUnwrappedPropertyHolder {
+        public String qux;
+
+        @JsonUnwrapped(prefix = "baz")
+        public UnwrappedPropertyHolder unwrappedPropertyHolder1;
+
+        @JsonUnwrapped(suffix = "qux")
+        public UnwrappedPropertyHolder unwrappedPropertyHolder2;
     }
 
     static public class UnwrappedPropertyHolder {

@@ -1,6 +1,7 @@
 package com.mercateo.jsonschema
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
+import com.mercateo.jsonschema.property.UnwrappedPropertyUpdater
 import com.mercateo.jsonschema.property.collector.FieldCollector
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -146,7 +147,11 @@ class SchemaGeneratorTest {
 
     @Test
     fun shouldAddUnwrappedPropertyMapper() {
-        schemaGenerator = SchemaGenerator(propertyCollectors = listOf(FieldCollector()), unwrapAnnotations = listOf(JsonUnwrapped::class.java))
+        schemaGenerator = SchemaGenerator(propertyCollectors = listOf(FieldCollector()), unwrapAnnotations = listOf(object : UnwrappedPropertyUpdater<JsonUnwrapped>(JsonUnwrapped::class.java) {
+            override fun updateName(name: String, annotation: JsonUnwrapped): String {
+                return annotation.prefix + name + annotation.suffix
+            }
+        }))
 
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.EnumValue::class.java, null, null)
 
