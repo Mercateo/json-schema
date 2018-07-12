@@ -9,7 +9,7 @@ import com.mercateo.jsonschema.property.collector.MethodCollector
 import java.util.function.Function
 
 class SchemaGenerator(
-        unwrapAnnotations: List<Class<out Annotation>> = emptyList(),
+        unwrapAnnotations: List<UnwrappedPropertyUpdater<*>> = emptyList(),
         propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector()),
         customUnwrappers: Map<Class<*>, Function<Any, Any?>> = emptyMap()
 ) {
@@ -38,7 +38,7 @@ class SchemaGenerator(
     }
 
     private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>,
-                                      unwrapAnnotations: List<Class<out Annotation>>,
+                                      unwrapAnnotations: List<UnwrappedPropertyUpdater<*>>,
                                       customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilder {
         var propertyBuilder: PropertyBuilder = BasicPropertyBuilder(customUnwrappers, *propertyCollectors.toTypedArray())
 
