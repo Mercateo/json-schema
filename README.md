@@ -1,4 +1,5 @@
 # json-schema
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/93fedefc8591476d84aa9e3b76ad5f53)](https://app.codacy.com/app/wuan/json-schema?utm_source=github.com&utm_medium=referral&utm_content=Mercateo/json-schema&utm_campaign=badger)
 [![Build Status](https://travis-ci.org/Mercateo/json-schema.svg?branch=master)](https://travis-ci.org/Mercateo/json-schema)
 [![Coverage Status](https://coveralls.io/repos/github/Mercateo/json-schema/badge.svg?branch=master)](https://coveralls.io/github/Mercateo/json-schema?branch=master)
 [![MavenCentral](https://img.shields.io/maven-central/v/com.mercateo/json-schema.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.mercateo%22%20AND%20a%3A%22json-schema%22)
