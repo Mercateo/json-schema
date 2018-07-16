@@ -124,6 +124,13 @@ class SchemaGeneratorTest {
     }
 
     @Test
+    fun showsPatternValidationProperties() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.PatternValidation::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"pattern\":{\"type\":\"string\",\"pattern\":\"^(the )?pattern$\"}}}")
+    }
+
+    @Test
     fun showsIntegerValidationProperties() {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.IntegerAnnotations::class.java)
 
