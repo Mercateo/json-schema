@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.databind.node.TextNode
 import com.mercateo.jsonschema.mapper.ObjectContext
+import javax.validation.constraints.Pattern
 import javax.validation.constraints.Size
 
 internal class StringJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
@@ -47,6 +48,13 @@ internal class StringJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
                 ?.fold(0, { min, ann -> if ((ann as Size).min > min) ann.min else min })
                 ?.takeIf { it > 0 }
                 ?.let { propertyNode.put("minLength", it) }
+
+
+        val patternAnnotations = property.property.annotations.get(Pattern::class.java)
+        patternAnnotations
+                ?.map { (it as Pattern).regexp }
+                ?.firstOrNull()
+                ?.let { propertyNode.put("pattern", it) }
 
         return propertyNode
     }
