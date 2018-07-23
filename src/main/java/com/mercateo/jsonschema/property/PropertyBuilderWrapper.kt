@@ -6,10 +6,6 @@ class PropertyBuilderWrapper(private val propertyBuilder: PropertyBuilder, varar
 
     private val propertyMappers: Array<out PropertyMapper> = propertyMappers
 
-    override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
-        return from(GenericType.Companion.of(propertyClass))
-    }
-
     override fun <T> from(genericType: GenericType<T>): Property<Void, T> {
         var property = propertyBuilder.from(genericType)
 

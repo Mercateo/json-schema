@@ -20,7 +20,6 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
         })
     }
 
-
     private val rawPropertyCollectors: Array<out RawPropertyCollector> = rawPropertyCollectors
 
     private val genericTypeHierarchy: GenericTypeHierarchy = GenericTypeHierarchy()
@@ -28,10 +27,6 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
     private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
 
     private val knownDescriptors: MutablePropertyDescriptorMap = MutablePropertyDescriptorMap()
-
-    override fun <T> from(propertyClass: Class<T>): Property<Void, T> {
-        return from(GenericType.of(propertyClass))
-    }
 
     override fun <T> from(genericType: GenericType<T>): Property<Void, T> {
         return from(ROOT_NAME, genericType, mutableMapOf(),

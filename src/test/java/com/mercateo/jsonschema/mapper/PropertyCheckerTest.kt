@@ -3,6 +3,7 @@ package com.mercateo.jsonschema.mapper
 import com.mercateo.jsonschema.SchemaGeneratorClasses
 import com.mercateo.jsonschema.property.BasicPropertyBuilder
 import com.mercateo.jsonschema.property.Property
+import com.mercateo.jsonschema.property.from
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.assertj.core.api.Assertions.assertThat
