@@ -1,8 +1,11 @@
 package com.mercateo.jsonschema
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
-import com.mercateo.jsonschema.property.UnwrappedPropertyUpdater
+import com.mercateo.jsonschema.generictype.GenericType
+import com.mercateo.jsonschema.mapper.PropertyChecker
+import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.collector.FieldCollector
+import com.mercateo.jsonschema.property.mapper.UnwrappedPropertyUpdater
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -20,6 +23,14 @@ class SchemaGeneratorTest {
     fun shouldCreateSchema() {
         val schemaClass = SchemaGeneratorClasses.Simple::class.java
         val schema = schemaGenerator.generateSchema(schemaClass)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"quux\":{\"type\":\"boolean\"},\"qux\":{\"type\":\"number\"}}}")
+    }
+
+    @Test
+    fun shouldCreateSchemaFromGenericType() {
+        val schemaClass = SchemaGeneratorClasses.Simple::class.java
+        val schema = schemaGenerator.generateSchema(GenericType.of(schemaClass))
 
         assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"baar\":{\"type\":\"integer\"},\"bar\":{\"type\":\"integer\"},\"baz\":{\"type\":\"number\"},\"foo\":{\"type\":\"string\"},\"quux\":{\"type\":\"boolean\"},\"qux\":{\"type\":\"number\"}}}")
     }
@@ -163,5 +174,16 @@ class SchemaGeneratorTest {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.EnumValue::class.java, null, null)
 
         assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"enumValue\":{\"type\":\"string\",\"enum\":[\"TRUE\",\"FALSE\"]}}}")
+    }
+
+    @Test
+    fun shouldRemovePropertiesAccordingToPropertyCheckerResult() {
+        val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Checked::class.java, null, null, object : PropertyChecker {
+            override fun test(t: Property<*, *>): Boolean {
+                return !t.annotations.containsKey(SchemaGeneratorClasses.Inactive::class.java)
+            }
+        })
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"bar\":{\"type\":\"string\"}}}")
     }
 }

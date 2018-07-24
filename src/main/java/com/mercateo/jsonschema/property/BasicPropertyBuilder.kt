@@ -73,7 +73,7 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
                 } else {
                     val propertyType = PropertyTypeMapper.of(genericType)
                     val annotations = genericType.rawType.annotations
-                    return PropertyDescriptorDefault(propertyType, genericType, PropertyDescriptor.Context.InnerReference,
+                    return PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.InnerReference,
                             annotationMapBuilder.createMap(*annotations))
                 }
             }
@@ -98,7 +98,7 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
 
         val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
         val sortedChildren = children.sortedBy { it.name }
-        val propertyDescriptor = PropertyDescriptorDefault(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations))
+        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations))
         addedDescriptors.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }

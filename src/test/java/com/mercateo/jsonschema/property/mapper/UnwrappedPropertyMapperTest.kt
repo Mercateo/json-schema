@@ -1,8 +1,11 @@
-package com.mercateo.jsonschema.property
+package com.mercateo.jsonschema.property.mapper
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
-import com.mercateo.jsonschema.property.UnwrappedPropertyMapperClasses.*
+import com.mercateo.jsonschema.property.BasicPropertyBuilder
+import com.mercateo.jsonschema.property.PropertyBuilderWrapper
+import com.mercateo.jsonschema.property.mapper.UnwrappedPropertyMapperClasses.*
 import com.mercateo.jsonschema.property.collector.FieldCollector
+import com.mercateo.jsonschema.property.from
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.IterableAssert
 import org.junit.Before
@@ -10,7 +13,7 @@ import org.junit.Test
 
 class UnwrappedPropertyMapperTest {
 
-    private lateinit var propertyBuilder: PropertyBuilder
+    private lateinit var propertyBuilder: PropertyBuilderWrapper
 
     @Before
     fun setUp() {

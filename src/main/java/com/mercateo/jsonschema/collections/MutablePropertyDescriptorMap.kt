@@ -2,7 +2,6 @@ package com.mercateo.jsonschema.collections
 
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.property.PropertyDescriptor
-import com.mercateo.jsonschema.property.PropertyDescriptorDefault
 import java.util.concurrent.ConcurrentHashMap
 
 class MutablePropertyDescriptorMap {
@@ -22,7 +21,7 @@ class MutablePropertyDescriptorMap {
         return map[genericType] as PropertyDescriptor<T>
     }
 
-    fun <T> put(genericType: GenericType<T>, propertyDescriptor: PropertyDescriptorDefault<T>) {
+    fun <T> put(genericType: GenericType<T>, propertyDescriptor: PropertyDescriptor<T>) {
         map.put(genericType, propertyDescriptor)
     }
 

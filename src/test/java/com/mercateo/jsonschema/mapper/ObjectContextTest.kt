@@ -1,8 +1,11 @@
 package com.mercateo.jsonschema.mapper
 
+import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyDescriptor
-import com.nhaarman.mockito_kotlin.mock
+import com.mercateo.jsonschema.property.PropertyType
+import io.mockk.every
+import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -23,8 +26,17 @@ class ObjectContextTest {
 
     @Before
     fun setup() {
-        outer = Property("#", mock<PropertyDescriptor<PropertyA>> {}, { x: Nothing -> null }, emptyMap(), Property.Context.Unconnected)
-        inner = Property("inner", mock<PropertyDescriptor<PropertyB>> {}, { x: PropertyA -> x.inner }, emptyMap(), Property.Context.Unconnected)
+        val propertyDescriptorA = mockk<PropertyDescriptor<PropertyA>> {}
+        every { propertyDescriptorA.children } returns emptyList()
+        every { propertyDescriptorA.genericType } returns GenericType.of(PropertyA::class.java)
+        every { propertyDescriptorA.propertyType } returns PropertyType.OBJECT
+        outer = Property("#", propertyDescriptorA, { x: Nothing -> null }, emptyMap(), Property.Context.Unconnected)
+
+        val propertyDescriptorB = mockk<PropertyDescriptor<PropertyB>> {}
+        every { propertyDescriptorB.children } returns emptyList()
+        every { propertyDescriptorB.genericType } returns GenericType.of(PropertyB::class.java)
+        every { propertyDescriptorB.propertyType } returns PropertyType.OBJECT
+        inner = Property("inner", propertyDescriptorB, { x: PropertyA -> x.inner }, emptyMap(), Property.Context.Unconnected)
     }
 
     @Test
