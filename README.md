@@ -93,4 +93,14 @@ Property<Foo, String> bar;
 Property<Foo, String> qux;
 ```
 
+# Benchmarks
 
+current results
+
+```
+Benchmark                         Mode  Cnt        Score        Error  Units
+Benchmarks.createRepeatedSchema  thrpt   10  1847783.024 ± 366533.953  ops/s
+Benchmarks.createSchema          thrpt   10   234140.670 ±  34461.239  ops/s
+```
+
+`createSchema` creates `SchemaGenerator` and schema for each iteration, `createdRepeatedSchema` uses caching in the `SchemaGenerator` for schema creation
