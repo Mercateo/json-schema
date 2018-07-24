@@ -1,6 +1,10 @@
-package com.mercateo.jsonschema.property
+package com.mercateo.jsonschema.property.mapper
 
+import com.mercateo.jsonschema.property.BasicPropertyBuilder
+import com.mercateo.jsonschema.property.PropertyBuilderWrapper
+import com.mercateo.jsonschema.property.PropertyDescriptor
 import com.mercateo.jsonschema.property.collector.FieldCollector
+import com.mercateo.jsonschema.property.from
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -32,6 +36,7 @@ class ReferencedPropertyMapperTest {
         assertThat(child.name).isEqualTo("property")
         assertThat(child.path).isEqualTo("#/property")
         assertThat(child.reference).isNull()
+        assertThat(child.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
     }
 
     @Test
@@ -48,12 +53,14 @@ class ReferencedPropertyMapperTest {
         assertThat(listChild.name).isEqualTo("children")
         assertThat(listChild.path).isEqualTo("#/children")
         assertThat(listChild.reference).isNull()
+        assertThat(listChild.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
 
         val listType = listChild.children.first()
         assertThat(listType.children).isEmpty()
         assertThat(listType.name).isEqualTo("")
         assertThat(listType.path).isEqualTo("#/children/")
         assertThat(listType.reference).isEqualTo("#")
+        assertThat(listType.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.InnerReference::class.java)
     }
 
     @Test
@@ -70,11 +77,13 @@ class ReferencedPropertyMapperTest {
         assertThat(holder1.name).isEqualTo("holder1")
         assertThat(holder1.path).isEqualTo("#/holder1")
         assertThat(holder1.reference).isNull()
+        assertThat(holder1.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
 
         val holder2 = property.children.find { it.name == "holder2" }!!
         assertThat(holder2.children).isEmpty()
         assertThat(holder2.name).isEqualTo("holder2")
         assertThat(holder2.path).isEqualTo("#/holder2")
         assertThat(holder2.reference).isEqualTo("#/holder1")
+        assertThat(holder2.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.InnerReference::class.java)
     }
 }

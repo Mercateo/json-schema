@@ -7,6 +7,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -127,5 +129,15 @@ public class SchemaGeneratorClasses {
     public static class Unwrapped {
         @JsonUnwrapped
         public Superclass unwrapped;
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Inactive {}
+
+    public static class Checked {
+        @Inactive
+        public String foo;
+
+        public String bar;
     }
 }

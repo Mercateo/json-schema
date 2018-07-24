@@ -2,12 +2,24 @@ package com.mercateo.jsonschema.property
 
 import com.mercateo.jsonschema.generictype.GenericType
 
-interface PropertyDescriptor<T> {
-    val propertyType: PropertyType
-    val genericType: GenericType<T>
-    val context: Context
-    val annotations: Map<Class<out Annotation>, Set<Annotation>>
-    val children: List<Property<T, Any>>
+data class PropertyDescriptor<T>(
+        val propertyType: PropertyType,
+        val genericType: GenericType<T>,
+        val context: PropertyDescriptor.Context,
+        val annotations: Map<Class<out Annotation>, Set<Annotation>>
+) {
+    @Suppress("UNCHECKED_CAST")
+    val children: List<Property<T, Any>> =
+            when (context) {
+                is PropertyDescriptor.Context.Children<*> -> context.children as List<Property<T, Any>>
+                else -> emptyList()
+            }
+
+    val innerReference: Boolean =
+            when (context) {
+                is PropertyDescriptor.Context.InnerReference -> true
+                else -> false
+            }
 
     sealed class Context {
         class Children<T>(val children: List<Property<T, Any>>) : Context()

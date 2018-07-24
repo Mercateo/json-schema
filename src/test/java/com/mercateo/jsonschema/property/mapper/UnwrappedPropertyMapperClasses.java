@@ -1,4 +1,4 @@
-package com.mercateo.jsonschema.property;
+package com.mercateo.jsonschema.property.mapper;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
