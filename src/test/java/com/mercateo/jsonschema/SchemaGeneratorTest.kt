@@ -177,6 +177,13 @@ class SchemaGeneratorTest {
     }
 
     @Test
+    fun shouldRenderPolymorphism() {
+        val schema = schemaGenerator.generateSchema(Polymorphism::class.java)
+
+        assertThat(schema.toString()).isEqualTo("{\"type\":\"object\",\"properties\":{\"contact\":{\"type\":\"object\",\"anyOf\":[{\"type\":\"object\",\"properties\":{\"emailAddress\":{\"type\":\"string\"},\"@type\":{\"type\":\"string\",\"enum\":[\"email\"]}},\"required\":[\"emailAddress\"]},{\"type\":\"object\",\"properties\":{\"faxNumber\":{\"type\":\"string\"},\"personName\":{\"type\":\"string\"},\"@type\":{\"type\":\"string\",\"enum\":[\"fax\"]}},\"required\":[\"faxNumber\"]}]},\"name\":{\"type\":\"string\"}}}")
+    }
+
+    @Test
     fun shouldRemovePropertiesAccordingToPropertyCheckerResult() {
         val schema = schemaGenerator.generateSchema(SchemaGeneratorClasses.Checked::class.java, null, null, object : PropertyChecker {
             override fun test(t: Property<*, *>): Boolean {

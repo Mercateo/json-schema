@@ -1,5 +1,8 @@
 package com.mercateo.jsonschema.property;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
@@ -97,4 +100,25 @@ public class BasicPropertyBuilderClasses {
         public Double doubleValue;
     }
 
+    public static class Polymorphism {
+        public Contact contact;
+        public String name;
+    }
+
+    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
+    @JsonSubTypes({
+            @JsonSubTypes.Type(name = "email", value = EmailContact.class),
+            @JsonSubTypes.Type(name = "fax", value = FaxContact.class),
+            @JsonSubTypes.Type(name = "empty", value = EmptyContact.class)
+    })
+    interface Contact {}
+
+    public static class EmailContact implements Contact {
+        public String emailAddress;
+    }
+    public static class FaxContact implements Contact {
+        public String faxNumber;
+    }
+    public static class EmptyContact implements Contact {
+    }
 }

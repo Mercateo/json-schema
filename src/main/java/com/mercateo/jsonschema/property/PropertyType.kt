@@ -1,5 +1,5 @@
 package com.mercateo.jsonschema.property
 
 enum class PropertyType {
-    OBJECT, STRING, BOOLEAN, INTEGER, NUMBER, ARRAY;
+    OBJECT, POLY, STRING, BOOLEAN, INTEGER, NUMBER, ARRAY;
 }

@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.property
 
+import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
@@ -55,7 +56,8 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
             nestedTypes: Set<GenericType<*>>): Property<S, T> {
         val propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes)
 
-        return Property(name, propertyDescriptor, valueAccessor, annotationMapBuilder.merge(annotations, propertyDescriptor.annotations))
+        val mergedAnnotations = annotationMapBuilder.merge(annotations, propertyDescriptor.annotations)
+        return Property(name, propertyDescriptor, valueAccessor, mergedAnnotations)
     }
 
     private fun <T> getPropertyDescriptor(
@@ -96,11 +98,37 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
             else -> emptyList()
         }
 
+        val poly: List<Property<T, Any>> = when (propertyType) {
+            PropertyType.POLY -> createPolymorphicProperty(genericType, addedDescriptors, nestedTypes)
+            else -> emptyList()
+        }
+
         val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
         val sortedChildren = children.sortedBy { it.name }
-        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations))
+        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations), poly)
         addedDescriptors.put(genericType, propertyDescriptor)
         return propertyDescriptor
+    }
+
+    private fun <T> createPolymorphicProperty(
+            genericType: GenericType<T>,
+            addedDescriptors: MutablePropertyDescriptorMap,
+            nestedTypes: Set<GenericType<*>>): List<Property<T, Any>> {
+        val subtypes = readSubtypesFromAnnotations(genericType)
+
+        return subtypes.map {
+            val name = it.key;
+            val type = GenericType.of(it.value)
+            val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
+            val valueAccessor: (T) -> Any? = { throw IllegalStateException("should not happen!") }
+            from(name, type, annotationMapBuilder.createMap(*annotations), valueAccessor, addedDescriptors, nestedTypes)
+        }
+    }
+
+    private fun <T> readSubtypesFromAnnotations(genericType: GenericType<T>): Map<String, Class<*>> {
+        val jsonSubTypes = genericType.rawType.getAnnotation(JsonSubTypes::class.java)
+
+        return jsonSubTypes.value.map { it.name to it.value.java }.toMap()
     }
 
     private fun <T> createChildProperties(
