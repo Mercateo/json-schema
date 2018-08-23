@@ -74,9 +74,9 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
                     return createPropertyDescriptor(genericType, addedDescriptors, nestedTypes)
                 } else {
                     val propertyType = PropertyTypeMapper.of(genericType)
-                    val annotations = genericType.rawType.annotations
+                    val annotations = genericType.rawType.annotations.toList()
                     return PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.InnerReference,
-                            annotationMapBuilder.createMap(*annotations))
+                            annotationMapBuilder.createMap(annotations))
                 }
             }
         }
@@ -103,9 +103,9 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
             else -> emptyList()
         }
 
-        val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
+        val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
         val sortedChildren = children.sortedBy { it.name }
-        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(*annotations), poly)
+        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Context.Children(sortedChildren), annotationMapBuilder.createMap(annotations), poly)
         addedDescriptors.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }
@@ -119,9 +119,9 @@ class BasicPropertyBuilder(customUnwrappers: Map<Class<*>, (Any) -> Any?> = empt
         return subtypes.map {
             val name = it.key;
             val type = GenericType.of(it.value)
-            val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }.toTypedArray()
+            val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
             val valueAccessor: (T) -> Any? = { throw IllegalStateException("should not happen!") }
-            from(name, type, annotationMapBuilder.createMap(*annotations), valueAccessor, addedDescriptors, nestedTypes)
+            from(name, type, annotationMapBuilder.createMap(annotations), valueAccessor, addedDescriptors, nestedTypes)
         }
     }
 

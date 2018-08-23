@@ -15,18 +15,18 @@ class AnnotationCollectorTest {
 
     @Test
     fun returnsAnnotations() {
-        val annotations = AnnotationCollectorClasses.PropertyHolder::class.java.getDeclaredField("foo").annotations
+        val annotations = AnnotationCollectorClasses.PropertyHolder::class.java.getDeclaredField("foo").annotations.toList()
 
-        val result = annotationCollector.collect(*annotations)
+        val result = annotationCollector.collect(annotations)
 
         assertThat(result).hasSize(1)
     }
 
     @Test
     fun returnsNestedAnnotations() {
-        val annotations = AnnotationCollectorClasses.PropertyHolder::class.java.getDeclaredField("bar").annotations
+        val annotations = AnnotationCollectorClasses.PropertyHolder::class.java.getDeclaredField("bar").annotations.toList()
 
-        val result = annotationCollector.collect(*annotations)
+        val result = annotationCollector.collect(annotations)
 
         assertThat(result).hasSize(2)
     }
