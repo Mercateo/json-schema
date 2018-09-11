@@ -9,6 +9,7 @@ data class ObjectContext<T>(
         val allowedValues: Set<T> = emptySet()
 ) {
     val propertyDescriptor get() = property.propertyDescriptor
+
     val reference get() = property.reference
 
     fun <U> createInner(child: Property<T, U>, valueAccessor: (T) -> U?): ObjectContext<U> {

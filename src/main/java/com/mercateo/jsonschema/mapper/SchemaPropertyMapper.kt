@@ -12,8 +12,7 @@ class SchemaPropertyMapper(private val referencedElements: Set<String>) {
             Pair(PropertyType.NUMBER, NumberJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.BOOLEAN, BooleanJsonPropertyMapper(nodeFactory)),
             Pair(PropertyType.ARRAY, ArrayJsonPropertyMapper(this, nodeFactory)),
-            Pair(PropertyType.OBJECT, ObjectJsonPropertyMapper(this, nodeFactory)),
-            Pair(PropertyType.POLY, PolymorphicJsonPropertyMapper(this, nodeFactory))
+            Pair(PropertyType.OBJECT, ObjectJsonPropertyMapper(this, nodeFactory))
     )
 
     fun <T> toJson(context: ObjectContext<T>): ObjectNode {

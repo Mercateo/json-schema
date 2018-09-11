@@ -5,7 +5,7 @@ import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyDescriptor
-import com.mercateo.jsonschema.property.PropertyDescriptor.Context.Children
+import com.mercateo.jsonschema.property.PropertyDescriptor.Variant.Properties
 import java.util.concurrent.ConcurrentHashMap
 
 class UnwrappedPropertyMapper
@@ -61,7 +61,7 @@ class UnwrappedPropertyMapper
         val children = getChildren(property, addedUnwrappedProperties)
         val propertyType = property.propertyType
         val genericType = property.genericType
-        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, Children(children), property.propertyDescriptor.annotations)
+        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, Properties(children), property.propertyDescriptor.annotations)
         addedUnwrappedProperties.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }

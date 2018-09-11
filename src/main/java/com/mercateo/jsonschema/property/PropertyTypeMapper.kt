@@ -42,8 +42,6 @@ object PropertyTypeMapper {
             return TYPE_MAP[clazz]!!
         }
 
-        clazz.annotations.find { it is JsonTypeInfo }?.let { return PropertyType.POLY }
-
         return PropertyType.OBJECT
     }
 
