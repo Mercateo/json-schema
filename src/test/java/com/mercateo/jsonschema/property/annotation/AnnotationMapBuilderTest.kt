@@ -16,7 +16,7 @@ class AnnotationMapBuilderTest {
 
     @Test
     fun createMapShouldReturnEmptyMap() {
-        val annotationMap = annotationMapBuilder.createMap()
+        val annotationMap = annotationMapBuilder.createMap(emptyList())
 
         assertThat(annotationMap).isEmpty()
     }
@@ -42,19 +42,19 @@ class AnnotationMapBuilderTest {
     @Test
     fun createMapShouldReturnSingleValueMap() {
         val annotations = TestClass::class.memberProperties
-                .filter { it.name == "value" }.first().annotations.toTypedArray()
-        val annotationMap = annotationMapBuilder.createMap(*annotations)
+                .filter { it.name == "value" }.first().annotations
+        val annotationMap = annotationMapBuilder.createMap(annotations)
 
         assertThat(annotationMap).hasSize(1)
     }
 
     @Test
     fun testMerge() {
-        val annotations = TestClass::class.memberProperties.first().annotations.toTypedArray()
-        val annotationMap = annotationMapBuilder.createMap(*annotations)
+        val annotations = TestClass::class.memberProperties.first().annotations
+        val annotationMap = annotationMapBuilder.createMap(annotations)
 
-        val annotations2 = TestClass::class.memberProperties.last().annotations.toTypedArray()
-        val annotationMap2 = annotationMapBuilder.createMap(*annotations2)
+        val annotations2 = TestClass::class.memberProperties.last().annotations
+        val annotationMap2 = annotationMapBuilder.createMap(annotations2)
 
         val result = annotationMapBuilder.merge(annotationMap, annotationMap2)
 

@@ -3,7 +3,7 @@ package com.mercateo.jsonschema.property.annotation
 import java.util.*
 
 class AnnotationCollector {
-    fun collect(vararg annotations: Annotation): Array<out Annotation> {
+    fun collect(annotations: Iterable<Annotation>): List<Annotation> {
         val collectedAnnotations: MutableList<Annotation> = mutableListOf()
 
         val stack: Stack<Annotation> = Stack()
@@ -18,7 +18,7 @@ class AnnotationCollector {
                     .forEach { stack.push(it) }
         }
 
-        return collectedAnnotations.toTypedArray()
+        return collectedAnnotations
     }
 
     private fun isNotInternalAnnotation(annotation: Annotation): Boolean {
