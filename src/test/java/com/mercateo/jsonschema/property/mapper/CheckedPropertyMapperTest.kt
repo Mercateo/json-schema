@@ -7,7 +7,6 @@ import com.mercateo.jsonschema.property.collector.FieldCollector
 import com.mercateo.jsonschema.property.from
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
 import io.mockk.verifyAll
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
@@ -28,7 +27,7 @@ class CheckedPropertyMapperTest {
 
     @Test
     fun mapsProperties() {
-        val propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector())
+        val propertyBuilder = BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector()))
 
         val property = propertyBuilder.from(CheckedPropertyMapperClasses.Simple::class.java)
 
@@ -46,7 +45,7 @@ class CheckedPropertyMapperTest {
 
     @Test
     fun disablesProperties() {
-        val propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector())
+        val propertyBuilder = BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector()))
 
         val property = propertyBuilder.from(CheckedPropertyMapperClasses.Simple::class.java)
 
@@ -59,7 +58,7 @@ class CheckedPropertyMapperTest {
 
     @Test
     fun handlesNestedProperties() {
-        val propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector())
+        val propertyBuilder = BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector()))
         val referencedPropertyMapper = ReferencedPropertyMapper()
 
         val property = referencedPropertyMapper.from(

@@ -13,32 +13,35 @@ data class Property<in S, T>(
         return valueAccessor(instance)
     }
 
+    fun filterChildren(predicate: (Property<Any, Any>) -> Boolean): Property<S, T> {
+        return copy(propertyDescriptor= propertyDescriptor.filter(predicate))
+    }
+
+    fun update(updateVisitor: PropertyDescriptor.UpdateVisitor) : Property<S, T> {
+        return updateVisitor.update(this as Property<Any, Any>) as Property<S, T>
+    }
+
+    fun updateChildren(updateVisitor: PropertyDescriptor.UpdateVisitor) : Property<S, T> {
+        return copy(propertyDescriptor = propertyDescriptor.update(updateVisitor))
+    }
+
     val children: List<Property<T, Any>> = propertyDescriptor.children
 
-    val reference: String? = when (context) {
-        is Context.Connected -> {
-            context.reference
-        }
-        else -> {
-            null
-        }
-    }
+    val reference: String? = context.reference
 
-    val path: String? = when (context) {
-        is Context.Connected -> {
-            context.path
-        }
-        else -> {
-            null
-        }
-    }
+    val path: String? = context.path
 
     val genericType: GenericType<T> = propertyDescriptor.genericType
 
     val propertyType: PropertyType = propertyDescriptor.propertyType
 
-    sealed class Context {
+    sealed class Context(val path: String? = null, val reference: String? = null) {
         object Unconnected : Context()
-        class Connected(val path: String, val reference: String?) : Context()
+
+        class Connected(path: String, reference: String?) : Context(path, reference) {
+            override fun toString(): String {
+                return "Connected(path='$path', reference='$reference')"
+            }
+        }
     }
 }

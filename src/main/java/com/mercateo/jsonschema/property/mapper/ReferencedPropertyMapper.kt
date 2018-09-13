@@ -24,15 +24,15 @@ class ReferencedPropertyMapper : PropertyMapper {
             knownPaths.put(typeName, path)
         }
 
-        val context = if (reference == null) {
-            PropertyDescriptor.Context.Children(property.children.map { addPathAndReference(it, path + PATH_SEPARATOR + it.name, knownPaths) })
+        val connected = Property.Context.Connected(path, reference)
+        return if (reference == null) {
+            property.updateChildren( PropertyDescriptor.UpdateVisitor.Flat( { addPathAndReference(it, path + PATH_SEPARATOR + it.name, knownPaths) }))
+                    .copy(context = connected)
         } else {
-            PropertyDescriptor.Context.InnerReference
+            property.copy(
+                    propertyDescriptor = property.propertyDescriptor.copy(variant = PropertyDescriptor.Variant.Reference),
+                    context = connected)
         }
-
-        val propertyDescriptor = property.propertyDescriptor.copy(context = context)
-
-        return property.copy(propertyDescriptor = propertyDescriptor, context = Property.Context.Connected(path, reference))
     }
 
     companion object {

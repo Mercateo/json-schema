@@ -49,7 +49,7 @@ class SchemaGenerator(
     private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>,
                                       unwrapAnnotations: List<UnwrappedPropertyUpdater<*>>,
                                       customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilderWrapper {
-        var propertyBuilder: PropertyBuilder = BasicPropertyBuilder(customUnwrappers, *propertyCollectors.toTypedArray())
+        var propertyBuilder: PropertyBuilder = BasicPropertyBuilder(customUnwrappers = customUnwrappers, rawPropertyCollectors = propertyCollectors)
 
         var propertyMappers: MutableList<PropertyMapper> = mutableListOf()
 

@@ -25,7 +25,7 @@ class FieldCollector(
 
         return RawProperty<S, Any>(field.name,
                 fieldType,
-                annotationProcessor.collectAndGroup(*field.annotations),
+                annotationProcessor.collectAndGroup(field.annotations.toList()),
                 { instance: S -> valueAccessor(field, instance) })
     }
 

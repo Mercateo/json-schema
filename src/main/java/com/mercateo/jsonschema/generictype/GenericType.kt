@@ -5,6 +5,7 @@ import com.googlecode.gentyref.GenericTypeReflector
 import java.lang.reflect.*
 
 import java.util.Objects.requireNonNull
+import kotlin.reflect.KClass
 
 interface GenericType<out T> {
     val rawType: Class<out T>
@@ -37,6 +38,10 @@ interface GenericType<out T> {
 
         fun <T> of(type: Class<T>): GenericType<T> {
             return of(type, null)
+        }
+
+        fun of(type: KClass<*>): GenericType<Any> {
+            return of(type.java, null)
         }
 
         @SuppressWarnings("unchecked")

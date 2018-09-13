@@ -4,7 +4,6 @@ import com.mercateo.jsonschema.property.BasicPropertyBuilderClasses.*
 import com.mercateo.jsonschema.property.collector.FieldCollector
 import com.mercateo.jsonschema.property.collector.MethodCollector
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.IterableAssert
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
@@ -17,7 +16,7 @@ class BasicPropertyBuilderTest {
 
     @Before
     fun setUp() {
-        propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector(), MethodCollector())
+        propertyBuilder = BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector(), MethodCollector()))
     }
 
     @Test
@@ -44,13 +43,14 @@ class BasicPropertyBuilderTest {
 
     @Test
     fun unwrapsCustomTypes() {
-        propertyBuilder = BasicPropertyBuilder(mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
-            if (wrapper is GenericPropertyHolder<*>) {
-                wrapper.property
-            } else {
-                null
-            }
-        })), FieldCollector())
+        propertyBuilder = BasicPropertyBuilder(
+                customUnwrappers = mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
+                    if (wrapper is GenericPropertyHolder<*>) {
+                        wrapper.property
+                    } else {
+                        null
+                    }
+                })), rawPropertyCollectors = listOf(FieldCollector()))
         val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("holder")
@@ -136,8 +136,6 @@ class BasicPropertyBuilderTest {
         val firstElement1 = property.children.first()
         assertThat(getAnnotations(firstElement1)).containsExactlyInAnyOrder(Annotation1::class.java, Annotation2::class.java)
     }
-
-    fun <T> assertThat(actual: Iterable<T>) = IterableAssert(actual)
 
     private fun getAnnotations(firstElement1: Property<*, *>): Set<Class<out Annotation>> {
         return firstElement1.annotations.keys
@@ -339,5 +337,35 @@ class BasicPropertyBuilderTest {
         val property = propertyBuilder.from(TypesPropertyHolder::class.java)
 
         assertThat(property.children.find { it.name == "doubleValue" }).extracting("propertyType").contains(PropertyType.NUMBER)
+    }
+
+    @Test
+    fun shouldMapPolymorphicType() {
+        val property = propertyBuilder.from(BasicPropertyBuilderClasses.Contact::class.java)
+
+        assertThat(property.propertyType).isEqualTo(PropertyType.OBJECT)
+    }
+
+    @Test
+    fun shouldMapPolymorphicProperty() {
+        val property = propertyBuilder.from(BasicPropertyBuilderClasses.Polymorphism::class.java)
+
+        val contact = property.children.find { it.name == "contact" }
+        assertThat(contact?.propertyType).isEqualTo(PropertyType.OBJECT)
+
+        /*val polymorphicTypes = contact?.propertyDescriptor?.polymorphicSubTypes.orEmpty()
+        assertThat(polymorphicTypes).isNotEmpty()
+        assertThat(polymorphicTypes).extracting("name").contains("email")
+        assertThat(polymorphicTypes).anySatisfy {
+            assertThat(it?.name).isEqualTo("fax")
+            assertThat(it?.propertyType).isEqualTo(PropertyType.OBJECT)
+            assertThat(it?.genericType?.rawType).isSameAs(FaxContact::class.java)
+        }
+        assertThat(polymorphicTypes).anySatisfy {
+            assertThat(it?.name).isEqualTo("empty")
+            assertThat(it?.propertyType).isEqualTo(PropertyType.OBJECT)
+            assertThat(it?.genericType?.rawType).isSameAs(EmptyContact::class.java)
+            assertThat(it?.elements).isEmpty()
+        }*/
     }
 }
