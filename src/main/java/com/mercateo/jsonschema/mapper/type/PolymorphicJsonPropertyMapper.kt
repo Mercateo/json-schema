@@ -42,14 +42,15 @@ internal class PolymorphicJsonPropertyMapper(
         val enum = ArrayNode(nodeFactory)
         enum.add(typeAlias)
 
-        val type = ObjectNode(nodeFactory)
-        type.put("type", "string")
-        type.set("enum", enum)
+        val type = ObjectNode(nodeFactory).apply {
+            put("type", "string")
+            set("enum", enum)
+        }
 
-        val properties = subtypeSchema.get("properties")
-
-        if (properties is ObjectNode) {
-            properties.set("@type", type)
+        subtypeSchema.get("properties").apply {
+            if (this is ObjectNode) {
+                set("@type", type)
+            }
         }
 
         // create @type field as enumeration in the specific sub-schema
