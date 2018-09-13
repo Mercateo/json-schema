@@ -28,7 +28,7 @@ class MethodCollector(
         val methodType = GenericType.ofMethod(method, genericType.type) as GenericType<Any>
         return RawProperty<S, Any>(getPropertyName(method),
                 methodType,
-                annotationProcessor.collectAndGroup(*collectAnnotations(method).toTypedArray()),
+                annotationProcessor.collectAndGroup(collectAnnotations(method)),
                 { instance: S -> valueAccessor(method, instance) })
     }
 
