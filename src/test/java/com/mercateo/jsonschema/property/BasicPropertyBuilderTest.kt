@@ -16,7 +16,7 @@ class BasicPropertyBuilderTest {
 
     @Before
     fun setUp() {
-        propertyBuilder = BasicPropertyBuilder(emptyMap(), FieldCollector(), MethodCollector())
+        propertyBuilder = BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector(), MethodCollector()))
     }
 
     @Test
@@ -43,13 +43,14 @@ class BasicPropertyBuilderTest {
 
     @Test
     fun unwrapsCustomTypes() {
-        propertyBuilder = BasicPropertyBuilder(mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
-            if (wrapper is GenericPropertyHolder<*>) {
-                wrapper.property
-            } else {
-                null
-            }
-        })), FieldCollector())
+        propertyBuilder = BasicPropertyBuilder(
+                customUnwrappers = mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
+                    if (wrapper is GenericPropertyHolder<*>) {
+                        wrapper.property
+                    } else {
+                        null
+                    }
+                })), rawPropertyCollectors = listOf(FieldCollector()))
         val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("holder")
@@ -342,7 +343,7 @@ class BasicPropertyBuilderTest {
     fun shouldMapPolymorphicType() {
         val property = propertyBuilder.from(BasicPropertyBuilderClasses.Contact::class.java)
 
-        assertThat(property.propertyType).isEqualTo(PropertyType.POLY)
+        assertThat(property.propertyType).isEqualTo(PropertyType.OBJECT)
     }
 
     @Test
@@ -350,9 +351,9 @@ class BasicPropertyBuilderTest {
         val property = propertyBuilder.from(BasicPropertyBuilderClasses.Polymorphism::class.java)
 
         val contact = property.children.find { it.name == "contact" }
-        assertThat(contact?.propertyType).isEqualTo(PropertyType.POLY)
+        assertThat(contact?.propertyType).isEqualTo(PropertyType.OBJECT)
 
-        val polymorphicTypes = contact?.propertyDescriptor?.polymorphicSubTypes.orEmpty()
+        /*val polymorphicTypes = contact?.propertyDescriptor?.polymorphicSubTypes.orEmpty()
         assertThat(polymorphicTypes).isNotEmpty()
         assertThat(polymorphicTypes).extracting("name").contains("email")
         assertThat(polymorphicTypes).anySatisfy {
@@ -364,7 +365,7 @@ class BasicPropertyBuilderTest {
             assertThat(it?.name).isEqualTo("empty")
             assertThat(it?.propertyType).isEqualTo(PropertyType.OBJECT)
             assertThat(it?.genericType?.rawType).isSameAs(EmptyContact::class.java)
-            assertThat(it?.children).isEmpty()
-        }
+            assertThat(it?.elements).isEmpty()
+        }*/
     }
 }
