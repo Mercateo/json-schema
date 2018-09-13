@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.property
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.mercateo.jsonschema.generictype.GenericType
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -33,7 +34,6 @@ object PropertyTypeMapper {
         }
 
         val clazz = type.rawType
-
         if (Enum::class.java.isAssignableFrom(clazz)) {
             return PropertyType.STRING
         }

@@ -18,7 +18,7 @@ class UnwrappedPropertyMapperTest {
     @Before
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                BasicPropertyBuilder(emptyMap(), FieldCollector()),
+                BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector())),
                 UnwrappedPropertyMapper(object : UnwrappedPropertyUpdater<JsonUnwrapped>(JsonUnwrapped::class.java) {
                     override fun updateName(name: String, annotation: JsonUnwrapped): String {
                         return annotation.prefix + name + annotation.suffix

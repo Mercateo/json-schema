@@ -17,7 +17,7 @@ class ReferencedPropertyMapperTest {
     @Before
     fun setUp() {
         propertyBuilder = PropertyBuilderWrapper(
-                BasicPropertyBuilder(emptyMap(), FieldCollector()),
+                BasicPropertyBuilder(rawPropertyCollectors = listOf(FieldCollector())),
                 ReferencedPropertyMapper()
         )
     }
@@ -36,7 +36,7 @@ class ReferencedPropertyMapperTest {
         assertThat(child.name).isEqualTo("property")
         assertThat(child.path).isEqualTo("#/property")
         assertThat(child.reference).isNull()
-        assertThat(child.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
+        assertThat(child.propertyDescriptor.variant).isInstanceOf(PropertyDescriptor.Variant.Primitive::class.java)
     }
 
     @Test
@@ -53,14 +53,14 @@ class ReferencedPropertyMapperTest {
         assertThat(listChild.name).isEqualTo("children")
         assertThat(listChild.path).isEqualTo("#/children")
         assertThat(listChild.reference).isNull()
-        assertThat(listChild.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
+        assertThat(listChild.propertyDescriptor.variant).isInstanceOf(PropertyDescriptor.Variant.Properties::class.java)
 
         val listType = listChild.children.first()
         assertThat(listType.children).isEmpty()
         assertThat(listType.name).isEqualTo("")
         assertThat(listType.path).isEqualTo("#/children/")
         assertThat(listType.reference).isEqualTo("#")
-        assertThat(listType.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.InnerReference::class.java)
+        assertThat(listType.propertyDescriptor.variant).isInstanceOf(PropertyDescriptor.Variant.Reference::class.java)
     }
 
     @Test
@@ -77,13 +77,13 @@ class ReferencedPropertyMapperTest {
         assertThat(holder1.name).isEqualTo("holder1")
         assertThat(holder1.path).isEqualTo("#/holder1")
         assertThat(holder1.reference).isNull()
-        assertThat(holder1.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.Children::class.java)
+        assertThat(holder1.propertyDescriptor.variant).isInstanceOf(PropertyDescriptor.Variant.Properties::class.java)
 
         val holder2 = property.children.find { it.name == "holder2" }!!
         assertThat(holder2.children).isEmpty()
         assertThat(holder2.name).isEqualTo("holder2")
         assertThat(holder2.path).isEqualTo("#/holder2")
         assertThat(holder2.reference).isEqualTo("#/holder1")
-        assertThat(holder2.propertyDescriptor.context).isInstanceOf(PropertyDescriptor.Context.InnerReference::class.java)
+        assertThat(holder2.propertyDescriptor.variant).isInstanceOf(PropertyDescriptor.Variant.Reference::class.java)
     }
 }

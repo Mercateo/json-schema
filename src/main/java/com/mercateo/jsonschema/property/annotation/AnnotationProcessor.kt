@@ -5,8 +5,8 @@ class AnnotationProcessor(
         private val annotationMapBuilder: AnnotationMapBuilder = AnnotationMapBuilder()
 ) {
 
-    fun collectAndGroup(vararg annotations: Annotation): Map<Class<out Annotation>, Set<Annotation>> {
-        val allAnnotations = annotationCollector.collect(*annotations)
-        return annotationMapBuilder.createMap(*allAnnotations)
+    fun collectAndGroup(annotations: Iterable<Annotation>): Map<Class<out Annotation>, Set<Annotation>> {
+        val allAnnotations = annotationCollector.collect(annotations)
+        return annotationMapBuilder.createMap(allAnnotations)
     }
 }
