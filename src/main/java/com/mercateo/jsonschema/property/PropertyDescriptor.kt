@@ -6,7 +6,8 @@ data class PropertyDescriptor<T>(
         val propertyType: PropertyType,
         val genericType: GenericType<T>,
         val context: PropertyDescriptor.Context,
-        val annotations: Map<Class<out Annotation>, Set<Annotation>>
+        val annotations: Map<Class<out Annotation>, Set<Annotation>>,
+        val polymorphicSubTypes: List<Property<T, Any>> = emptyList()
 ) {
     @Suppress("UNCHECKED_CAST")
     val children: List<Property<T, Any>> =
