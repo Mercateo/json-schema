@@ -9,8 +9,7 @@ import com.mercateo.jsonschema.mapper.type.internal.PolymorphicObjectMapper
 import com.mercateo.jsonschema.property.PropertyDescriptor
 
 internal class ObjectJsonPropertyMapper(
-        private val schemaPropertyMapper: SchemaPropertyMapper
-        ,
+        schemaPropertyMapper: SchemaPropertyMapper ,
         private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
 
@@ -24,19 +23,19 @@ internal class ObjectJsonPropertyMapper(
         polymorphicObjectMapper = PolymorphicObjectMapper(nodeFactory, schemaPropertyMapper)
     }
 
-    override fun toJson(properties: ObjectContext<*>): ObjectNode {
+    override fun toJson(property: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)
 
         propertyNode.put("type", "object")
 
-        val variant = properties.propertyDescriptor.variant
+        val variant = property.propertyDescriptor.variant
 
         when (variant) {
             is PropertyDescriptor.Variant.Properties<*> -> {
-                defaultObjectMapper.addStandardObjectSchema(variant as PropertyDescriptor.Variant.Properties<Any>, properties as ObjectContext<Any>, propertyNode)
+                defaultObjectMapper.addStandardObjectSchema(variant as PropertyDescriptor.Variant.Properties<Any>, property as ObjectContext<Any>, propertyNode)
             }
             is PropertyDescriptor.Variant.Polymorphic -> {
-                polymorphicObjectMapper.addPolymorphicObjectSchema(variant, properties as ObjectContext<Any>, propertyNode)
+                polymorphicObjectMapper.addPolymorphicObjectSchema(variant, property as ObjectContext<Any>, propertyNode)
             }
         }
 

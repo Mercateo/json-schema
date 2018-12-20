@@ -1,11 +1,10 @@
 package com.mercateo.jsonschema.generictype
 
-import kotlin.coroutines.experimental.buildSequence
 
 class GenericTypeHierarchy {
     fun hierarchy(genericType: GenericType<*>): Sequence<GenericType<*>> {
 
-        return buildSequence {
+        return sequence {
             var currentType: GenericType<*>? = genericType
 
             while (currentType != null) {
