@@ -25,7 +25,7 @@ class MethodCollector(
     }
 
     private fun <S> mapRawDataProperty(method: Method, genericType: GenericType<S>): RawProperty<S, *> {
-        val methodType = GenericType.ofMethod(method, genericType.type) as GenericType<Any>
+        val methodType = GenericType.ofMethod(method, genericType.type)
         return RawProperty<S, Any>(getPropertyName(method),
                 methodType,
                 annotationProcessor.collectAndGroup(collectAnnotations(method)),

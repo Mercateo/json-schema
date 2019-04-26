@@ -104,8 +104,7 @@ class BasicPropertyBuilder(
 
             PropertyType.ARRAY -> {
                 val containedType = genericType.containedType as GenericType<Any>
-                val typeValue = TypeValue(containedType as GenericType<Any>, "")
-                PropertyDescriptor.Variant.Properties<T>(listOf(from("", containedType, mutableMapOf(), { o -> null }, addedDescriptors, nestedTypes)))
+                PropertyDescriptor.Variant.Properties<T>(listOf(from("", containedType, mutableMapOf(), { _ -> null }, addedDescriptors, nestedTypes)))
             }
 
             else -> PropertyDescriptor.Variant.Primitive
