@@ -55,7 +55,7 @@ interface GenericType<out T> {
             } else if (type is GenericArrayType) {
                 return GenericArray(type, requireNonNull<Class<T>>(rawType))
             }
-            run { throw IllegalStateException("unhandled type " + type) }
+            run { throw IllegalStateException("unhandled type $type") }
         }
 
         fun ofField(field: Field, type: Type): GenericType<Any> {
