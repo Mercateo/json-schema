@@ -17,7 +17,7 @@ internal class IntegerJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {
         val nodeCreator = { value: Int -> IntNode(value) }
-        val propertyNode = primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Int>)
+        @Suppress("UNCHECKED_CAST") val propertyNode = primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Int>)
                 .withType("integer").withDefaultAndAllowedValues(nodeCreator).build()
 
         property.property.annotations.get(Max::class.java)

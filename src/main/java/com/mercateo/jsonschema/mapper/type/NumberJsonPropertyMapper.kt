@@ -16,6 +16,7 @@ internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonProp
     }
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {
+        @Suppress("UNCHECKED_CAST")
         return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Number>) //
                 .withType("number").withDefaultAndAllowedValues(this::createNode).build()
     }
