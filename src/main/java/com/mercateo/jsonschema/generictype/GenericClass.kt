@@ -14,18 +14,6 @@ internal class GenericClass<T>(type: Class<T>) : GenericTypeAbstract<T, Class<*>
             throw IllegalAccessError("GenericClass $simpleName has no contained type")
         }
 
-    override val superType: GenericType<Any>?
-        get() {
-            val superclass = rawType.superclass as Class<out Any>?
-            return if (superclass != null) {
-                val exactSuperType: Type = GenericTypeReflector.getExactSuperType(
-                        rawType, superclass)
-                GenericType.of(exactSuperType, superclass)
-            } else {
-                null
-            }
-        }
-
     override val isIterable: Boolean
         get() = rawType.isArray
 

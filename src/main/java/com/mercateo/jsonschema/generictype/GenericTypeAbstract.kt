@@ -1,5 +1,6 @@
 package com.mercateo.jsonschema.generictype
 
+import com.googlecode.gentyref.GenericTypeReflector
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.lang.reflect.Type
@@ -33,6 +34,18 @@ internal abstract class GenericTypeAbstract<out T, out U : Type>(
     override val declaredMethods: Array<Method>
         get() = rawType.declaredMethods
 
+    override val superType: GenericType<Any>?
+        get() {
+            val superclass = rawType.superclass as Class<out Any>?
+            return if (superclass != null) {
+                val exactSuperType: Type = GenericTypeReflector.getExactSuperType(
+                        type, superclass)
+                GenericType.of(exactSuperType, superclass)
+            } else {
+                null
+            }
+        }
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other == null || !GenericType::class.java.isAssignableFrom(other.javaClass)) {
@@ -47,3 +60,4 @@ internal abstract class GenericTypeAbstract<out T, out U : Type>(
         return Objects.hash(type, type)
     }
 }
+
