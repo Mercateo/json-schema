@@ -11,10 +11,10 @@ internal class GenericJsonPropertyMapper(private val nodeFactory: JsonNodeFactor
     fun <T> addDefaultAndAllowedValues(propertyNode: ObjectNode, property: ObjectContext<T>,
                                        nodeCreator: (T) -> JsonNode) {
         if (hasDefaultValue(property)) {
-            propertyNode.set("default", getDefaultValue(property, nodeCreator))
+            propertyNode.set<ObjectNode>("default", getDefaultValue(property, nodeCreator))
         }
         if (hasAllowedValues(property)) {
-            propertyNode.set("enum", getAllowedValues(property, nodeCreator))
+            propertyNode.set<ObjectNode>("enum", getAllowedValues(property, nodeCreator))
         }
     }
 

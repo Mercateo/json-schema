@@ -70,5 +70,4 @@ interface GenericType<out T> {
             return of(returnType, returnClass)
         }
     }
-
 }

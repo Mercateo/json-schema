@@ -22,6 +22,6 @@ data class ObjectContext<T>(
 
         val defaultValue = defaultValue?.let(valueAccessor)
 
-        return ObjectContext<U>(child, defaultValue, allowedValues)
+        return ObjectContext(child, defaultValue, allowedValues)
     }
 }

@@ -18,11 +18,11 @@ class DefaultObjectMapper(
     fun <T> addStandardObjectSchema(variant: PropertyDescriptor.Variant.Properties<T>, properties: ObjectContext<T>, propertyNode: ObjectNode) {
         val objectNode = ObjectNode(nodeFactory)
         for (property in variant.children) {
-            objectNode.set(property.name, schemaPropertyMapper.toJson(
+            objectNode.set<ObjectNode>(property.name, schemaPropertyMapper.toJson(
                     properties.createInner(property, property.valueAccessor)
             ))
         }
-        propertyNode.set("properties", objectNode)
+        propertyNode.set<ObjectNode>("properties", objectNode)
 
         addRequiredElements(properties, propertyNode)
     }
@@ -34,7 +34,7 @@ class DefaultObjectMapper(
         val requiredElements = arrayNode
 
         if (requiredElements.size() > 0) {
-            propertyNode.set("required", requiredElements)
+            propertyNode.set<ObjectNode>("required", requiredElements)
         }
     }
 

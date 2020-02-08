@@ -25,5 +25,4 @@ internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Cla
     override fun toString(): String {
         return type.toString()
     }
-
 }

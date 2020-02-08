@@ -39,7 +39,7 @@ internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFac
             if (!propertyNode.has("enum")) {
                 val arrayNode = ArrayNode(nodeFactory)
                 enumConstants.map(nodeCreator).forEach({ arrayNode.add(it) })
-                propertyNode.set("enum", arrayNode)
+                propertyNode.set<ObjectNode>("enum", arrayNode)
             }
             return this
         }

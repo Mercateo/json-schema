@@ -13,9 +13,9 @@ internal class ArrayJsonPropertyMapper(
     override fun toJson(property: ObjectContext<*>): ObjectNode {
         val propertyNode = ObjectNode(nodeFactory)
         propertyNode.put("type", "array")
-        propertyNode.set("items", schemaPropertyMapper.toJson(ObjectContext(property.property.children[0])));
+        propertyNode.set<ObjectNode>("items", schemaPropertyMapper.toJson(ObjectContext(property.property.children[0])))
         /*jsonProperty.sizeConstraints.min?.let { propertyNode.put("minItems", it) }
         jsonProperty.sizeConstraints.max?.let { propertyNode.put("maxItems", it) }*/
-        return propertyNode;
+        return propertyNode
     }
 }

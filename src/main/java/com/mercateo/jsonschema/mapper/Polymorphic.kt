@@ -12,13 +12,10 @@ class Polymorphic {
 
     fun getSubTypes(genericType: GenericType<Any>): List<TypeValue<Any>> {
         val jsonSubTypes = genericType.rawType.getAnnotation(JsonSubTypes::class.java)
-        return if (jsonSubTypes != null) {
-            jsonSubTypes.value.map {
-                TypeValue(name = it.name, type = GenericType.of(it.value))
-            }
-        } else {
-            listOf(TypeValue(name = genericType.name, type = genericType))
+        return jsonSubTypes?.value?.map {
+            TypeValue(name = it.name, type = GenericType.of(it.value))
         }
+                ?: listOf(TypeValue(name = genericType.name, type = genericType))
     }
 }
 
