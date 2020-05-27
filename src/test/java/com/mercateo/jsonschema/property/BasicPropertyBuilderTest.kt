@@ -4,7 +4,6 @@ import com.mercateo.jsonschema.property.BasicPropertyBuilderClasses.*
 import com.mercateo.jsonschema.property.collector.FieldCollector
 import com.mercateo.jsonschema.property.collector.MethodCollector
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.ListAssert
 import org.junit.Before
 import org.junit.Test
 import org.slf4j.LoggerFactory
@@ -145,7 +144,7 @@ class BasicPropertyBuilderTest {
     @Test
     @Throws(Exception::class)
     fun returnInheritedProperty() {
-        val property = propertyBuilder.from(BasicPropertyBuilderClasses.InheritedPropertyHolder::class.java)
+        val property = propertyBuilder.from(InheritedPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("property")
     }
@@ -212,7 +211,7 @@ class BasicPropertyBuilderTest {
         val collectionElement: Property<CollectionPropertyHolder, Any> = property.children.first()
         val collectionTypeElement: Property<Any, out Any?> = collectionElement.children.first()
 
-        assertThat(collectionTypeElement).isNotNull()
+        assertThat(collectionTypeElement).isNotNull
         assertThat(collectionTypeElement.name).isEqualTo("")
         assertThat(collectionTypeElement.annotations.values).isEmpty()
         assertThat(collectionTypeElement.genericType.rawType).isEqualTo(String::class.java)
@@ -230,14 +229,14 @@ class BasicPropertyBuilderTest {
         val collectionElement = property.children.first()
 
         val collectionTypeElement = collectionElement.children.first()
-        assertThat(collectionTypeElement).isNotNull()
+        assertThat(collectionTypeElement).isNotNull
         assertThat(collectionTypeElement.name).isEqualTo("")
         assertThat(collectionTypeElement.annotations.values).isEmpty()
         assertThat(collectionTypeElement.genericType.rawType).isEqualTo(Array<String>::class.java)
 
         val nestedCollectionTypeElement = collectionTypeElement.children.first()
 
-        assertThat(nestedCollectionTypeElement).isNotNull()
+        assertThat(nestedCollectionTypeElement).isNotNull
         assertThat(nestedCollectionTypeElement.name).isEqualTo("")
         assertThat(nestedCollectionTypeElement.genericType.rawType).isEqualTo(String::class.java)
         assertThat(nestedCollectionTypeElement.annotations.values).isEmpty()
@@ -342,14 +341,14 @@ class BasicPropertyBuilderTest {
 
     @Test
     fun shouldMapPolymorphicType() {
-        val property = propertyBuilder.from(BasicPropertyBuilderClasses.Contact::class.java)
+        val property = propertyBuilder.from(Contact::class.java)
 
         assertThat(property.propertyType).isEqualTo(PropertyType.OBJECT)
     }
 
     @Test
     fun shouldMapPolymorphicProperty() {
-        val property = propertyBuilder.from(BasicPropertyBuilderClasses.Polymorphism::class.java)
+        val property = propertyBuilder.from(Polymorphism::class.java)
 
         val contact = property.children.find { it.name == "contact" }
         assertThat(contact?.propertyType).isEqualTo(PropertyType.OBJECT)

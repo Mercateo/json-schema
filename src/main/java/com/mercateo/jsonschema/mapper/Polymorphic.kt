@@ -15,11 +15,11 @@ class Polymorphic {
         return jsonSubTypes?.value?.map {
             TypeValue(name = it.name, type = GenericType.of(it.value))
         }
-                ?: listOf(TypeValue(name = genericType.name, type = genericType))
+            ?: listOf(TypeValue(name = genericType.name, type = genericType))
     }
 }
 
 data class TypeValue<T>(
-        val type: GenericType<T>,
-        val name: String
+    val type: GenericType<T>,
+    val name: String
 )

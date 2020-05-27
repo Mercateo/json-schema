@@ -61,7 +61,7 @@ class SchemaGeneratorTest {
         defaultValue.baar = 100L
         defaultValue.baz = 4.8f
         defaultValue.qux = 5.1
-        defaultValue.quux = true;
+        defaultValue.quux = true
 
         val schema = schemaGenerator.generateSchema(schemaClass, defaultValue = defaultValue)
 
@@ -74,11 +74,11 @@ class SchemaGeneratorTest {
 
         val allowedValue = SchemaGeneratorClasses.Simple()
         allowedValue.foo = "foo"
-        allowedValue.bar = 10;
+        allowedValue.bar = 10
         allowedValue.baar = 100L
-        allowedValue.baz = 4.8f;
+        allowedValue.baz = 4.8f
         allowedValue.qux = 5.1
-        allowedValue.quux = true;
+        allowedValue.quux = true
 
         val schema = schemaGenerator.generateSchema(schemaClass, allowedValues = arrayOf(allowedValue))
 

@@ -22,7 +22,6 @@ class MutablePropertyDescriptorMap {
     }
 
     fun <T> put(genericType: GenericType<T>, propertyDescriptor: PropertyDescriptor<T>) {
-        map.put(genericType, propertyDescriptor)
+        map[genericType] = propertyDescriptor
     }
-
 }

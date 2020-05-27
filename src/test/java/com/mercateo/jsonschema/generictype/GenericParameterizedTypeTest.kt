@@ -57,7 +57,7 @@ class GenericParameterizedTypeTest {
 
         val superType = genericType.superType
 
-        assertThat(superType).isNull();
+        assertThat(superType).isNull()
     }
 
 }

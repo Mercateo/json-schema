@@ -8,8 +8,10 @@ import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class GenericJsonPropertyMapper(private val nodeFactory: JsonNodeFactory) {
 
-    fun <T> addDefaultAndAllowedValues(propertyNode: ObjectNode, property: ObjectContext<T>,
-                                       nodeCreator: (T) -> JsonNode) {
+    fun <T> addDefaultAndAllowedValues(
+        propertyNode: ObjectNode, property: ObjectContext<T>,
+        nodeCreator: (T) -> JsonNode
+    ) {
         if (hasDefaultValue(property)) {
             propertyNode.set<ObjectNode>("default", getDefaultValue(property, nodeCreator))
         }
@@ -19,12 +21,12 @@ internal class GenericJsonPropertyMapper(private val nodeFactory: JsonNodeFactor
     }
 
     private fun hasAllowedValues(jsonProperty: ObjectContext<*>): Boolean {
-        return !jsonProperty.allowedValues.isEmpty()
+        return jsonProperty.allowedValues.isNotEmpty()
     }
 
     private fun <T> getAllowedValues(jsonProperty: ObjectContext<T>, nodeCreator: (T) -> JsonNode): ArrayNode {
         val arrayNode = ArrayNode(nodeFactory)
-        jsonProperty.allowedValues.map(nodeCreator).forEach({ arrayNode.add(it) })
+        jsonProperty.allowedValues.map(nodeCreator).forEach { arrayNode.add(it) }
         return arrayNode
     }
 

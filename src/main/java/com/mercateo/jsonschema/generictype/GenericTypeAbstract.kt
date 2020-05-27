@@ -8,8 +8,8 @@ import java.util.*
 import java.util.Objects.requireNonNull
 
 internal abstract class GenericTypeAbstract<out T, out U : Type>(
-        override val rawType: Class<out T>,
-        override val type: U
+    override val rawType: Class<out T>,
+    override val type: U
 ) : GenericType<T> {
 
     override val simpleName: String
@@ -39,7 +39,8 @@ internal abstract class GenericTypeAbstract<out T, out U : Type>(
             val superclass = rawType.superclass as Class<out Any>?
             return if (superclass != null) {
                 val exactSuperType: Type = GenericTypeReflector.getExactSuperType(
-                        type, superclass)
+                    type, superclass
+                )
                 GenericType.of(exactSuperType, superclass)
             } else {
                 null

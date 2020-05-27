@@ -5,6 +5,7 @@ import com.mercateo.jsonschema.property.Property
 
 
 data class SchemaContext(
-        val propertyChecker: PropertyChecker = object : PropertyChecker {
-            override fun test(t: Property<*, *>): Boolean = true
-        })
+    val propertyChecker: PropertyChecker = object : PropertyChecker {
+        override fun test(t: Property<*, *>): Boolean = true
+    }
+)

@@ -14,8 +14,8 @@ class AnnotationCollector {
             collectedAnnotations.add(annotation)
 
             annotation.annotationClass.annotations
-                    .filter(this::isNotInternalAnnotation)
-                    .forEach { stack.push(it) }
+                .filter(this::isNotInternalAnnotation)
+                .forEach { stack.push(it) }
         }
 
         return collectedAnnotations

@@ -1,6 +1,5 @@
 package com.mercateo.jsonschema.property
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.mercateo.jsonschema.generictype.GenericType
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -10,23 +9,24 @@ import java.util.*
 object PropertyTypeMapper {
 
     private val TYPE_MAP = mapOf(
-            Pair(String::class.java, PropertyType.STRING),
-            Pair(Boolean::class.java, PropertyType.BOOLEAN),
-            Pair(java.lang.Boolean::class.java, PropertyType.BOOLEAN),
-            Pair(Int::class.java, PropertyType.INTEGER),
-            Pair(java.lang.Integer::class.java, PropertyType.INTEGER),
-            Pair(Long::class.java, PropertyType.INTEGER),
-            Pair(java.lang.Long::class.java, PropertyType.INTEGER),
-            Pair(Float::class.java, PropertyType.NUMBER),
-            Pair(java.lang.Float::class.java, PropertyType.NUMBER),
-            Pair(Double::class.java, PropertyType.NUMBER),
-            Pair(java.lang.Double::class.java, PropertyType.NUMBER),
-            Pair(Number::class.java, PropertyType.NUMBER),
-            Pair(java.lang.Number::class.java, PropertyType.NUMBER),
-            Pair(BigInteger::class.java, PropertyType.INTEGER),
-            Pair(BigDecimal::class.java, PropertyType.NUMBER),
-            Pair(UUID::class.java, PropertyType.STRING),
-            Pair(Instant::class.java, PropertyType.STRING))
+        Pair(String::class.java, PropertyType.STRING),
+        Pair(Boolean::class.java, PropertyType.BOOLEAN),
+        Pair(java.lang.Boolean::class.java, PropertyType.BOOLEAN),
+        Pair(Int::class.java, PropertyType.INTEGER),
+        Pair(java.lang.Integer::class.java, PropertyType.INTEGER),
+        Pair(Long::class.java, PropertyType.INTEGER),
+        Pair(java.lang.Long::class.java, PropertyType.INTEGER),
+        Pair(Float::class.java, PropertyType.NUMBER),
+        Pair(java.lang.Float::class.java, PropertyType.NUMBER),
+        Pair(Double::class.java, PropertyType.NUMBER),
+        Pair(java.lang.Double::class.java, PropertyType.NUMBER),
+        Pair(Number::class.java, PropertyType.NUMBER),
+        Pair(java.lang.Number::class.java, PropertyType.NUMBER),
+        Pair(BigInteger::class.java, PropertyType.INTEGER),
+        Pair(BigDecimal::class.java, PropertyType.NUMBER),
+        Pair(UUID::class.java, PropertyType.STRING),
+        Pair(Instant::class.java, PropertyType.STRING)
+    )
 
     fun of(type: GenericType<*>): PropertyType {
         if (type.isIterable) {

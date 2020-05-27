@@ -6,8 +6,8 @@ import com.mercateo.jsonschema.mapper.ObjectContext
 import com.mercateo.jsonschema.mapper.SchemaPropertyMapper
 
 internal class ArrayJsonPropertyMapper(
-        private val schemaPropertyMapper: SchemaPropertyMapper,
-        private val nodeFactory: JsonNodeFactory
+    private val schemaPropertyMapper: SchemaPropertyMapper,
+    private val nodeFactory: JsonNodeFactory
 ) : JsonPropertyMapper {
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {

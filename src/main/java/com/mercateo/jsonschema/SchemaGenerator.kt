@@ -11,9 +11,9 @@ import com.mercateo.jsonschema.property.mapper.*
 import java.util.function.Function
 
 class SchemaGenerator(
-        unwrapAnnotations: List<UnwrappedPropertyUpdater<*>> = emptyList(),
-        propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector()),
-        customUnwrappers: Map<Class<*>, Function<Any, Any?>> = emptyMap()
+    unwrapAnnotations: List<UnwrappedPropertyUpdater<*>> = emptyList(),
+    propertyCollectors: List<RawPropertyCollector> = listOf(MethodCollector()),
+    customUnwrappers: Map<Class<*>, Function<Any, Any?>> = emptyMap()
 ) {
 
     private val propertyBuilder: PropertyBuilderWrapper
@@ -21,37 +21,44 @@ class SchemaGenerator(
     private val schemaMapper: SchemaMapper
 
     init {
-        val convertedCustomUnwrappers: Map<Class<*>, (Any) -> Any?> = customUnwrappers.mapValues { entry -> { x: Any -> entry.value.apply(x) } }
+        val convertedCustomUnwrappers: Map<Class<*>, (Any) -> Any?> =
+            customUnwrappers.mapValues { entry -> { x: Any -> entry.value.apply(x) } }
 
         propertyBuilder = createPropertyBuilder(propertyCollectors, unwrapAnnotations, convertedCustomUnwrappers)
         schemaMapper = SchemaMapper()
     }
 
     @JvmOverloads
-    fun <T> generateSchema(elementType: GenericType<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
-                           propertyChecker: PropertyChecker = defaultPropertyChecker
+    fun <T> generateSchema(
+        elementType: GenericType<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
+        propertyChecker: PropertyChecker = defaultPropertyChecker
     ): ObjectNode {
 
         val property = propertyBuilder.from(elementType, SchemaContext(propertyChecker))
 
-        val objectContext = ObjectContext(property, defaultValue, if (allowedValues != null) setOf(*allowedValues) else emptySet())
+        val objectContext =
+            ObjectContext(property, defaultValue, if (allowedValues != null) setOf(*allowedValues) else emptySet())
 
         return schemaMapper.toJson(objectContext)
     }
 
     @JvmOverloads
-    fun <T> generateSchema(elementClass: Class<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
-                           propertyChecker: PropertyChecker = defaultPropertyChecker
+    fun <T> generateSchema(
+        elementClass: Class<T>, defaultValue: T? = null, allowedValues: Array<T>? = null,
+        propertyChecker: PropertyChecker = defaultPropertyChecker
     ): ObjectNode {
         return generateSchema(GenericType.of(elementClass), defaultValue, allowedValues, propertyChecker)
     }
 
-    private fun createPropertyBuilder(propertyCollectors: List<RawPropertyCollector>,
-                                      unwrapAnnotations: List<UnwrappedPropertyUpdater<*>>,
-                                      customUnwrappers: Map<Class<*>, (Any) -> Any?>): PropertyBuilderWrapper {
-        var propertyBuilder: PropertyBuilder = BasicPropertyBuilder(customUnwrappers = customUnwrappers, rawPropertyCollectors = propertyCollectors)
+    private fun createPropertyBuilder(
+        propertyCollectors: List<RawPropertyCollector>,
+        unwrapAnnotations: List<UnwrappedPropertyUpdater<*>>,
+        customUnwrappers: Map<Class<*>, (Any) -> Any?>
+    ): PropertyBuilderWrapper {
+        val propertyBuilder: PropertyBuilder =
+            BasicPropertyBuilder(customUnwrappers = customUnwrappers, rawPropertyCollectors = propertyCollectors)
 
-        var propertyMappers: MutableList<PropertyMapper> = mutableListOf()
+        val propertyMappers: MutableList<PropertyMapper> = mutableListOf()
 
         PropertyBuilderWrapper(propertyBuilder)
         if (unwrapAnnotations.isNotEmpty()) {

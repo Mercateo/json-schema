@@ -9,15 +9,22 @@ import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyDescriptor
 
 class PolymorphicObjectMapper(
-        private val nodeFactory: JsonNodeFactory,
-        private val schemaPropertyMapper: SchemaPropertyMapper
+    private val nodeFactory: JsonNodeFactory,
+    private val schemaPropertyMapper: SchemaPropertyMapper
 ) {
 
-    fun addPolymorphicObjectSchema(variant: PropertyDescriptor.Variant.Polymorphic, properties: ObjectContext<Any>, objectNode: ObjectNode) {
+    fun addPolymorphicObjectSchema(
+        variant: PropertyDescriptor.Variant.Polymorphic,
+        properties: ObjectContext<Any>,
+        objectNode: ObjectNode
+    ) {
         objectNode.set<ObjectNode>("anyOf", createPossibleTypeSchemas(variant.elements, properties))
     }
 
-    private fun createPossibleTypeSchemas(polymorphicTypes: List<Property<Any, Any>>, properties: ObjectContext<Any>): ArrayNode {
+    private fun createPossibleTypeSchemas(
+        polymorphicTypes: List<Property<Any, Any>>,
+        properties: ObjectContext<Any>
+    ): ArrayNode {
         val subtypeSchemas = ArrayNode(nodeFactory)
 
         for (subType in polymorphicTypes) {

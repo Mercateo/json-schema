@@ -9,27 +9,28 @@ import java.lang.reflect.Modifier
 import java.util.*
 
 class MethodCollector(
-        private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
+    private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
 ) : RawPropertyCollector {
 
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
         val declaredMethods = genericType.declaredMethods
         return sequenceOf(*declaredMethods)
-                .filter { !it.isSynthetic }
-                .filter { it.declaringClass != Any::class.java }
-                .filter { it.returnType != Void.TYPE }
-                .filter { !it.overridesObject }
-                .filter { it.parameterCount == 0 }
-                .filter { !Modifier.isStatic(it.modifiers) }
-                .map { mapRawDataProperty(method = it, genericType = genericType) }
+            .filter { !it.isSynthetic }
+            .filter { it.declaringClass != Any::class.java }
+            .filter { it.returnType != Void.TYPE }
+            .filter { !it.overridesObject }
+            .filter { it.parameterCount == 0 }
+            .filter { !Modifier.isStatic(it.modifiers) }
+            .map { mapRawDataProperty(method = it, genericType = genericType) }
     }
 
     private fun <S> mapRawDataProperty(method: Method, genericType: GenericType<S>): RawProperty<S, *> {
         val methodType = GenericType.ofMethod(method, genericType.type)
-        return RawProperty<S, Any>(getPropertyName(method),
-                methodType,
-                annotationProcessor.collectAndGroup(collectAnnotations(method)),
-                { instance: S -> valueAccessor(method, instance) })
+        return RawProperty(
+            getPropertyName(method),
+            methodType,
+            annotationProcessor.collectAndGroup(collectAnnotations(method))
+        ) { instance: S -> valueAccessor(method, instance) }
     }
 
     private fun getPropertyName(method: Method): String {
@@ -47,7 +48,7 @@ class MethodCollector(
         return method.invoke(instance)
     }
 
-    fun collectAnnotations(rootMethod: Method): Set<Annotation> {
+    private fun collectAnnotations(rootMethod: Method): Set<Annotation> {
         val annotations: MutableSet<Annotation> = mutableSetOf()
 
         val stack: Stack<Method> = Stack()
@@ -90,12 +91,11 @@ class MethodCollector(
 
 private val Method.overridesObject: Boolean
     get() {
-        var clazz = this.declaringClass
+        var clazz: Class<*>? = this.declaringClass
 
         while (clazz != null) {
             val overridesMethod = clazz.declaredMethods.filter { it.name == this.name }
-                    .filter { Arrays.equals(it.parameterTypes, this.parameterTypes) }
-                    .isNotEmpty()
+                .any { Arrays.equals(it.parameterTypes, this.parameterTypes) }
 
             if (overridesMethod && clazz == Object::class.java) {
                 return true

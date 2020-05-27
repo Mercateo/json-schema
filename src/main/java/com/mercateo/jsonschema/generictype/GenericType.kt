@@ -33,7 +33,7 @@ interface GenericType<out T> {
     companion object {
 
         fun of(type: Type): GenericType<Any> {
-            return of<Any>(type, null)
+            return of(type, null)
         }
 
         fun <T> of(type: Class<T>): GenericType<T> {

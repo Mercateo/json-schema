@@ -4,8 +4,8 @@ import com.googlecode.gentyref.GenericTypeReflector
 import java.lang.reflect.GenericArrayType
 
 internal class GenericArray<T>(
-        arrayType: GenericArrayType,
-        rawType: Class<T>
+    arrayType: GenericArrayType,
+    rawType: Class<T>
 ) : GenericTypeAbstract<T, GenericArrayType>(rawType, arrayType) {
 
     override val simpleName: String

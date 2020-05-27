@@ -12,30 +12,47 @@ class ReferencedPropertyMapper : PropertyMapper {
 
     override fun <S, T> from(property: Property<S, T>, schemaContext: SchemaContext): Property<S, T> {
         @Suppress("UNCHECKED_CAST")
-        return knownRootElements.computeIfAbsent(property.genericType.name, { addPathAndReference(property, "#", mutableMapOf()) }) as Property<S, T>
+        return knownRootElements.computeIfAbsent(property.genericType.name) {
+            addPathAndReference(
+                property,
+                "#",
+                mutableMapOf()
+            )
+        } as Property<S, T>
     }
 
-    private fun <S, T> addPathAndReference(property: Property<S, T>, path: String, knownPaths: MutableMap<String, String>): Property<S, T> {
+    private fun <S, T> addPathAndReference(
+        property: Property<S, T>,
+        path: String,
+        knownPaths: MutableMap<String, String>
+    ): Property<S, T> {
         val typeName = property.genericType.name
 
-        val reference = knownPaths.get(typeName)
+        val reference = knownPaths[typeName]
 
         if (reference == null && property.propertyType == PropertyType.OBJECT) {
-            knownPaths.put(typeName, path)
+            knownPaths[typeName] = path
         }
 
         val connected = Property.Context.Connected(path, reference)
         return if (reference == null) {
-            property.updateChildren( Property.Updater.Flat( { addPathAndReference(it, path + PATH_SEPARATOR + it.name, knownPaths) }))
-                    .copy(context = connected)
+            property.updateChildren(Property.Updater.Flat {
+                addPathAndReference(
+                    it,
+                    path + PATH_SEPARATOR + it.name,
+                    knownPaths
+                )
+            })
+                .copy(context = connected)
         } else {
             property.copy(
-                    propertyDescriptor = property.propertyDescriptor.copy(variant = PropertyDescriptor.Variant.Reference),
-                    context = connected)
+                propertyDescriptor = property.propertyDescriptor.copy(variant = PropertyDescriptor.Variant.Reference),
+                context = connected
+            )
         }
     }
 
     companion object {
-        private val PATH_SEPARATOR = "/"
+        private const val PATH_SEPARATOR = "/"
     }
 }

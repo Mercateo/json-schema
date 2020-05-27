@@ -23,7 +23,7 @@ public class Benchmarks {
         final ObjectNode nodes = schemaGenerator.generateSchema(SchemaGeneratorClasses.Benchmark.class);
     }
 
-    public static void main(String[] args) throws RunnerException, InterruptedException {
+    public static void main(String[] args) throws RunnerException {
 
         Options opt = new OptionsBuilder()
                 .warmupIterations(10)

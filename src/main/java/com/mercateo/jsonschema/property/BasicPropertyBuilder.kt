@@ -4,14 +4,13 @@ import com.mercateo.jsonschema.collections.MutablePropertyDescriptorMap
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.generictype.GenericTypeHierarchy
 import com.mercateo.jsonschema.mapper.Polymorphic
-import com.mercateo.jsonschema.mapper.TypeValue
 import com.mercateo.jsonschema.property.annotation.AnnotationMapBuilder
 import java.util.*
 
 class BasicPropertyBuilder(
-        customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(),
-        private val rawPropertyCollectors: List<RawPropertyCollector> = emptyList(),
-        polymorphic: Polymorphic? = null
+    customUnwrappers: Map<Class<*>, (Any) -> Any?> = emptyMap(),
+    private val rawPropertyCollectors: List<RawPropertyCollector> = emptyList(),
+    polymorphic: Polymorphic? = null
 ) : PropertyBuilder {
 
     private val customUnwrappers: Map<Class<*>, (Any) -> Any?>
@@ -39,15 +38,17 @@ class BasicPropertyBuilder(
 
     override fun <T> from(genericType: GenericType<T>): Property<Void, T> {
         return from(ROOT_NAME, genericType, mutableMapOf(),
-                { it: Void -> rootValueAccessor(it) }, mutableSetOf())
+            { rootValueAccessor(it) }, mutableSetOf()
+        )
     }
 
     private fun <S, T> from(
-            name: String,
-            genericType: GenericType<T>,
-            annotations: Map<Class<out Annotation>, Set<Annotation>>,
-            valueAccessor: (S) -> T?,
-            nestedTypes: Set<GenericType<*>>): Property<S, T> {
+        name: String,
+        genericType: GenericType<T>,
+        annotations: Map<Class<out Annotation>, Set<Annotation>>,
+        valueAccessor: (S) -> T?,
+        nestedTypes: Set<GenericType<*>>
+    ): Property<S, T> {
         val addedDescriptors = MutablePropertyDescriptorMap()
         val property = from(name, genericType, annotations, valueAccessor, addedDescriptors, nestedTypes)
         knownDescriptors.putAll(addedDescriptors)
@@ -56,12 +57,13 @@ class BasicPropertyBuilder(
     }
 
     private fun <S, T> from(
-            name: String,
-            genericType: GenericType<T>,
-            annotations: Map<Class<out Annotation>, Set<Annotation>>,
-            valueAccessor: (S) -> T?,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>): Property<S, T> {
+        name: String,
+        genericType: GenericType<T>,
+        annotations: Map<Class<out Annotation>, Set<Annotation>>,
+        valueAccessor: (S) -> T?,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
+    ): Property<S, T> {
         val propertyDescriptor = getPropertyDescriptor(genericType, addedDescriptors, nestedTypes)
 
         val mergedAnnotations = annotationMapBuilder.merge(annotations, propertyDescriptor.annotations)
@@ -69,103 +71,137 @@ class BasicPropertyBuilder(
     }
 
     private fun <T> getPropertyDescriptor(
-            genericType: GenericType<T>,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>): PropertyDescriptor<T> {
+        genericType: GenericType<T>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
+    ): PropertyDescriptor<T> {
         if (knownDescriptors.containsKey(genericType)) {
             return knownDescriptors[genericType]
         } else {
-            if (addedDescriptors.containsKey(genericType)) {
-                return addedDescriptors[genericType]
+            return if (addedDescriptors.containsKey(genericType)) {
+                addedDescriptors[genericType]
             } else {
                 if (!nestedTypes.contains(genericType)) {
-                    return createPropertyDescriptor(genericType, addedDescriptors, nestedTypes)
+                    createPropertyDescriptor(genericType, addedDescriptors, nestedTypes)
                 } else {
                     val propertyType = PropertyTypeMapper.of(genericType)
                     val annotations = genericType.rawType.annotations.toList()
-                    return PropertyDescriptor(propertyType, genericType, PropertyDescriptor.Variant.Reference,
-                            annotationMapBuilder.createMap(annotations))
+                    PropertyDescriptor(
+                        propertyType, genericType, PropertyDescriptor.Variant.Reference,
+                        annotationMapBuilder.createMap(annotations)
+                    )
                 }
             }
         }
     }
 
     private fun <T> createPropertyDescriptor(
-            genericType: GenericType<T>,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>
+        genericType: GenericType<T>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
     ): PropertyDescriptor<T> {
         val propertyType = PropertyTypeMapper.of(genericType)
 
         val variant: PropertyDescriptor.Variant = when (propertyType) {
             PropertyType.OBJECT -> {
-                createObjectPropertiesHandlingPolymorphicTypes(genericType as GenericType<Any>, addedDescriptors, nestedTypes)
+                createObjectPropertiesHandlingPolymorphicTypes(
+                    genericType as GenericType<Any>,
+                    addedDescriptors,
+                    nestedTypes
+                )
             }
 
             PropertyType.ARRAY -> {
                 val containedType = genericType.containedType as GenericType<Any>
-                PropertyDescriptor.Variant.Properties<T>(listOf(from("", containedType, mutableMapOf(), { _ -> null }, addedDescriptors, nestedTypes)))
+                PropertyDescriptor.Variant.Properties<T>(
+                    listOf(
+                        from(
+                            "",
+                            containedType,
+                            mutableMapOf(),
+                            { null },
+                            addedDescriptors,
+                            nestedTypes
+                        )
+                    )
+                )
             }
 
             else -> PropertyDescriptor.Variant.Primitive
         }
 
-        val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
-        val propertyDescriptor = PropertyDescriptor(propertyType, genericType, variant, annotationMapBuilder.createMap(annotations))
+        val annotations =
+            genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
+        val propertyDescriptor =
+            PropertyDescriptor(propertyType, genericType, variant, annotationMapBuilder.createMap(annotations))
         addedDescriptors.put(genericType, propertyDescriptor)
         return propertyDescriptor
     }
 
-    private fun createObjectPropertiesHandlingPolymorphicTypes(genericType: GenericType<Any>, addedDescriptors: MutablePropertyDescriptorMap, nestedTypes: Set<GenericType<*>>): PropertyDescriptor.Variant {
+    private fun createObjectPropertiesHandlingPolymorphicTypes(
+        genericType: GenericType<Any>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
+    ): PropertyDescriptor.Variant {
         return if (polymorphic.isPolymorphic(genericType)) {
             PropertyDescriptor.Variant.Polymorphic(
-                    createPolymorphicProperty(genericType, addedDescriptors, nestedTypes))
+                createPolymorphicProperty(genericType, addedDescriptors, nestedTypes)
+            )
         } else {
             PropertyDescriptor.Variant.Properties(
-                    createChildProperties(genericType, addedDescriptors, nestedTypes + genericType))
+                createChildProperties(genericType, addedDescriptors, nestedTypes + genericType)
+            )
         }
     }
 
     private fun <T> createPolymorphicProperty(
-            genericType: GenericType<Any>,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>
+        genericType: GenericType<Any>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
     ): List<Property<T, Any>> {
         return polymorphic
-                .getSubTypes(genericType)
-                .map {
-                    val name = it.name;
-                    val type = it.type
-                    val annotations = genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
-                    val valueAccessor: (T) -> Any? = { throw IllegalStateException("should not happen!") }
-                    from(name, type, annotationMapBuilder.createMap(annotations), valueAccessor, addedDescriptors, nestedTypes)
-                }
+            .getSubTypes(genericType)
+            .map {
+                val name = it.name
+                val type = it.type
+                val annotations =
+                    genericType.rawType.annotations.filter { !it.annotationClass.qualifiedName!!.startsWith("kotlin.") }
+                val valueAccessor: (T) -> Any? = { throw IllegalStateException("should not happen!") }
+                from(
+                    name,
+                    type,
+                    annotationMapBuilder.createMap(annotations),
+                    valueAccessor,
+                    addedDescriptors,
+                    nestedTypes
+                )
+            }
     }
 
     private fun <T> createChildProperties(
-            genericType: GenericType<T>,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>
+        genericType: GenericType<T>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
     ): List<Property<T, Any>> {
         return rawPropertyCollectors.flatMap { collector ->
             genericTypeHierarchy
-                    .hierarchy(genericType)
-                    .flatMap { collector.forType(it) }
-                    .map {
-                        it as RawProperty<T, Any>
-                    }
-                    .sortedBy { it.name }
-                    .asIterable()
+                .hierarchy(genericType)
+                .flatMap { collector.forType(it) }
+                .map {
+                    it as RawProperty<T, Any>
+                }
+                .sortedBy { it.name }
+                .asIterable()
         }.map { mapProperty(it, addedDescriptors, nestedTypes) }
     }
 
     private fun <S, T> mapProperty(
-            rawProperty: RawProperty<S, T>,
-            addedDescriptors: MutablePropertyDescriptorMap,
-            nestedTypes: Set<GenericType<*>>
+        rawProperty: RawProperty<S, T>,
+        addedDescriptors: MutablePropertyDescriptorMap,
+        nestedTypes: Set<GenericType<*>>
     ): Property<S, Any> {
         val genericType = rawProperty.genericType
-        val customUnwrapper = customUnwrappers.get(genericType.rawType)
+        val customUnwrapper = customUnwrappers[genericType.rawType]
 
         val targetGenericType = (if (customUnwrapper == null) genericType else {
             genericType.containedType
@@ -175,14 +211,16 @@ class BasicPropertyBuilder(
             val inner = rawProperty.valueAccessor.invoke(it)
             if (inner != null) customUnwrapper.invoke(inner) else null
         }
-        return from(rawProperty.name,
-                targetGenericType,
-                if (customUnwrapper == null) rawProperty.annotations else emptyMap(),
-                valueAccessor, addedDescriptors, nestedTypes)
+        return from(
+            rawProperty.name,
+            targetGenericType,
+            if (customUnwrapper == null) rawProperty.annotations else emptyMap(),
+            valueAccessor, addedDescriptors, nestedTypes
+        )
     }
 
     companion object {
-        private val ROOT_NAME = "#"
+        private const val ROOT_NAME = "#"
 
         private fun <T> rootValueAccessor(instance: Void): T? {
             throw IllegalStateException("cannot call value accessor for root element")
