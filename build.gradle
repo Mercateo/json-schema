@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = "1.4.21"
+    ext.kotlin_version = "1.4.32"
 
     repositories {
         mavenCentral()
@@ -117,7 +117,7 @@ uploadArchives {
     }
 }
 
-def jackson_version = "2.11.2"
+def jackson_version = "2.11.4"
 
 dependencies {
     implementation("com.googlecode.gentyref:gentyref:1.2.0")
