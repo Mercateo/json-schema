@@ -8,11 +8,7 @@ import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 
-    private val primitiveJsonPropertyBuilder: PrimitiveJsonPropertyBuilder
-
-    init {
-        primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
-    }
+    private val primitiveJsonPropertyBuilder: PrimitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {
         val nodeCreator: (Boolean) -> JsonNode = {
@@ -22,9 +18,10 @@ internal class BooleanJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPro
                 BooleanNode.FALSE
         }
 
+        @Suppress("UNCHECKED_CAST")
         return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Boolean>)
-                .withType("boolean")
-                .withDefaultAndAllowedValues(nodeCreator).build()
+            .withType("boolean")
+            .withDefaultAndAllowedValues(nodeCreator).build()
     }
 
 }

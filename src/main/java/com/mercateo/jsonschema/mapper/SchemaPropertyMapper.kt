@@ -7,12 +7,13 @@ import com.mercateo.jsonschema.property.PropertyType
 
 class SchemaPropertyMapper(private val referencedElements: Set<String>) {
 
-    private val propertyMappers = mapOf(Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
-            Pair(PropertyType.INTEGER, IntegerJsonPropertyMapper(nodeFactory)),
-            Pair(PropertyType.NUMBER, NumberJsonPropertyMapper(nodeFactory)),
-            Pair(PropertyType.BOOLEAN, BooleanJsonPropertyMapper(nodeFactory)),
-            Pair(PropertyType.ARRAY, ArrayJsonPropertyMapper(this, nodeFactory)),
-            Pair(PropertyType.OBJECT, ObjectJsonPropertyMapper(this, nodeFactory))
+    private val propertyMappers = mapOf(
+        Pair(PropertyType.STRING, StringJsonPropertyMapper(nodeFactory)),
+        Pair(PropertyType.INTEGER, IntegerJsonPropertyMapper(nodeFactory)),
+        Pair(PropertyType.NUMBER, NumberJsonPropertyMapper(nodeFactory)),
+        Pair(PropertyType.BOOLEAN, BooleanJsonPropertyMapper(nodeFactory)),
+        Pair(PropertyType.ARRAY, ArrayJsonPropertyMapper(this, nodeFactory)),
+        Pair(PropertyType.OBJECT, ObjectJsonPropertyMapper(this, nodeFactory))
     )
 
     fun <T> toJson(context: ObjectContext<T>): ObjectNode {
@@ -20,7 +21,7 @@ class SchemaPropertyMapper(private val referencedElements: Set<String>) {
         return if (context.reference != null) {
             nodeFactory.objectNode().apply { put("\$ref", context.reference) }
         } else {
-            propertyMappers.get(context.propertyDescriptor.propertyType)!!.toJson(context).apply {
+            propertyMappers[context.propertyDescriptor.propertyType]!!.toJson(context).apply {
                 val name = context.property.path
 
                 if (referencedElements.contains(name)) {

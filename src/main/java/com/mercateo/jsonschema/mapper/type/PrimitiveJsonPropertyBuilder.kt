@@ -4,26 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.JsonNodeFactory
 import com.fasterxml.jackson.databind.node.ObjectNode
-import com.fasterxml.jackson.databind.node.TextNode
 import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFactory) {
-    private val genericJsonPropertyMapper: GenericJsonPropertyMapper
-
-    init {
-        this.genericJsonPropertyMapper = GenericJsonPropertyMapper(nodeFactory)
-    }
+    private val genericJsonPropertyMapper: GenericJsonPropertyMapper = GenericJsonPropertyMapper(nodeFactory)
 
     fun <T> forProperty(jsonProperty: ObjectContext<T>): Builder<T> {
         return Builder(jsonProperty)
     }
 
     internal inner class Builder<T>(private val jsonProperty: ObjectContext<T>) {
-        private val propertyNode: ObjectNode
-
-        init {
-            propertyNode = ObjectNode(nodeFactory)
-        }
+        private val propertyNode: ObjectNode = ObjectNode(nodeFactory)
 
         fun withType(type: String): Builder<T> {
             propertyNode.put("type", type)
@@ -38,8 +29,8 @@ internal class PrimitiveJsonPropertyBuilder(private val nodeFactory: JsonNodeFac
         fun withAllowedValuesDefault(enumConstants: Array<Enum<*>>, nodeCreator: (Any) -> JsonNode): Builder<T> {
             if (!propertyNode.has("enum")) {
                 val arrayNode = ArrayNode(nodeFactory)
-                enumConstants.map(nodeCreator).forEach({ arrayNode.add(it) })
-                propertyNode.set("enum", arrayNode)
+                enumConstants.map(nodeCreator).forEach { arrayNode.add(it) }
+                propertyNode.set<ObjectNode>("enum", arrayNode)
             }
             return this
         }

@@ -2,9 +2,6 @@ package com.mercateo.jsonschema.property.mapper;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
 public class UnwrappedPropertyMapperClasses {
 
     static public class SecondLevelPropertyHolder {

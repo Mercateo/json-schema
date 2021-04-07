@@ -15,9 +15,9 @@ import org.junit.Test
 
 class CheckedPropertyMapperTest {
 
-    lateinit var uut: CheckedPropertyMapper
+    private lateinit var uut: CheckedPropertyMapper
 
-    lateinit var propertyChecker: PropertyChecker
+    private lateinit var propertyChecker: PropertyChecker
 
     @Before
     fun setUp() {

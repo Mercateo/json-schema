@@ -31,7 +31,7 @@ class ReferencedPropertyMapperTest {
         assertThat(property.path).isEqualTo("#")
         assertThat(property.reference).isNull()
 
-        val child = property.children.first();
+        val child = property.children.first()
         assertThat(child.children).isEmpty()
         assertThat(child.name).isEqualTo("property")
         assertThat(child.path).isEqualTo("#/property")

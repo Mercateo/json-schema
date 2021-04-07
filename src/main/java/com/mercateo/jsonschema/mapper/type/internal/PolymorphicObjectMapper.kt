@@ -9,15 +9,22 @@ import com.mercateo.jsonschema.property.Property
 import com.mercateo.jsonschema.property.PropertyDescriptor
 
 class PolymorphicObjectMapper(
-        private val nodeFactory: JsonNodeFactory,
-        private val schemaPropertyMapper: SchemaPropertyMapper
+    private val nodeFactory: JsonNodeFactory,
+    private val schemaPropertyMapper: SchemaPropertyMapper
 ) {
 
-    fun addPolymorphicObjectSchema(variant: PropertyDescriptor.Variant.Polymorphic, properties: ObjectContext<Any>, objectNode: ObjectNode) {
-        objectNode.set("anyOf", createPossibleTypeSchemas(variant.elements, properties))
+    fun addPolymorphicObjectSchema(
+        variant: PropertyDescriptor.Variant.Polymorphic,
+        properties: ObjectContext<Any>,
+        objectNode: ObjectNode
+    ) {
+        objectNode.set<ObjectNode>("anyOf", createPossibleTypeSchemas(variant.elements, properties))
     }
 
-    private fun createPossibleTypeSchemas(polymorphicTypes: List<Property<Any, Any>>, properties: ObjectContext<Any>): ArrayNode {
+    private fun createPossibleTypeSchemas(
+        polymorphicTypes: List<Property<Any, Any>>,
+        properties: ObjectContext<Any>
+    ): ArrayNode {
         val subtypeSchemas = ArrayNode(nodeFactory)
 
         for (subType in polymorphicTypes) {
@@ -39,12 +46,12 @@ class PolymorphicObjectMapper(
 
         val type = ObjectNode(nodeFactory).apply {
             put("type", "string")
-            set("enum", enum)
+            set<ObjectNode>("enum", enum)
         }
 
         subtypeSchema.get("properties").apply {
             if (this is ObjectNode) {
-                set("@type", type)
+                set<ObjectNode>("@type", type)
             }
         }
 

@@ -10,7 +10,7 @@ import org.junit.Test
 
 class PropertyTest {
 
-    lateinit var propertyBuilder: BasicPropertyBuilder
+    private lateinit var propertyBuilder: BasicPropertyBuilder
 
     @Before
     fun setUp() {
@@ -23,7 +23,7 @@ class PropertyTest {
 
         val visited = mutableListOf<Property<*, *>>()
 
-        property.update(Property.Updater.Flat({ visited.add(it); it }))
+        property.update(Property.Updater.Flat { visited.add(it); it })
 
         assertThat(visited).extracting("name").containsExactly("#")
     }

@@ -21,8 +21,8 @@ data class PropertyB(
 
 class ObjectContextTest {
 
-    lateinit var outer: Property<Nothing, PropertyA>
-    lateinit var inner: Property<PropertyA, PropertyB>
+    private lateinit var outer: Property<Nothing, PropertyA>
+    private lateinit var inner: Property<PropertyA, PropertyB>
 
     @Before
     fun setup() {
@@ -30,7 +30,7 @@ class ObjectContextTest {
         every { propertyDescriptorA.children } returns emptyList()
         every { propertyDescriptorA.genericType } returns GenericType.of(PropertyA::class.java)
         every { propertyDescriptorA.propertyType } returns PropertyType.OBJECT
-        outer = Property("#", propertyDescriptorA, { x: Nothing -> null }, emptyMap(), Property.Context.Unconnected)
+        outer = Property("#", propertyDescriptorA, { null }, emptyMap(), Property.Context.Unconnected)
 
         val propertyDescriptorB = mockk<PropertyDescriptor<PropertyB>> {}
         every { propertyDescriptorB.children } returns emptyList()
@@ -57,7 +57,7 @@ class ObjectContextTest {
         val propertyBContext = propertyAContext.createInner(inner,
                 PropertyA::inner)
 
-        assertThat(propertyBContext.defaultValue).isNull();
+        assertThat(propertyBContext.defaultValue).isNull()
     }
 
     @Test
@@ -66,8 +66,8 @@ class ObjectContextTest {
 
         val propertyAContext = ObjectContext(outer, defaultValue = defaultValue)
 
-        val propertyBContext = propertyAContext.createInner(inner,
-                { propA -> propA.inner })
+        val propertyBContext = propertyAContext.createInner(inner
+        ) { propA -> propA.inner }
 
         assertThat(propertyBContext.defaultValue).isNull()
     }
@@ -79,8 +79,8 @@ class ObjectContextTest {
 
         val propertyAContext = ObjectContext(outer, allowedValues = setOf(propertyA1, propertyA2))
 
-        val propertyBContext = propertyAContext.createInner(inner,
-                { propA -> propA.inner })
+        val propertyBContext = propertyAContext.createInner(inner
+        ) { propA -> propA.inner }
 
         assertThat(propertyBContext.allowedValues).containsExactlyInAnyOrder(propertyA1.inner,
                 propertyA2.inner)

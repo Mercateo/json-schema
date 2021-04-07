@@ -41,8 +41,7 @@ class AnnotationMapBuilderTest {
 
     @Test
     fun createMapShouldReturnSingleValueMap() {
-        val annotations = TestClass::class.memberProperties
-                .filter { it.name == "value" }.first().annotations
+        val annotations = TestClass::class.memberProperties.first { it.name == "value" }.annotations
         val annotationMap = annotationMapBuilder.createMap(annotations)
 
         assertThat(annotationMap).hasSize(1)

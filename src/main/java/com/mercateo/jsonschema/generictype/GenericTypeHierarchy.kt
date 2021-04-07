@@ -8,6 +8,7 @@ class GenericTypeHierarchy {
             var currentType: GenericType<*>? = genericType
 
             while (currentType != null) {
+                @Suppress("USELESS_CAST")
                 yield(currentType as GenericType<*>)
                 currentType = currentType.superType
             }

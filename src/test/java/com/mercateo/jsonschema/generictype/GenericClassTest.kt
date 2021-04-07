@@ -1,7 +1,6 @@
 package com.mercateo.jsonschema.generictype
 
 import com.googlecode.gentyref.GenericTypeReflector
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.Test
@@ -17,8 +16,8 @@ class GenericClassTest {
         @SuppressWarnings("rawtypes")
         val genericType = GenericClass(type as Class<*>)
 
-        Assertions.assertThat(genericType.name).isEqualTo("[Ljava.lang.Float;")
-        Assertions.assertThat(genericType.simpleName).isEqualTo("Float[]")
+        assertThat(genericType.name).isEqualTo("[Ljava.lang.Float;")
+        assertThat(genericType.simpleName).isEqualTo("Float[]")
     }
 
     @Test
@@ -30,8 +29,8 @@ class GenericClassTest {
         @SuppressWarnings("rawtypes")
         val genericType = GenericClass(type as Class<*>)
 
-        Assertions.assertThat(genericType.name).isEqualTo("[F")
-        Assertions.assertThat(genericType.simpleName).isEqualTo("float[]")
+        assertThat(genericType.name).isEqualTo("[F")
+        assertThat(genericType.simpleName).isEqualTo("float[]")
     }
 
     @Test

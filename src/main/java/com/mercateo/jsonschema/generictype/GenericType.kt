@@ -33,7 +33,7 @@ interface GenericType<out T> {
     companion object {
 
         fun of(type: Type): GenericType<Any> {
-            return of<Any>(type, null)
+            return of(type, null)
         }
 
         fun <T> of(type: Class<T>): GenericType<T> {
@@ -47,13 +47,15 @@ interface GenericType<out T> {
         @SuppressWarnings("unchecked")
         fun <T> of(type: Type, rawType: Class<T>?): GenericType<T> {
             if (type is ParameterizedType) {
+                @Suppress("UNCHECKED_CAST")
                 return GenericParameterizedType(type, type.rawType as Class<T>)
             } else if (type is Class<*>) {
+                @Suppress("UNCHECKED_CAST")
                 return GenericClass(type as Class<T>)
             } else if (type is GenericArrayType) {
                 return GenericArray(type, requireNonNull<Class<T>>(rawType))
             }
-            run { throw IllegalStateException("unhandled type " + type) }
+            run { throw IllegalStateException("unhandled type $type") }
         }
 
         fun ofField(field: Field, type: Type): GenericType<Any> {
@@ -68,5 +70,4 @@ interface GenericType<out T> {
             return of(returnType, returnClass)
         }
     }
-
 }

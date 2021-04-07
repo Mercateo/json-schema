@@ -11,18 +11,24 @@ import javax.validation.constraints.NotNull
 
 
 class DefaultObjectMapper(
-        private val nodeFactory: JsonNodeFactory,
-        private val schemaPropertyMapper: SchemaPropertyMapper
+    private val nodeFactory: JsonNodeFactory,
+    private val schemaPropertyMapper: SchemaPropertyMapper
 ) {
 
-    fun <T> addStandardObjectSchema(variant: PropertyDescriptor.Variant.Properties<T>, properties: ObjectContext<T>, propertyNode: ObjectNode) {
+    fun <T> addStandardObjectSchema(
+        variant: PropertyDescriptor.Variant.Properties<T>,
+        properties: ObjectContext<T>,
+        propertyNode: ObjectNode
+    ) {
         val objectNode = ObjectNode(nodeFactory)
         for (property in variant.children) {
-            objectNode.set(property.name, schemaPropertyMapper.toJson(
+            objectNode.set<ObjectNode>(
+                property.name, schemaPropertyMapper.toJson(
                     properties.createInner(property, property.valueAccessor)
-            ))
+                )
+            )
         }
-        propertyNode.set("properties", objectNode)
+        propertyNode.set<ObjectNode>("properties", objectNode)
 
         addRequiredElements(properties, propertyNode)
     }
@@ -31,10 +37,9 @@ class DefaultObjectMapper(
         val arrayNode = ArrayNode(nodeFactory)
 
         properties.propertyDescriptor.children.filter(this::isRequired).forEach { arrayNode.add(it.name) }
-        val requiredElements = arrayNode
 
-        if (requiredElements.size() > 0) {
-            propertyNode.set("required", requiredElements)
+        if (arrayNode.size() > 0) {
+            propertyNode.set<ObjectNode>("required", arrayNode)
         }
     }
 

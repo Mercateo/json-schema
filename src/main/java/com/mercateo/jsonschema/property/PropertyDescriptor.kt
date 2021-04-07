@@ -4,18 +4,18 @@ import com.mercateo.jsonschema.generictype.GenericType
 
 
 data class PropertyDescriptor<T>(
-        val propertyType: PropertyType,
-        val genericType: GenericType<T>,
-        val variant: PropertyDescriptor.Variant,
-        val annotations: Map<Class<out Annotation>, Set<Annotation>>
+    val propertyType: PropertyType,
+    val genericType: GenericType<T>,
+    val variant: Variant,
+    val annotations: Map<Class<out Annotation>, Set<Annotation>>
 ) {
     @Suppress("UNCHECKED_CAST")
     val children: List<Property<T, Any>> =
-            when (variant) {
-                is PropertyDescriptor.Variant.Properties<*> -> variant.children as List<Property<T, Any>>
-                is PropertyDescriptor.Variant.Polymorphic -> variant.elements as List<Property<T, Any>>
-                else -> emptyList()
-            }
+        when (variant) {
+            is Variant.Properties<*> -> variant.children as List<Property<T, Any>>
+            is Variant.Polymorphic -> variant.elements as List<Property<T, Any>>
+            else -> emptyList()
+        }
 
     sealed class Variant {
         open fun filter(predicate: (Property<Any, Any>) -> Boolean): Variant = this
@@ -23,11 +23,12 @@ data class PropertyDescriptor<T>(
 
         class Properties<T>(val children: List<Property<T, Any>>) : Variant() {
             override fun filter(predicate: (Property<Any, Any>) -> Boolean): Variant =
-                    Properties((children as List<Property<Any, Any>>).filter(predicate).map { it.filterChildren(predicate) })
+                Properties(
+                    (children as List<Property<Any, Any>>).filter(predicate).map { it.filterChildren(predicate) })
 
 
             override fun update(updater: Property.Updater): Variant =
-                    Properties((children as List<Property<Any, Any>>).map { updater.update(it) })
+                Properties((children as List<Property<Any, Any>>).map { updater.update(it) })
 
             override fun toString(): String {
                 return "Properties(elements=${children.joinToString(", ", transform = { it.name })})"
@@ -36,10 +37,10 @@ data class PropertyDescriptor<T>(
 
         class Polymorphic(val elements: List<Property<Any, Any>>) : Variant() {
             override fun filter(predicate: (Property<Any, Any>) -> Boolean): Variant =
-                    Polymorphic(elements.filter(predicate).map { it.filterChildren(predicate) })
+                Polymorphic(elements.filter(predicate).map { it.filterChildren(predicate) })
 
             override fun update(updater: Property.Updater): Variant =
-                    Polymorphic(elements.map { updater.update(it) })
+                Polymorphic(elements.map { updater.update(it) })
 
             override fun toString(): String {
                 return "Polymorphic(elements=${elements.joinToString(", ", transform = { it.name })})"
@@ -60,9 +61,9 @@ data class PropertyDescriptor<T>(
     }
 
     fun filter(predicate: (Property<Any, Any>) -> Boolean): PropertyDescriptor<T> =
-            copy(variant = variant.filter(predicate))
+        copy(variant = variant.filter(predicate))
 
     fun update(updater: Property.Updater): PropertyDescriptor<T> =
-            copy(variant = variant.update(updater))
+        copy(variant = variant.update(updater))
 
 }

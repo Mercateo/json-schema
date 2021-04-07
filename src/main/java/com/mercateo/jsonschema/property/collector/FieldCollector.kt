@@ -8,25 +8,26 @@ import java.lang.reflect.Field
 import java.lang.reflect.Modifier
 
 class FieldCollector(
-        private val config: FieldCollectorConfig = FieldCollectorConfig(),
-        private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
+    private val config: FieldCollectorConfig = FieldCollectorConfig(),
+    private val annotationProcessor: AnnotationProcessor = AnnotationProcessor()
 ) : RawPropertyCollector {
 
     override fun <S> forType(genericType: GenericType<S>): Sequence<RawProperty<S, *>> {
         return sequenceOf(*genericType.declaredFields)
-                .filter { !it.isSynthetic }
-                .filter { !Modifier.isStatic(it.modifiers) }
-                .filter { config.includePrivateFields || Modifier.isPublic(it.modifiers) }
-                .map { mapRawDataProperty(it, genericType) }
+            .filter { !it.isSynthetic }
+            .filter { !Modifier.isStatic(it.modifiers) }
+            .filter { config.includePrivateFields || Modifier.isPublic(it.modifiers) }
+            .map { mapRawDataProperty(it, genericType) }
     }
 
     private fun <S> mapRawDataProperty(field: Field, genericType: GenericType<S>): RawProperty<S, Any> {
         val fieldType = GenericType.ofField(field, genericType.type)
 
-        return RawProperty<S, Any>(field.name,
-                fieldType,
-                annotationProcessor.collectAndGroup(field.annotations.toList()),
-                { instance: S -> valueAccessor(field, instance) })
+        return RawProperty(
+            field.name,
+            fieldType,
+            annotationProcessor.collectAndGroup(field.annotations.toList())
+        ) { instance: S -> valueAccessor(field, instance) }
     }
 
     private fun <S> valueAccessor(field: Field, instance: S): Any? {

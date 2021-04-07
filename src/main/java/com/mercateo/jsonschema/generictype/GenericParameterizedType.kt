@@ -1,11 +1,9 @@
 package com.mercateo.jsonschema.generictype
 
-import com.googlecode.gentyref.GenericTypeReflector
-
 import java.lang.reflect.ParameterizedType
-import java.lang.reflect.Type
 
-internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Class<T>) : GenericTypeAbstract<T, ParameterizedType>(rawType, type) {
+internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Class<T>) :
+    GenericTypeAbstract<T, ParameterizedType>(rawType, type) {
 
     override val simpleName: String
         get() = type.typeName
@@ -17,24 +15,12 @@ internal class GenericParameterizedType<T>(type: ParameterizedType, rawType: Cla
         get() {
             val actualTypeArguments = type.actualTypeArguments
             if (actualTypeArguments.size > 1) {
-                throw IllegalStateException(type.toString() + " not supported for subtyping")
+                throw IllegalStateException("$type not supported for subtyping")
             }
             return GenericType.of(actualTypeArguments[0], rawType)
-        }
-
-    override val superType: GenericType<Any>?
-        get() {
-            val superclass = rawType.superclass as Class<out Any>?
-            return if (superclass != null) {
-                val exactSuperType: Type = GenericTypeReflector.getExactSuperType(type,
-                        superclass)
-                GenericType.of(exactSuperType, superclass)
-            } else
-                null
         }
 
     override fun toString(): String {
         return type.toString()
     }
-
 }

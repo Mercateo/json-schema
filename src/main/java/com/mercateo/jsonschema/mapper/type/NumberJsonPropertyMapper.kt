@@ -9,15 +9,12 @@ import com.mercateo.jsonschema.mapper.ObjectContext
 
 internal class NumberJsonPropertyMapper(nodeFactory: JsonNodeFactory) : JsonPropertyMapper {
 
-    private val primitiveJsonPropertyBuilder: PrimitiveJsonPropertyBuilder
-
-    init {
-        primitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
-    }
+    private val primitiveJsonPropertyBuilder: PrimitiveJsonPropertyBuilder = PrimitiveJsonPropertyBuilder(nodeFactory)
 
     override fun toJson(property: ObjectContext<*>): ObjectNode {
+        @Suppress("UNCHECKED_CAST")
         return primitiveJsonPropertyBuilder.forProperty(property as ObjectContext<Number>) //
-                .withType("number").withDefaultAndAllowedValues(this::createNode).build()
+            .withType("number").withDefaultAndAllowedValues(this::createNode).build()
     }
 
     private fun createNode(value: Number): JsonNode {

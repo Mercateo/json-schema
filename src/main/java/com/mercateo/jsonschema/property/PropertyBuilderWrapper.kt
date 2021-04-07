@@ -5,11 +5,15 @@ import com.mercateo.jsonschema.SchemaGenerator
 import com.mercateo.jsonschema.generictype.GenericType
 import com.mercateo.jsonschema.property.mapper.PropertyMapper
 
-class PropertyBuilderWrapper(private val propertyBuilder: PropertyBuilder, vararg propertyMappers: PropertyMapper) {
+class PropertyBuilderWrapper(
+    private val propertyBuilder: PropertyBuilder,
+    private vararg val propertyMappers: PropertyMapper
+) {
 
-    private val propertyMappers: Array<out PropertyMapper> = propertyMappers
-
-    fun <T> from(genericType: GenericType<T>, schemaContext: SchemaContext = SchemaContext(SchemaGenerator.defaultPropertyChecker)): Property<Void, T> {
+    fun <T> from(
+        genericType: GenericType<T>,
+        schemaContext: SchemaContext = SchemaContext(SchemaGenerator.defaultPropertyChecker)
+    ): Property<Void, T> {
         var property = propertyBuilder.from(genericType)
 
         for (propertyMapper in propertyMappers) {
