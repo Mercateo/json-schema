@@ -2,11 +2,7 @@ package com.mercateo.jsonschema;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.List;
@@ -74,7 +70,7 @@ public class SchemaGeneratorClasses {
         @NotNull
         public Optional<String> baz;
 
-        @org.hibernate.validator.constraints.NotEmpty
+        @NotEmpty
         public String qux;
     }
 

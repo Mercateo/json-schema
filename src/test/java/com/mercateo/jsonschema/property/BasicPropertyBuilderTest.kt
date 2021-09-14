@@ -44,13 +44,13 @@ class BasicPropertyBuilderTest {
     @Test
     fun unwrapsCustomTypes() {
         propertyBuilder = BasicPropertyBuilder(
-                customUnwrappers = mapOf(Pair(GenericPropertyHolder::class.java, { wrapper ->
+                customUnwrappers = mapOf(Pair(GenericPropertyHolder::class.java) { wrapper ->
                     if (wrapper is GenericPropertyHolder<*>) {
                         wrapper.property
                     } else {
                         null
                     }
-                })), rawPropertyCollectors = listOf(FieldCollector()))
+                }), rawPropertyCollectors = listOf(FieldCollector()))
         val property = propertyBuilder.from(TwoLevelPropertyHolder::class.java)
 
         assertThat(property.children).extracting("name").containsExactly("holder")

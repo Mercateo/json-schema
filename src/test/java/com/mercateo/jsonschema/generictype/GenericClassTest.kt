@@ -62,7 +62,7 @@ class GenericClassTest {
     fun isInstanceShouldWorkForPlainClasses() {
         val genericType1 = GenericType.of(String::class.java)
 
-        assertThat(genericType1.isInstanceOf(String::class.java)).isTrue()
+        assertThat(genericType1.isInstanceOf(String::class.java)).isTrue
     }
 
     @Test

@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = "1.4.21"
+    ext.kotlin_version = '1.5.30'
 
     repositories {
         mavenCentral()
@@ -117,13 +117,14 @@ uploadArchives {
     }
 }
 
-def jackson_version = "2.11.2"
+def jackson_version = '2.12.5'
+def jmh_version = '1.33'
 
 dependencies {
     implementation("com.googlecode.gentyref:gentyref:1.2.0")
     implementation("com.fasterxml.jackson.core:jackson-annotations:${jackson_version}")
     implementation(group: "com.fasterxml.jackson.core", name: "jackson-databind", version: jackson_version)
-    implementation(group: "org.slf4j", name: "slf4j-api", version: "1.7.30")
+    implementation(group: "org.slf4j", name: "slf4j-api", version: "1.7.32")
     implementation(group: "javax.validation", name: "validation-api", version: "2.0.1.Final") {
         exclude(module: "testng")
     }
@@ -131,11 +132,11 @@ dependencies {
     implementation(group: "org.jetbrains.kotlin", name: "kotlin-reflect", version: kotlin_version)
 
     testImplementation(group: "junit", name: "junit", version: "4.13")
-    testImplementation(group: "org.assertj", name: "assertj-core", version: "3.16.1")
-    testImplementation(group: "io.mockk", name: "mockk", version: "1.10.0")
-    testImplementation(group: "org.openjdk.jmh", name: "jmh-core", version: "1.25")
-    testImplementation(group: "org.openjdk.jmh", name: "jmh-generator-annprocess", version: "1.25")
-    testImplementation(group: "ch.qos.logback", name: "logback-classic", version: "1.2.3")
+    testImplementation(group: "org.assertj", name: "assertj-core", version: "3.20.2")
+    testImplementation(group: "io.mockk", name: "mockk", version: "1.12.0")
+    testImplementation(group: "org.openjdk.jmh", name: "jmh-core", version: jmh_version)
+    testAnnotationProcessor(group: "org.openjdk.jmh", name: "jmh-generator-annprocess", version: jmh_version)
+    testImplementation(group: "ch.qos.logback", name: "logback-classic", version: "1.2.5")
     testImplementation(group: "org.jetbrains.kotlin", name: "kotlin-test", version: kotlin_version)
-    testImplementation(group: "org.hibernate", name: "hibernate-validator", version: "6.1.5.Final")
+    testImplementation(group: "org.hibernate", name: "hibernate-validator", version: "6.2.0.Final")
 }

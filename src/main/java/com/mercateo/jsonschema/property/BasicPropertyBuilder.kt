@@ -18,13 +18,13 @@ class BasicPropertyBuilder(
     private val polymorphic: Polymorphic
 
     init {
-        this.customUnwrappers = customUnwrappers + Pair(Optional::class.java, { option ->
+        this.customUnwrappers = customUnwrappers + Pair(Optional::class.java) { option ->
             if (option is Optional<*>) {
                 option.orElse(null)
             } else {
                 null
             }
-        })
+        }
 
         this.polymorphic = polymorphic ?: Polymorphic()
 

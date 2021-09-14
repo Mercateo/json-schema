@@ -14,7 +14,8 @@ class UnwrappedPropertyMapper
     private val unwrappers: Map<Class<out Annotation>, UnwrappedPropertyUpdater<*>> =
         unwrapProperties.groupBy { it.annotation }.mapValues { it.value.first() }
 
-    private val unwrappedProperties: ConcurrentHashMap<GenericType<*>, Property<*, *>> = ConcurrentHashMap()
+    private val unwrappedProperties: ConcurrentHashMap<GenericType<*>, Property<*, *>> =
+        ConcurrentHashMap<GenericType<*>, Property<*, *>>()
 
     private val unwrappedPropertyDescriptors = MutablePropertyDescriptorMap()
 

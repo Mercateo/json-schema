@@ -13,6 +13,6 @@ class SchemaContextTest {
 
         val result = uut.propertyChecker.test(mockk<Property<Unit, Unit>>())
 
-        assertThat(result).isTrue()
+        assertThat(result).isTrue
     }
 }

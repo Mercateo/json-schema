@@ -46,14 +46,18 @@ interface GenericType<out T> {
 
         @SuppressWarnings("unchecked")
         fun <T> of(type: Type, rawType: Class<T>?): GenericType<T> {
-            if (type is ParameterizedType) {
-                @Suppress("UNCHECKED_CAST")
-                return GenericParameterizedType(type, type.rawType as Class<T>)
-            } else if (type is Class<*>) {
-                @Suppress("UNCHECKED_CAST")
-                return GenericClass(type as Class<T>)
-            } else if (type is GenericArrayType) {
-                return GenericArray(type, requireNonNull<Class<T>>(rawType))
+            when (type) {
+                is ParameterizedType -> {
+                    @Suppress("UNCHECKED_CAST")
+                    return GenericParameterizedType(type, type.rawType as Class<T>)
+                }
+                is Class<*> -> {
+                    @Suppress("UNCHECKED_CAST")
+                    return GenericClass(type as Class<T>)
+                }
+                is GenericArrayType -> {
+                    return GenericArray(type, requireNonNull<Class<T>>(rawType))
+                }
             }
             run { throw IllegalStateException("unhandled type $type") }
         }

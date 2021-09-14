@@ -23,10 +23,10 @@ class PropertyCheckerTest {
 
         every { predicate.test(property) } returns false
 
-        assertThat(checker.test(property)).isFalse()
+        assertThat(checker.test(property)).isFalse
 
         every { predicate.test(property) } returns true
 
-        assertThat(checker.test(property)).isTrue()
+        assertThat(checker.test(property)).isTrue
     }
 }

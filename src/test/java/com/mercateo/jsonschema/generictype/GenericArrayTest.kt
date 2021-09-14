@@ -42,11 +42,11 @@ class GenericArrayTest {
 
     @Test
     fun shouldBeIterable() {
-        assertThat(genericType.isIterable).isTrue()
+        assertThat(genericType.isIterable).isTrue
     }
 
     @Test
     fun shouldNotBeEnum() {
-        assertThat(genericType.isEnum).isFalse()
+        assertThat(genericType.isEnum).isFalse
     }
 }
