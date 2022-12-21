@@ -38,6 +38,8 @@ internal class ObjectJsonPropertyMapper(
                     propertyNode
                 )
             }
+            else -> {
+            }
         }
 
         return propertyNode
