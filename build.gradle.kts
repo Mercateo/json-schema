@@ -80,7 +80,7 @@ publishing {
     }
 }
 
-val jackson_version = "2.12.7"
+val jackson_version = "2.13.4"
 val jmh_version = "1.33"
 
 dependencies {
